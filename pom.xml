@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.sq</groupId>
+  <artifactId>uip</artifactId>
+  <packaging>pom</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>uip</name>
+  <url>https://github.com/ShuiQing301/uip</url>
+
+  <!--项目中包含的模块 -->
+  <modules>
+    <module>uip-parent</module>
+  </modules>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.0</version>
+        <configuration>
+          <locales>zh_CN</locales>
+          <outputEncoding>UTF-8</outputEncoding>
+          <inputEncoding>UTF-8</inputEncoding>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <!--项目build使用的编码 -->
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <!-- 开发人员信息 -->
+  <developers>
+    <developer>
+      <name>gemingming</name>
+      <email>shuiqing301@gmail.com</email>
+      <url>https://github.com/ShuiQing301</url>
+      <roles>
+        <role>software engineer</role>
+      </roles>
+      <timezone>3</timezone>
+    </developer>
+  </developers>
+
+  <!--许可证 -->
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+</project>
