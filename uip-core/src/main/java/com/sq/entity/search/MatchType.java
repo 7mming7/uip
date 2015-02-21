@@ -16,28 +16,46 @@ import java.util.Arrays;
  * | o| (_
  */
 public enum MatchType {
+
     EQ("等于", "="),
+
     NE("不等于", "!="),
+
     GT("大于", ">"),
+
     GTE("大于等于", ">="),
+
     LT("小于", "<"),
+
     LTE("小于等于", "<="),
+
     prefixLike("前缀模糊匹配", "like"),
+
     prefixNotLike("前缀模糊不匹配", "not like"),
+
     suffixLike("后缀模糊匹配", "like"),
+
     suffixNotLike("后缀模糊不匹配", "not like"),
+
     LIKE("模糊匹配", "like"),
+
     notLike("不匹配", "not like"),
+
     isNull("空", "is null"),
+
     isNotNull("非空", "is not null"),
+
     IN("包含", "in"),
+
     notIn("不包含", "not in"),
+
     CUSTOM("自定义默认的", null);
 
     private final String info;
+
     private final String symbol;
 
-    SearchOperator(final String info, String symbol) {
+    MatchType(final String info, String symbol) {
         this.info = info;
         this.symbol = symbol;
     }
@@ -73,7 +91,7 @@ public enum MatchType {
             }
         }
 
-        throw new SearchException("SearchOperator not method search operator symbol : " + symbol);
+        throw new SearchException("MatchType not method search operator symbol : " + symbol);
     }
 
     private static String formatSymbol(String symbol) {
