@@ -1,9 +1,8 @@
-package entity.page;
+package com.sq.entity.page;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * 抽象返回到前台的页面对象.
@@ -24,7 +23,7 @@ public class PageResult<T> implements Serializable {
     private int pageNo = 1;
 
     /** 查询结果. */
-    private List<T> result;
+    private Object result;
 
     /** 当前查询结果是否成功. */
     private boolean success;

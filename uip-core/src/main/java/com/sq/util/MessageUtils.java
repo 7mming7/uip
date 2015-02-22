@@ -1,4 +1,4 @@
-package util;
+package com.sq.util;
 
 import org.springframework.context.MessageSource;
 

@@ -1,4 +1,4 @@
-package util;
+package com.sq.util;
 
 /**
  * Created with IntelliJ IDEA.

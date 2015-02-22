@@ -1,4 +1,4 @@
-package entity.search;
+package com.sq.entity.search;
 
 import java.io.Serializable;
 

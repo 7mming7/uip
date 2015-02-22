@@ -1,4 +1,4 @@
-package util;
+package com.sq.util;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 

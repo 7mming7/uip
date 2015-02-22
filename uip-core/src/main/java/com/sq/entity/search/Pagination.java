@@ -1,6 +1,6 @@
-package entity.search;
+package com.sq.entity.search;
 
-import util.Constants;
+import com.sq.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;

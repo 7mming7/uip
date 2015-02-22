@@ -1,4 +1,4 @@
-package entity;
+package com.sq.entity;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.springframework.data.domain.Persistable;

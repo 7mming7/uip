@@ -1,7 +1,7 @@
-package exception;
+package com.sq.exception;
 
-import util.MessageUtils;
-import util.StringUtils;
+import com.sq.util.MessageUtils;
+import com.sq.util.StringUtils;
 
 /**
  * 基础异常，作为特定业务异常的基类.
@@ -15,7 +15,7 @@ import util.StringUtils;
  * |_)._ _
  * | o| (_
  */
-public class BaseException implements RuntimeException{
+public class BaseException extends RuntimeException{
 
     /**
      * 所属模块

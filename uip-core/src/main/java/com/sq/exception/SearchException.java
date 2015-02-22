@@ -1,4 +1,4 @@
-package exception;
+package com.sq.exception;
 
 import org.springframework.core.NestedRuntimeException;
 

@@ -1,7 +1,7 @@
-package entity.search;
+package com.sq.entity.search;
 
-import exception.SearchException;
-import util.StringUtils;
+import com.sq.exception.SearchException;
+import com.sq.util.StringUtils;
 
 import java.util.Arrays;
 
