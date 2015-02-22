@@ -10,9 +10,10 @@
  * |_)._ _ 
  * | o| (_
  */
-package entity;
+package com.sq.entity;
 
 /**
  * <p>Entity 基础抽象模型，提供两种不同的基础Entity对象，分别应用于自增主键和非自增主键两种场景.</p>
- * <p>定义返回到前台的数据对象的结构.</p>
+ * <p>PageResult 定义返回到前台的数据对象的结构.</p>
+ * <p>search 查询相关.</p>
  */

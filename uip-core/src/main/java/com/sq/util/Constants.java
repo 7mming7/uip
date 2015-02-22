@@ -12,6 +12,6 @@ package com.sq.util;
  */
 public interface Constants {
 
-    /** 默认每页显示10条数据. */
+    /** 默认每页显示20条数据. */
     public static final int DEFAULT_PAGE_SIZE = 20;
 }

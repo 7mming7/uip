@@ -24,7 +24,7 @@ public class MessageUtils {
      *
      * @param code 消息键
      * @param args 参数
-     * @return message
+     * @return message 获取的消息文本
      */
     public static String message(String code, Object... args) {
         if (messageSource == null) {
