@@ -1,4 +1,4 @@
-package com.sq.entity.page;
+package com.sq.entity.pageAndSort;
 
 import java.io.Serializable;
 import java.util.ArrayList;

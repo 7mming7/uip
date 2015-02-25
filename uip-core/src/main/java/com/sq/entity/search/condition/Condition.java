@@ -1,6 +1,6 @@
-package com.sq.entity.search;
+package com.sq.entity.search.condition;
 
-import java.io.Serializable;
+import com.sq.entity.search.MatchType;
 
 /**
  * 简单查询条件对象.
@@ -14,12 +14,14 @@ import java.io.Serializable;
  * |_)._ _
  * | o| (_
  */
-public class Condition implements Serializable {
-
-    private static final long serialVersionUID = -5684082479066686192L;
+public class Condition implements PropertyFilter {
 
     // ==========================================
     // fields...
+
+    /** 查询参数分隔符. */
+    public static final String separator = "_";
+
     /** 模型属性名. */
     private String property;
 
@@ -32,12 +34,35 @@ public class Condition implements Serializable {
     // ==========================================
     // constructor...
 
-    public Condition(String property, MatchType matchType, Object matchValue) {
+    private Condition(String property, MatchType matchType, Object matchValue) {
         this.property = property;
         this.matchType = matchType;
         this.matchValue = matchValue;
     }
 
+    // ==========================================
+    // 工具方法...
+    /**
+     * 根据查询属性、操作符和值生成Condition
+     * @param property   查询属性
+     * @param matchType  匹配操作符
+     * @param matchValue 匹配参数
+     * @return 构建出的查询条件
+     */
+    public static Condition newCondition(final String property, final MatchType matchType, final Object matchValue) {
+        return new Condition(property, matchType, matchValue);
+    }
+
+    /**
+     * 获取当前condition的操作符
+     * @return 操作符
+     */
+    public String getOperatorStr () {
+        if (matchType != null) {
+            return matchType.getSymbol();
+        }
+        return "";
+    }
 
     // ==========================================
     // getter and setter method...
