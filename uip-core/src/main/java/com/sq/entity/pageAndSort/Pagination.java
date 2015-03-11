@@ -1,7 +1,5 @@
 package com.sq.entity.pageAndSort;
 
-import org.springframework.data.domain.Pageable;
-
 import java.io.Serializable;
 
 /**
@@ -23,5 +21,9 @@ public class Pagination implements Serializable {
     // ==========================================
     // fields...
     private Sort sort;
+
+    private int page;
+
+    private int size;
 }
 

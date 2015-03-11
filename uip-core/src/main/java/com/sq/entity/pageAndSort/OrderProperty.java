@@ -22,14 +22,18 @@ public class OrderProperty implements Serializable {
 
     private static final long serialVersionUID = 1522511010900108987L;
 
+    // ==========================================
+    // fields...
     /** 默认忽略大小写.*/
     private static final boolean DEFAULT_IGNORE_CASE = false;
 
     /** 默认正序排序.*/
     public static final Direction DEFAULT_DIRECTION = Direction.ASC;
 
+    /** 排序方向.*/
     private final Direction direction;
 
+    /** 排序属性.*/
     private final String property;
 
     private final boolean ignoreCase;
