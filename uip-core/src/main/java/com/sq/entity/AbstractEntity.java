@@ -32,7 +32,6 @@ public abstract class AbstractEntity<ID extends Serializable> implements Persist
      * (non-Javadoc)
      *
      * @see org.springframework.data.domain.Persistable#isNew()
-
      */
     public boolean isNew() {
 

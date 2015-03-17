@@ -1,5 +1,8 @@
 package com.sq.entity.pageAndSort;
 
+import org.springframework.data.domain.*;
+import org.springframework.data.domain.Sort;
+
 import java.io.Serializable;
 
 /**
@@ -14,16 +17,12 @@ import java.io.Serializable;
  * |_)._ _
  * | o| (_
  */
-public class Pagination implements Serializable {
+public class Pagination {
 
     private static final long serialVersionUID = 3309155422497701579L;
 
+
     // ==========================================
     // fields...
-    private Sort sort;
-
-    private int page;
-
-    private int size;
 }
 

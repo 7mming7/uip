@@ -1,6 +1,12 @@
 package com.sq.entity.search.condition;
 
 import com.sq.entity.search.MatchType;
+import com.sq.entity.search.exception.InvlidSearchOperatorException;
+import com.sq.exception.SearchException;
+import com.sq.util.StringUtils;
+import org.springframework.util.Assert;
+
+import java.util.List;
 
 /**
  * 简单查询条件对象.
@@ -14,13 +20,15 @@ import com.sq.entity.search.MatchType;
  * |_)._ _
  * | o| (_
  */
-public class Condition implements PropertyFilter {
+public class Condition implements SearchFilter {
 
     // ==========================================
     // fields...
 
     /** 查询参数分隔符. */
     public static final String separator = "_";
+
+    private String key;
 
     /** 模型属性名. */
     private String property;
@@ -34,14 +42,60 @@ public class Condition implements PropertyFilter {
     // ==========================================
     // constructor...
 
-    private Condition(String property, MatchType matchType, Object matchValue) {
+    Condition(String property, MatchType matchType, Object matchValue) {
         this.property = property;
         this.matchType = matchType;
         this.matchValue = matchValue;
+        this.key = this.property + separator + this.matchType;
     }
 
     // ==========================================
     // 工具方法...
+
+    /**
+     * 根据查询key和值生成Condition
+     * @param key
+     * @param value
+     * @return Condition
+     * @throws SearchException 查询exception
+     */
+    static Condition newCondition(final String key, final Object value) throws SearchException {
+
+        Assert.notNull(key, "Condition key must not null");
+
+        String[] searchs = StringUtils.split(key, separator);
+
+        if (searchs.length == 0) {
+            throw new SearchException("Condition key format must be : property or property_op");
+        }
+
+        String searchProperty = searchs[0];
+
+        MatchType matchType = null;
+        if (searchs.length == 1) {
+            matchType = MatchType.CUSTOM;
+        } else {
+            try {
+                matchType = MatchType.valueOf(searchs[1]);
+            } catch (IllegalArgumentException e) {
+                throw new InvlidSearchOperatorException(searchProperty, searchs[1]);
+            }
+        }
+
+        boolean allowBlankValue = MatchType.isAllowBlankValue(matchType);
+        boolean isValueBlank = value == null;
+        isValueBlank = isValueBlank || (value instanceof String && StringUtils.isBlank((String) value));
+        isValueBlank = isValueBlank || (value instanceof List && ((List) value).size() == 0);
+        //过滤掉空值，即不参与查询
+        if (!allowBlankValue && isValueBlank) {
+            return null;
+        }
+
+        Condition searchFilter = newCondition(searchProperty, matchType, value);
+
+        return searchFilter;
+    }
+
     /**
      * 根据查询属性、操作符和值生成Condition
      * @param property   查询属性
@@ -89,6 +143,14 @@ public class Condition implements PropertyFilter {
 
     public void setMatchValue(Object matchValue) {
         this.matchValue = matchValue;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     // ==========================================

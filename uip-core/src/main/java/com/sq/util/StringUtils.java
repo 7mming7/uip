@@ -59,6 +59,10 @@ public class StringUtils {
         return org.apache.commons.lang3.StringUtils.join(list, separator);
     }
 
+    public static String[] split(String str, String separatorChar) {
+        return org.apache.commons.lang3.StringUtils.split(str, separatorChar);
+    }
+
     public static String escapeHtml(String text) {
         return StringEscapeUtils.escapeHtml4(text);
     }

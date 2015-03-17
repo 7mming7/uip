@@ -10,5 +10,6 @@ package com.sq.entity.search.condition;
  * |_)._ _
  * | o| (_
  */
-public interface PropertyFilter {
+public interface SearchFilter {
+
 }
