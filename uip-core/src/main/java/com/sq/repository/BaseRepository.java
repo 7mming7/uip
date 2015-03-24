@@ -1,5 +1,6 @@
 package com.sq.repository;
 
+import com.sq.entity.search.Searchable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -44,4 +45,11 @@ public interface BaseRepository<M, ID extends Serializable> extends JpaRepositor
      */
     Page<M> findAll(Pageable pageable);
 
+    /**
+     * 根据条件统计所有记录数
+     *
+     * @param searchable
+     * @return
+     */
+    public long count(Searchable searchable);
 }
