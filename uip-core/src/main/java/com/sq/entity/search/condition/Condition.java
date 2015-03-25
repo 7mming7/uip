@@ -108,6 +108,15 @@ public class Condition implements SearchFilter {
     }
 
     /**
+     * 获取 操作符
+     *
+     * @return
+     */
+    public MatchType getOperator() throws InvlidSearchOperatorException {
+        return matchType;
+    }
+
+    /**
      * 获取当前condition的操作符
      * @return 操作符
      */
@@ -155,6 +164,26 @@ public class Condition implements SearchFilter {
 
     // ==========================================
     // override method...
+
+    /**
+     * 得到实体属性名
+     *
+     * @return
+     */
+    public String getEntityProperty() {
+        return property;
+    }
+
+    /**
+     * 是否是一元过滤 如is null is not null
+     *
+     * @return
+     */
+    public boolean isUnaryFilter() {
+        String operatorStr = getOperator().getSymbol();
+        return operatorStr.startsWith("is");
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -97,7 +97,7 @@ public abstract class Searchable {
      * @param value          值
      */
     public abstract Searchable addSearchFilter(
-            final String searchProperty, final MatchType operator, final Object value) throws SearchException;
+            final String searchProperty, final SearchOperator operator, final Object value) throws SearchException;
 
     public abstract Searchable addSearchFilter(final SearchFilter searchFilter);
 
@@ -108,6 +108,15 @@ public abstract class Searchable {
      * @return
      */
     public abstract Searchable addSearchFilters(final Collection<? extends SearchFilter> searchFilters);
+
+    /**
+     * 添加多个or连接的过滤条件
+     *
+     * @param first  第一个
+     * @param others 其他
+     * @return
+     */
+    public abstract Searchable or(final SearchFilter first, final SearchFilter... others);
 
     /**
      * 添加多个and连接的过滤条件
@@ -132,6 +141,15 @@ public abstract class Searchable {
      * @return
      */
     public abstract Searchable removeSearchFilter(String searchProperty, MatchType operator);
+
+    /**
+     * 把字符串类型的值转化为entity属性值
+     *
+     * @param entityClass
+     * @param <T>
+     */
+    public abstract <T> Searchable convert(final Class<T> entityClass)
+            throws InvalidSearchValueException, InvalidSearchPropertyException;
 
     /**
      * 标识为已经转换过了 避免多次转换
@@ -225,4 +243,6 @@ public abstract class Searchable {
      * @return
      */
     public abstract <T> T getValue(final String key);
+
+
 }
