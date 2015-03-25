@@ -1,7 +1,7 @@
 package com.sq.util;
 
 /**
- * Created with IntelliJ IDEA.
+ * 系统常量.
  * User: shuiqing
  * Date: 2015/2/20
  * Time: 16:40

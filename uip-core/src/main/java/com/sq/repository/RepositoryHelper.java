@@ -43,6 +43,10 @@ public class RepositoryHelper {
         this.enableQueryCache = enableQueryCache;
     }
 
+    /**
+     * 创建Entity对象.
+     * @param entityManagerFactory
+     */
     public static void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
         entityManager = SharedEntityManagerCreator.createSharedEntityManager(entityManagerFactory);
     }

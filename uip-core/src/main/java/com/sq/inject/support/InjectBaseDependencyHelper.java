@@ -28,7 +28,10 @@ import java.util.Set;
  */
 public class InjectBaseDependencyHelper {
 
-
+    /**
+     * 为baseservice查找并注入相关的仓库类
+     * @param baseService
+     */
     public static void findAndInjectBaseRepositoryDependency(BaseService<?, ?> baseService) {
         final Set<Object> candidates =
                 findDependencies(baseService, BaseComponent.class);
@@ -49,6 +52,10 @@ public class InjectBaseDependencyHelper {
     }
 
 
+    /**
+     * 为basecontroller注入baseservice
+     * @param baseController
+     */
     public static void findAndInjectBaseServiceDependency(BaseController<?, ?> baseController) {
         final Set<Object> candidates =
                 findDependencies(baseController, BaseComponent.class);

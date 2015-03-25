@@ -52,6 +52,10 @@ public abstract class BaseController<M extends AbstractEntity, ID extends Serial
         this.baseService = baseService;
     }
 
+    /**
+     * bean 初始化之后需要查找该bean的依赖，并inject其依赖bean.
+     * @throws Exception
+     */
     @Override
     public void afterPropertiesSet() throws Exception {
         if(this.entityClass != null) {
@@ -86,6 +90,10 @@ public abstract class BaseController<M extends AbstractEntity, ID extends Serial
         return viewPrefix;
     }
 
+    /**
+     * 实例化一个当前Model对象
+     * @return
+     */
     protected M newModel() {
         try {
             return entityClass.newInstance();
@@ -96,7 +104,6 @@ public abstract class BaseController<M extends AbstractEntity, ID extends Serial
 
     /**
      * 获取视图名称：即prefixViewName + "/" + suffixName
-     *
      * @return
      */
     public String viewName(String suffixName) {
@@ -109,7 +116,6 @@ public abstract class BaseController<M extends AbstractEntity, ID extends Serial
     /**
      * 共享的验证规则
      * 验证失败返回true
-     *
      * @param m
      * @param result
      * @return
@@ -120,6 +126,7 @@ public abstract class BaseController<M extends AbstractEntity, ID extends Serial
     }
 
     /**
+     * 重定向到前一页面
      * @param backURL null 将重定向到默认getViewPrefix()
      * @return
      */
@@ -133,6 +140,10 @@ public abstract class BaseController<M extends AbstractEntity, ID extends Serial
         return "redirect:" + backURL;
     }
 
+    /**
+     * 获取当前视图的路径前缀
+     * @return 当前视图的路径
+     */
     protected String defaultViewPrefix() {
         String currentViewPrefix = "";
         RequestMapping requestMapping = AnnotationUtils.findAnnotation(getClass(), RequestMapping.class);
