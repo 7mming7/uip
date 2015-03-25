@@ -15,7 +15,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
+ * 抽象出的基础业务类.
  * User: shuiqing
  * Date: 2015/3/25
  * Time: 10:18

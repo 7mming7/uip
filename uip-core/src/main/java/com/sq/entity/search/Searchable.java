@@ -1,6 +1,8 @@
 package com.sq.entity.search;
 
 import com.sq.entity.search.condition.SearchFilter;
+import com.sq.exception.InvalidSearchPropertyException;
+import com.sq.exception.InvalidSearchValueException;
 import com.sq.exception.SearchException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -97,7 +99,7 @@ public abstract class Searchable {
      * @param value          值
      */
     public abstract Searchable addSearchFilter(
-            final String searchProperty, final SearchOperator operator, final Object value) throws SearchException;
+            final String searchProperty, final MatchType operator, final Object value) throws SearchException;
 
     public abstract Searchable addSearchFilter(final SearchFilter searchFilter);
 
