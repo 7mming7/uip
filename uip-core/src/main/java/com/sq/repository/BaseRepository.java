@@ -52,4 +52,13 @@ public interface BaseRepository<M, ID extends Serializable> extends JpaRepositor
      * @return
      */
     public long count(Searchable searchable);
+
+    /**
+     * 根据条件查询所有
+     * 条件 + 分页 + 排序
+     *
+     * @param searchable
+     * @return
+     */
+    public Page<M> findAll(Searchable searchable);
 }
