@@ -39,5 +39,5 @@ public interface SearchCallback {
     public void setValues(Query query, Searchable search);
 
     public void setPageable(Query query, Searchable search);
-
 }
+

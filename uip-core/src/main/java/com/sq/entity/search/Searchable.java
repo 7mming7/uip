@@ -1,8 +1,8 @@
 package com.sq.entity.search;
 
 import com.sq.entity.search.condition.SearchFilter;
-import com.sq.exception.InvalidSearchPropertyException;
-import com.sq.exception.InvalidSearchValueException;
+import com.sq.entity.search.exception.InvalidSearchPropertyException;
+import com.sq.entity.search.exception.InvalidSearchValueException;
 import com.sq.exception.SearchException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

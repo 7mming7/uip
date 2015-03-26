@@ -23,7 +23,6 @@
 
 
     <!-- 数据源 -->
-    <!--see https://github.com/alibaba/druid/wiki/%E9%85%8D%E7%BD%AE_DruidDataSource%E5%8F%82%E8%80%83%E9%85%8D%E7%BD%AE-->
     <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
         <!-- 基本属性 url、user、password -->
         <property name="url" value="${connection.url}"/>
@@ -120,7 +119,7 @@
     <jpa:repositories
             base-package="com.sq.repository"
             repository-impl-postfix="Impl"
-            factory-class="com.sishuok.es.common.repository.support.SimpleBaseRepositoryFactoryBean"
+            factory-class="com.sq.repository.support.SimpleBaseRepositoryFactoryBean"
             entity-manager-factory-ref="entityManagerFactory"
             transaction-manager-ref="transactionManager">
 

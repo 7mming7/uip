@@ -1,7 +1,8 @@
 package com.sq.repository.callback;
 
 import com.sq.entity.search.Searchable;
-import org.hibernate.Query;
+
+import javax.persistence.Query;
 
 /**
  * Created with IntelliJ IDEA.

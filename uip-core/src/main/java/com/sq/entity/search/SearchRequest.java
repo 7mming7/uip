@@ -5,7 +5,9 @@ import com.google.common.collect.Maps;
 import com.sq.entity.search.condition.Condition;
 import com.sq.entity.search.condition.SearchFilter;
 import com.sq.entity.search.condition.SearchFilterHelper;
+import com.sq.entity.search.utils.SearchableConvertUtils;
 import com.sq.exception.SearchException;
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -28,7 +30,7 @@ import java.util.Map;
  * |_)._ _
  * | o| (_
  */
-public final class SearchRequest extends Searchable{
+public final class SearchRequest extends Searchable {
 
     private final Map<String, SearchFilter> searchFilterMap = Maps.newHashMap();
     /**
@@ -74,9 +76,7 @@ public final class SearchRequest extends Searchable{
     /**
      * <p>根据查询参数拼Search<br/>
      * 查询参数格式：property_op=value 或 customerProperty=value<br/>
-     * customerProperty查找规则是：
-     *     1、先查找domain的属性，
-     *     2、如果找不到则查找domain上的SearchPropertyMappings映射规则
+     * customerProperty查找规则是：1、先查找domain的属性，2、如果找不到查找domain上的SearchPropertyMappings映射规则
      * 属性、操作符之间用_分割，op可省略/或custom，省略后值默认为custom，即程序中自定义<br/>
      * 如果op=custom，property也可以自定义（即可以与domain的不一样）,
      * </p>
@@ -105,6 +105,7 @@ public final class SearchRequest extends Searchable{
             addSearchFilter(SearchFilterHelper.newCondition(key, value));
         }
     }
+
 
     @Override
     public Searchable addSearchParam(final String key, final Object value) throws SearchException {
@@ -154,6 +155,12 @@ public final class SearchRequest extends Searchable{
         for (SearchFilter searchFilter : searchFilters) {
             addSearchFilter(searchFilter);
         }
+        return this;
+    }
+
+    @Override
+    public Searchable or(final SearchFilter first, final SearchFilter... others) {
+        addSearchFilter(SearchFilterHelper.or(first, others));
         return this;
     }
 
@@ -223,6 +230,15 @@ public final class SearchRequest extends Searchable{
         merge(new Sort(direction, property), page);
         return this;
     }
+
+
+    @Override
+    public <T> Searchable convert(final Class<T> entityClass) {
+        SearchableConvertUtils.convertSearchValueToEntityValue(this, entityClass);
+        markConverted();
+        return this;
+    }
+
 
     @Override
     public Searchable markConverted() {

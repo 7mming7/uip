@@ -7,9 +7,10 @@ import com.sq.entity.search.condition.Condition;
 import com.sq.entity.search.condition.OrCondition;
 import com.sq.entity.search.condition.SearchFilter;
 import com.sq.util.StringUtils;
-import org.hibernate.Query;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+
+import javax.persistence.Query;
 
 /**
  * Created with IntelliJ IDEA.

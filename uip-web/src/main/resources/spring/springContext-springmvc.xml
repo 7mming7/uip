@@ -21,6 +21,7 @@
                                 expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
     </context:component-scan>
 
+    <mvc:view-controller path="/" view-name="index"/>
 
     <!-- 会自动注册了validator  ConversionService  -->
     <mvc:annotation-driven
@@ -63,12 +64,7 @@
         </mvc:message-converters>
     </mvc:annotation-driven>
 
-    <mvc:view-controller path="/" view-name="redirect:/admin/index"/>
-    <!-- 当在web.xml 中   DispatcherServlet使用 <url-pattern>/</url-pattern> 映射时，能映射静态资源 -->
     <mvc:default-servlet-handler/>
-
-    <!-- 静态资源映射 -->
-    <mvc:resources mapping="/static/**" location="/WEB-INF/static/"/>
 
     <!-- 内容协商管理器  -->
     <!--1、首先检查路径扩展名（如my.pdf）；2、其次检查Parameter（如my?format=pdf）；3、检查Accept Header-->
@@ -114,7 +110,7 @@
           p:order="1">
         <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
         <property name="contentType" value="text/html"/>
-        <property name="prefix" value="/WEB-INF/jsp/"/>
+        <property name="prefix" value="/content/"/>
         <property name="suffix" value=".jsp"/>
     </bean>
 

@@ -44,6 +44,22 @@ public final class SearchFilterHelper {
     }
 
     /**
+     * 拼or条件
+     *
+     * @param first
+     * @param others
+     * @return
+     */
+    public static SearchFilter or(SearchFilter first, SearchFilter... others) {
+        OrCondition orCondition = new OrCondition();
+        orCondition.getOrFilters().add(first);
+        if (ArrayUtils.isNotEmpty(others)) {
+            orCondition.getOrFilters().addAll(Arrays.asList(others));
+        }
+        return orCondition;
+    }
+
+    /**
      * 拼and条件
      *
      * @param first
