@@ -74,7 +74,6 @@
         <dom4j.version>1.6.1</dom4j.version>
         <joda-time.version>2.3</joda-time.version>
         <prettytime.version>3.2.3.Final</prettytime.version>
-        <jcaptcha.version>2.0-alpha-1</jcaptcha.version>
 
         <jsoup.version>1.7.3</jsoup.version>
     </properties>
@@ -463,29 +462,6 @@
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>${joda-time.version}</version>
-        </dependency>
-
-        <!-- jcaptcha 验证码 -->
-        <dependency>
-            <groupId>com.octo.captcha</groupId>
-            <artifactId>jcaptcha-api</artifactId>
-            <version>${jcaptcha.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.octo.captcha</groupId>
-            <artifactId>jcaptcha</artifactId>
-            <version>${jcaptcha.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.octo.captcha</groupId>
-            <artifactId>jcaptcha-integration-simple-servlet</artifactId>
-            <version>${jcaptcha.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>servlet-api</artifactId>
-                    <groupId>javax.servlet</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <!-- html处理jar包 -->

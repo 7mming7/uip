@@ -90,9 +90,6 @@
     <orderEntry type="library" name="Maven: dom4j:dom4j:1.6.1" level="project" />
     <orderEntry type="library" name="Maven: org.ocpsoft.prettytime:prettytime:3.2.3.Final" level="project" />
     <orderEntry type="library" name="Maven: joda-time:joda-time:2.3" level="project" />
-    <orderEntry type="library" name="Maven: com.octo.captcha:jcaptcha-api:2.0-alpha-1" level="project" />
-    <orderEntry type="library" name="Maven: com.octo.captcha:jcaptcha:2.0-alpha-1" level="project" />
-    <orderEntry type="library" name="Maven: com.octo.captcha:jcaptcha-integration-simple-servlet:2.0-alpha-1" level="project" />
     <orderEntry type="library" name="Maven: org.jsoup:jsoup:1.7.3" level="project" />
   </component>
 </module>

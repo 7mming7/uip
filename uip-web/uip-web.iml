@@ -19,8 +19,8 @@
       <configuration />
     </facet>
   </component>
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_6" inherit-compiler-output="false">
-    <output url="file://$MODULE_DIR$/src/main/webapp/WEB-INF/classes" />
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
@@ -113,9 +113,6 @@
     <orderEntry type="library" name="Maven: dom4j:dom4j:1.6.1" level="project" />
     <orderEntry type="library" name="Maven: org.ocpsoft.prettytime:prettytime:3.2.3.Final" level="project" />
     <orderEntry type="library" name="Maven: joda-time:joda-time:2.3" level="project" />
-    <orderEntry type="library" name="Maven: com.octo.captcha:jcaptcha-api:2.0-alpha-1" level="project" />
-    <orderEntry type="library" name="Maven: com.octo.captcha:jcaptcha:2.0-alpha-1" level="project" />
-    <orderEntry type="library" name="Maven: com.octo.captcha:jcaptcha-integration-simple-servlet:2.0-alpha-1" level="project" />
     <orderEntry type="library" name="Maven: org.jsoup:jsoup:1.7.3" level="project" />
   </component>
 </module>

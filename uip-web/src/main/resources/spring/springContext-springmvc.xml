@@ -14,7 +14,7 @@
     <context:property-placeholder location="classpath:resources.properties"/>
 
     <!-- 开启controller注解支持 -->
-    <context:component-scan base-package="com.sq.web.controller" use-default-filters="false">
+    <context:component-scan base-package="com.sq" use-default-filters="false">
         <context:include-filter type="annotation"
                                 expression="org.springframework.stereotype.Controller"/>
         <context:include-filter type="annotation"
@@ -66,6 +66,18 @@
 
     <mvc:default-servlet-handler/>
 
+    <!-- 拦截器设置 -->
+    <mvc:interceptors>
+        <bean class="org.springframework.web.servlet.handler.ConversionServiceExposingInterceptor">
+            <constructor-arg ref="conversionService"/>
+        </bean>
+        <bean class="org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor"/>
+        <!--<mvc:interceptor>-->
+        <!--<mvc:mapping path="/**"/>-->
+        <!--<bean class="cn.javass.test.interceptor.TestInterceptor"/>-->
+        <!--</mvc:interceptor>-->
+    </mvc:interceptors>
+
     <!-- 内容协商管理器  -->
     <!--1、首先检查路径扩展名（如my.pdf）；2、其次检查Parameter（如my?format=pdf）；3、检查Accept Header-->
     <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
@@ -98,9 +110,7 @@
         <!-- 默认视图 放在解析链最后 -->
         <property name="defaultViews">
             <list>
-                <!--<bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>-->
                 <bean class="com.alibaba.fastjson.support.spring.FastJsonJsonView" />
-                <!--<bean class="org.springframework.web.servlet.view.xml.MarshallingView"/>-->
             </list>
         </property>
     </bean>

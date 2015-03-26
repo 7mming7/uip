@@ -74,7 +74,6 @@
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
                 <property name="generateDdl" value="${jpa.generateDdl}"/>
                 <property name="database" value="${jpa.database}"/>
-                <property name="databasePlatform" value="${jpa.databasePlatform}"/>
                 <property name="showSql" value="${jpa.showSql}"/>
             </bean>
         </property>
