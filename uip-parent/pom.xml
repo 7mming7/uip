@@ -76,6 +76,9 @@
         <prettytime.version>3.2.3.Final</prettytime.version>
 
         <jsoup.version>1.7.3</jsoup.version>
+        <jinterop.version>2.0.5</jinterop.version>
+        <utgard-dcom.version>1.2</utgard-dcom.version>
+        <utgard-lib.version>1.2</utgard-lib.version>
     </properties>
 
     <dependencies>
@@ -466,9 +469,28 @@
 
         <!-- html处理jar包 -->
         <dependency>
+            <groupId>org.kohsuke.jinterop</groupId>
+            <artifactId>j-interop</artifactId>
+            <version>${jinterop.version}</version>
+        </dependency>
+
+        <!-- opc通信 相关jar包 -->
+        <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>${jsoup.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openscada.opc</groupId>
+            <artifactId>lib</artifactId>
+            <version>${utgard-lib.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openscada.opc</groupId>
+            <artifactId>utgard-dcom</artifactId>
+            <version>${utgard-dcom.version}</version>
         </dependency>
     </dependencies>
 

@@ -35,6 +35,20 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+  <!-- repository配置，添加私有仓库和公用仓库  -->
+  <repositories>
+    <repository>
+      <id>thirdparty</id>
+      <url>http://192.168.1.239:8081/nexus/content/groups/public/</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>thirdparty</id>
+      <url>http://192.168.1.239:8081/nexus/content/repositories/thirdparty</url>
+    </pluginRepository>
+  </pluginRepositories>
+
   <!-- 开发人员信息 -->
   <developers>
     <developer>
