@@ -3,6 +3,8 @@ package com.sq.protocol.opc.service;
 import com.sq.protocol.opc.domain.MesuringPoint;
 import com.sq.protocol.opc.repository.MesuringPointRepository;
 import com.sq.service.BaseService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
@@ -20,8 +22,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class MesuringPointService extends BaseService<MesuringPoint, Long> {
 
+    private static final Logger log = LoggerFactory.getLogger(MesuringPointService.class);
+
     private MesuringPointRepository getMesuringPointRepository() {
         return (MesuringPointRepository) baseRepository;
+    }
+
+    /**
+     * 注册测点到opc group.
+     */
+    private void registerMesuringPoint() {
+
     }
 
 }

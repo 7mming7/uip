@@ -26,6 +26,9 @@ public class BaseConfiguration {
     private final static ConnectionInformation ci;
     private final static Properties prop;
 
+    /** 客户端配置序列 */
+    public static int CONFIG_CLIENT_ID = 1;
+
     public final static String CONFIG_USERNAME = "username";
     public final static String CONFIG_PASSWORD = "password";
     public final static String CONFIG_HOST = "host";
