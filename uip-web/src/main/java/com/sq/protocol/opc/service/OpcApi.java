@@ -1,9 +1,5 @@
 package com.sq.protocol.opc.service;
 
-import org.jinterop.dcom.core.JIVariant;
-
-import java.util.List;
-
 /**
  * opc服务接口.
  * User: shuiqing

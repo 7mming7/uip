@@ -1,9 +1,8 @@
 package com.sq.entity;
 
-import org.springframework.data.annotation.Id;
-
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.io.Serializable;
 
@@ -23,7 +22,7 @@ import java.io.Serializable;
 public abstract class BaseEntity<ID extends Serializable> extends AbstractEntity<ID> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private ID id;
 
     @Override

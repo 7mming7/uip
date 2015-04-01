@@ -51,7 +51,6 @@
                             <value>development</value>
                         </systemProperty>
                     </systemProperties>
-                    <war>${basedir}/target/uip.war</war>
                     <webAppSourceDirectory>src/main/webapp</webAppSourceDirectory>
                     <webAppConfig>
                         <contextPath>/${project.artifactId}</contextPath>

@@ -2,20 +2,13 @@ package com.sq.protocol.opc.service;
 
 import com.sq.protocol.opc.component.BaseConfiguration;
 import org.jinterop.dcom.common.JIException;
-import org.jinterop.dcom.core.JIVariant;
-import org.openscada.opc.dcom.da.OPCSERVERSTATE;
-import org.openscada.opc.dcom.da.OPCSERVERSTATUS;
 import org.openscada.opc.lib.common.AlreadyConnectedException;
-import org.openscada.opc.lib.da.Group;
-import org.openscada.opc.lib.da.Item;
 import org.openscada.opc.lib.da.Server;
-import org.openscada.opc.lib.da.browser.FlatBrowser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
+import org.springframework.stereotype.Service;
 
 import java.net.UnknownHostException;
-import java.util.List;
 import java.util.concurrent.Executors;
 
 /**
@@ -30,6 +23,7 @@ import java.util.concurrent.Executors;
  * |_)._ _
  * | o| (_
  */
+@Service
 public class OpcApiUtgardImpl implements OpcApi<Server>{
 
     private static final Logger log = LoggerFactory.getLogger(OpcApiUtgardImpl.class);
