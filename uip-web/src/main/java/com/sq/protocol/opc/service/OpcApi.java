@@ -1,5 +1,9 @@
 package com.sq.protocol.opc.service;
 
+import org.jinterop.dcom.core.JIVariant;
+
+import java.util.List;
+
 /**
  * opc服务接口.
  * User: shuiqing
@@ -26,9 +30,4 @@ public interface OpcApi<T> {
      * @param t opc client
      */
     public abstract void closeConnection(T t);
-
-    /**
-     * 同步服务端的测点数据
-     */
-    public abstract void syncReadItems(T t);
 }

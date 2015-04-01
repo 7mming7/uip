@@ -1,18 +1,23 @@
 package com.sq.protocol.opc.component;
 
 import org.jinterop.dcom.common.JIException;
+import org.jinterop.dcom.core.JIVariant;
 import org.openscada.opc.dcom.da.OPCSERVERSTATUS;
 import org.openscada.opc.dcom.list.ClassDetails;
 import org.openscada.opc.lib.common.AlreadyConnectedException;
+import org.openscada.opc.lib.da.Item;
 import org.openscada.opc.lib.da.Server;
+import org.openscada.opc.lib.da.browser.FlatBrowser;
 import org.openscada.opc.lib.list.Categories;
 import org.openscada.opc.lib.list.Category;
 import org.openscada.opc.lib.list.ServerList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
 
 import java.net.UnknownHostException;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.Executors;
 
 import static com.sq.protocol.opc.component.BaseConfiguration.getEntryValue;
@@ -91,6 +96,20 @@ public class UtgardOpcHelper {
         log.info(String.format("Current Time: %tc", status.getCurrentTime().asCalendar()));
         log.info(String.format("Last Update Time: %tc", status.getLastUpdateTime().asCalendar()));
         log.info("===== SERVER STATUS ======");
+    }
+
+    /**
+     * 同步指定item
+     */
+    public JIVariant syncTargetItem (Item item) {
+        Assert.notNull(item, "Target item must not be null.");
+        JIVariant ji = null;
+        try {
+            ji = item.read(false).getValue();
+        } catch (JIException e) {
+            log.error("获取" + item.getId() + "的实时值出错.",e);
+        }
+        return ji;
     }
 
     public static void main (String args[]) {

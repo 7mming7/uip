@@ -2,14 +2,20 @@ package com.sq.protocol.opc.service;
 
 import com.sq.protocol.opc.component.BaseConfiguration;
 import org.jinterop.dcom.common.JIException;
+import org.jinterop.dcom.core.JIVariant;
 import org.openscada.opc.dcom.da.OPCSERVERSTATE;
 import org.openscada.opc.dcom.da.OPCSERVERSTATUS;
 import org.openscada.opc.lib.common.AlreadyConnectedException;
+import org.openscada.opc.lib.da.Group;
+import org.openscada.opc.lib.da.Item;
 import org.openscada.opc.lib.da.Server;
+import org.openscada.opc.lib.da.browser.FlatBrowser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
 
 import java.net.UnknownHostException;
+import java.util.List;
 import java.util.concurrent.Executors;
 
 /**
@@ -57,10 +63,5 @@ public class OpcApiUtgardImpl implements OpcApi<Server>{
     @Override
     public void closeConnection(Server server) {
         server.dispose();
-    }
-
-    @Override
-    public void syncReadItems(Server server) {
-
     }
 }
