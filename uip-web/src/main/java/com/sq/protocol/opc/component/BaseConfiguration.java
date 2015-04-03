@@ -5,6 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -23,32 +25,88 @@ public class BaseConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(BaseConfiguration.class);
 
-    private final static ConnectionInformation ci;
-    private final static Properties prop;
+    private static Properties prop;
 
-    /** 客户端配置序列 */
+    public static String CONFIG_USERNAME = "username";
+    public static String CONFIG_PASSWORD = "password";
+    public static String CONFIG_HOST = "host";
+    public static String CONFIG_DOMAIN = "domain";
+    public static String CONFIG_CLSID = "clsid";
+    public static String CONFIG_PROGID = "progid";
+
+    /** 客户端配置的初始序列 */
     public static int CONFIG_CLIENT_ID = 1;
 
-    public final static String CONFIG_USERNAME = "username";
-    public final static String CONFIG_PASSWORD = "password";
-    public final static String CONFIG_HOST = "host";
-    public final static String CONFIG_DOMAIN = "domain";
-    public final static String CONFIG_CLSID = "clsid";
-    public final static String CONFIG_PROGID = "progid";
+    /** 客户端配置允许的最大序列 */
+    public static int CONFIG_CLIENT_MAX;
 
+    /** 支持的最大的客户端的数量 */
+    public static String CONFIG_MAX_CLIENT = "max_client";
+
+    /** 配置文件路径 */
     private final static String CONFIG_FILE_NAME = "/conf/utgard-opc-config.properties";
+
+    /** 字符串连接符 */
+    public static final String connOper = "->";
+
+    /** opc连接配置信息  K：clientID V：配置信息*/
+    public static Map<Integer, ConnectionInformation> conInfoMap = new HashMap<Integer, ConnectionInformation>();
 
     /**
      * 加载配置文件
      */
     static {
-        ci = new ConnectionInformation();
+        loadConfigProperties();
+        fillOpcConnInformation();
+    }
+
+    /**
+     * 加载opc服务的配置文件
+     * @return
+     */
+    private static Properties loadConfigProperties () {
         prop = new Properties();
         try {
             prop.load(BaseConfiguration.class.getResourceAsStream(CONFIG_FILE_NAME));
+            CONFIG_CLIENT_MAX = Integer.parseInt(getEntryValue(CONFIG_MAX_CLIENT));
         } catch (IOException e) {
             log.error("Utgard opc 加载" + CONFIG_FILE_NAME + "配置文件出错.", e);
         }
+        return prop;
+    }
+
+    /**
+     * 将配置文件中配置的客户端连接信息全都填充到MAP对象中
+     * @return 包含了所有的OPC 客户端连接信息的MAP对象
+     */
+    private static Map<Integer,ConnectionInformation> fillOpcConnInformation () {
+        while (CONFIG_CLIENT_ID <= CONFIG_CLIENT_MAX) {
+            assembleConfigKeyValue(CONFIG_CLIENT_ID);
+            CONFIG_CLIENT_ID++;
+        }
+        return conInfoMap;
+    }
+
+    /**
+     * 根据当前的客户端的ID拼装连接信息
+     * @param client_id 客户端ID
+     */
+    public static void assembleConfigKeyValue (Integer client_id) {
+        ConnectionInformation connectionInformation = new ConnectionInformation();
+        String slink = connOper + client_id.toString();
+        CONFIG_USERNAME = CONFIG_USERNAME + slink;
+        CONFIG_PASSWORD = CONFIG_PASSWORD + slink;
+        CONFIG_HOST = CONFIG_HOST + slink;
+        CONFIG_DOMAIN = CONFIG_DOMAIN + slink;
+        CONFIG_CLSID = CONFIG_CLSID + slink;
+        CONFIG_PROGID = CONFIG_PROGID + slink;
+        connectionInformation.setUser(getEntryValue(CONFIG_USERNAME));
+        connectionInformation.setClsid(getEntryValue(CONFIG_CLSID));
+        connectionInformation.setPassword(getEntryValue(CONFIG_PASSWORD));
+        connectionInformation.setDomain(getEntryValue(CONFIG_DOMAIN));
+        connectionInformation.setHost(getEntryValue(CONFIG_HOST));
+        connectionInformation.setProgId(getEntryValue(CONFIG_PROGID));
+        conInfoMap.put(client_id, connectionInformation);
     }
 
     /**
@@ -66,10 +124,10 @@ public class BaseConfiguration {
      *
      * @return
      */
-    public static ConnectionInformation getCLSIDConnectionInfomation() {
+    public static ConnectionInformation getCLSIDConnectionInfomation(Integer client_id) {
+        ConnectionInformation ci = conInfoMap.get(client_id);
         ci.setProgId(null);
-        getConnectionInfomation();
-        ci.setClsid(prop.getProperty(CONFIG_CLSID));
+        ci.setClsid(ci.getClsid());
         return ci;
     }
 
@@ -78,20 +136,10 @@ public class BaseConfiguration {
      *
      * @return
      */
-    public static ConnectionInformation getPROGIDConnectionInfomation() {
+    public static ConnectionInformation getPROGIDConnectionInfomation(Integer client_id) {
+        ConnectionInformation ci = conInfoMap.get(client_id);
         ci.setClsid(null);
-        getConnectionInfomation();
-        ci.setProgId(prop.getProperty(CONFIG_PROGID));
+        ci.setProgId(ci.getProgId());
         return ci;
-    }
-
-    /**
-     * 获得基础的连接信息
-     */
-    private static void getConnectionInfomation() {
-        ci.setHost(prop.getProperty(CONFIG_HOST));
-        ci.setDomain(prop.getProperty(CONFIG_DOMAIN));
-        ci.setUser(prop.getProperty(CONFIG_USERNAME));
-        ci.setPassword(prop.getProperty(CONFIG_PASSWORD));
     }
 }

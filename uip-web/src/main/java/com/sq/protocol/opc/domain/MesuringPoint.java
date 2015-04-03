@@ -46,6 +46,11 @@ public class MesuringPoint extends BaseEntity<Long> {
      */
     private String calculateExp;
 
+    /**
+     * 系统编号，表示opc服务的标示
+     */
+    private int sysId;
+
     public String getSourceCode() {
         return sourceCode;
     }
@@ -84,5 +89,13 @@ public class MesuringPoint extends BaseEntity<Long> {
 
     public void setCalculateExp(String calculateExp) {
         this.calculateExp = calculateExp;
+    }
+
+    public int getSysId() {
+        return sysId;
+    }
+
+    public void setSysId(int sysId) {
+        this.sysId = sysId;
     }
 }

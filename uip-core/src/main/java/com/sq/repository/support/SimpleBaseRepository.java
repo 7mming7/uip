@@ -18,6 +18,7 @@ import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.LockMetadataProvider;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
 import javax.persistence.EntityManager;
@@ -34,7 +35,7 @@ import java.util.*;
 import static org.springframework.data.jpa.repository.query.QueryUtils.toOrders;
 
 /**
- * Created with IntelliJ IDEA.
+ * 抽象基础Custom Repository 实现.
  * User: shuiqing
  * Date: 2015/3/25
  * Time: 16:22

@@ -12,18 +12,4 @@ package com.sq.protocol.opc.service;
  */
 public interface OpcApi<T> {
 
-    /**
-     * 初始化客户端，
-     * 1.加载客户端的配置信息，
-     * 2.连接server。
-     * 2014年11月1日 下午2:24:48 shuiqing PM 添加此方法
-     * @return Connect的对象
-     */
-    public abstract T connect();
-
-    /**
-     * 关闭opc连接
-     * @param t opc client
-     */
-    public abstract void closeConnection(T t);
 }

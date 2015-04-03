@@ -4,6 +4,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
  * Junit 测试基类，主要是为了加载配置文件
@@ -13,7 +17,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"classpath:spring/springContext-*.xml"})
+@WebAppConfiguration
 public class TestCase{
+
+    @PersistenceContext
+    protected EntityManager entityManager;
 
     @Test
 	public void test () {

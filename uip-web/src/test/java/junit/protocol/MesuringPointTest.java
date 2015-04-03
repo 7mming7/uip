@@ -1,10 +1,9 @@
 package junit.protocol;
 
-import com.sq.protocol.opc.repository.MesuringPointRepository;
+import com.sq.protocol.opc.service.MesuringPointService;
 import junit.base.TestCase;
 import org.junit.Test;
-
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,11 +19,11 @@ import javax.annotation.Resource;
  */
 public class MesuringPointTest extends TestCase {
 
-    @Resource
-    private MesuringPointRepository mesuringPointRepository;
+    @Autowired
+    private MesuringPointService mesuringPointService;
 
     @Test
-    public void findAll () {
-        this.mesuringPointRepository.findAll();
+    public void readBrunch () {
+        this.mesuringPointService.fetchSyncItems(1);
     }
 }

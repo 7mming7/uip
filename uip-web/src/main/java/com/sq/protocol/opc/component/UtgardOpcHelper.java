@@ -5,6 +5,7 @@ import org.jinterop.dcom.core.JIVariant;
 import org.openscada.opc.dcom.da.OPCSERVERSTATUS;
 import org.openscada.opc.dcom.list.ClassDetails;
 import org.openscada.opc.lib.common.AlreadyConnectedException;
+import org.openscada.opc.lib.common.ConnectionInformation;
 import org.openscada.opc.lib.da.Item;
 import org.openscada.opc.lib.da.Server;
 import org.openscada.opc.lib.da.browser.FlatBrowser;
@@ -39,18 +40,48 @@ public class UtgardOpcHelper {
     private static final Logger log = LoggerFactory.getLogger(UtgardOpcHelper.class);
 
     /**
+     * 连接目标host的opc server
+     * @return 服务连接
+     */
+    public static Server connect(int sid) {
+
+        Server server = new Server(
+                BaseConfiguration.getCLSIDConnectionInfomation(sid),
+                Executors.newSingleThreadScheduledExecutor());
+        server.setDefaultLocaleID(sid);
+        try {
+            server.connect();
+        } catch (UnknownHostException e) {
+            log.error("目标host的地址错误", e);
+        } catch (JIException e) {
+            log.error("获取配置文件中内容时出错",e);
+        } catch (AlreadyConnectedException e) {
+            log.error("连接已经存在，无需再次连接",e);
+        }
+        return server;
+    }
+
+    /**
+     * 断开与目标host地址上opc server的连接
+     */
+    public void closeConnection(Server server) {
+        server.dispose();
+    }
+
+    /**
      * 获取目标地址下所有的opc服务的详细信息
      * @return
      * @throws JIException
      * @throws UnknownHostException
      */
-    public Collection<ClassDetails> fetchClassDetails () {
+    public Collection<ClassDetails> fetchClassDetails (int sid) {
         Collection<ClassDetails> classDetails = null;
 
         try {
-            ServerList serverList = new ServerList(getEntryValue(BaseConfiguration.CONFIG_HOST),
-                    getEntryValue(BaseConfiguration.CONFIG_USERNAME), getEntryValue(BaseConfiguration.CONFIG_PASSWORD),
-                    getEntryValue(BaseConfiguration.CONFIG_DOMAIN));
+            ConnectionInformation connectionInformation = BaseConfiguration.conInfoMap.get(sid);
+            ServerList serverList = new ServerList(connectionInformation.getHost(),
+                    connectionInformation.getUser(), connectionInformation.getPassword(),
+                    connectionInformation.getDomain());
 
             /** According the progid get the clsid, then get the classdetail */
             /** Whatever the using DA agreement */
@@ -60,7 +91,7 @@ public class UtgardOpcHelper {
                             Categories.OPCDAServer30 }, new Category[] {});
 
             log.info("-----------------------------------------------------------");
-            log.info("--------开始获取目标Ip：" + BaseConfiguration.CONFIG_HOST + "下所有on service的opc服务.-----");
+            log.info("--------开始获取目标Ip：" + connectionInformation.getHost() + "下所有on service的opc服务.-----");
             for (ClassDetails cds : classDetails) {
                 log.info("ClassDetails  Show.   ");
                 log.info("    ProgId--->>" + cds.getProgId());
@@ -114,13 +145,17 @@ public class UtgardOpcHelper {
 
     public static void main (String args[]) {
         UtgardOpcHelper ut = new UtgardOpcHelper();
-        ut.fetchClassDetails();
+        ut.fetchClassDetails(1);
 
         Server server = new Server(
-                BaseConfiguration.getCLSIDConnectionInfomation(),
+                BaseConfiguration.getCLSIDConnectionInfomation(1),
                 Executors.newSingleThreadScheduledExecutor());
         try {
             server.connect();
+            FlatBrowser browser = server.getFlatBrowser();
+            for (String name : browser.browse()) {
+                System.out.println(name);
+            }
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (JIException e) {

@@ -50,15 +50,15 @@
     <root level="info"/>
 
     <!--错误日志-->
-    <logger name="uip-error" level="info">
+    <logger name="uip-error" level="error">
         <appender-ref ref="ERROR"/>
     </logger>
     <!--访问日志-->
-    <logger name="uip-access" level="info">
+    <logger name="uip-access" level="error">
         <appender-ref ref="ACCESS"/>
     </logger>
     <!--系统用户操作日志-->
-    <logger name="uip-sys-user" level="info">
+    <logger name="uip-sys-user" level="error">
         <appender-ref ref="SYS-USER"/>
     </logger>
 </configuration>

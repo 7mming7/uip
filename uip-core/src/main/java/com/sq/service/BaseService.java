@@ -191,3 +191,4 @@ public abstract class BaseService<M extends AbstractEntity, ID extends Serializa
         return baseRepository.count(searchable);
     }
 }
+

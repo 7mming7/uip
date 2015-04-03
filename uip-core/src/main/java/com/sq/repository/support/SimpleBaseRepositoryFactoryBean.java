@@ -18,7 +18,7 @@ import javax.persistence.EntityManager;
 import java.io.Serializable;
 
 /**
- * Created with IntelliJ IDEA.
+ * 基础Repostory简单实现 factory bean.
  * User: shuiqing
  * Date: 2015/3/25
  * Time: 16:56
