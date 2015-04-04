@@ -48,9 +48,9 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
             Branch branch  = server.getTreeBrowser().browse();
             dumpTree(branch, 0);
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+            log.error("Host name is error,please check it.", e);
         } catch (JIException e) {
-            e.printStackTrace();
+            log.error("Connect to server error.", e);
         }
     }
 

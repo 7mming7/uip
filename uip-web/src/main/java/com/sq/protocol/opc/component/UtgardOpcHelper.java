@@ -18,10 +18,7 @@ import org.springframework.util.Assert;
 
 import java.net.UnknownHostException;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.Executors;
-
-import static com.sq.protocol.opc.component.BaseConfiguration.getEntryValue;
 
 /**
  * opc连接辅助类.
