@@ -1,13 +1,14 @@
 package com.sq.protocol.opc.service;
 
 import com.sq.inject.annotation.BaseComponent;
-import com.sq.protocol.opc.component.UtgardOpcHelper;
+import com.sq.protocol.opc.component.OpcRegisterFactory;
 import com.sq.protocol.opc.domain.MesuringPoint;
+import com.sq.protocol.opc.domain.OpcServerInfomation;
 import com.sq.protocol.opc.repository.MesuringPointRepository;
 import com.sq.service.BaseService;
 import org.jinterop.dcom.common.JIException;
-import org.openscada.opc.lib.da.Server;
-import org.openscada.opc.lib.da.browser.Branch;
+import org.openscada.opc.lib.common.NotConnectedException;
+import org.openscada.opc.lib.da.*;
 import org.openscada.opc.lib.da.browser.Leaf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.net.UnknownHostException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,18 +41,35 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
     @BaseComponent
     private MesuringPointRepository mesuringPointRepository;
 
-    /**
-     * 获取opc批量数据
-     */
-    public void fetchSyncItems (int cid) {
-        Server server = UtgardOpcHelper.connect(cid);
+    public void fetchReadSyncItems (int cid) {
+        OpcRegisterFactory.registerConfigItems(cid);
+        OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
+        Collection<Leaf> leafs = opcServerInfomation.getLeafs();
+        Server server = opcServerInfomation.getServer();
+        Group group = null;
+        Item[] itemArr = new Item[leafs.size()];
         try {
-            Branch branch  = server.getTreeBrowser().browse();
-            dumpTree(branch, 0);
+            int item_flag = 0;
+            group = server.addGroup();
+            for(Leaf leaf:leafs){
+                Item item = group.addItem(leaf.getItemId());
+                itemArr[item_flag] = item;
+                item_flag++;
+            }
+            Map<Item, ItemState> syncItems = group.read(false, itemArr);
+            for (Map.Entry<Item, ItemState> entry : syncItems.entrySet()) {
+                System.out.println("key= " + entry.getKey().getId() + " and value= " + entry.getValue().getValue());
+            }
         } catch (UnknownHostException e) {
-            log.error("Host name is error,please check it.", e);
+            e.printStackTrace();
+        } catch (NotConnectedException e) {
+            e.printStackTrace();
         } catch (JIException e) {
-            log.error("Connect to server error.", e);
+            e.printStackTrace();
+        } catch (DuplicateGroupException e) {
+            e.printStackTrace();
+        } catch (AddFailedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -62,50 +81,4 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
         searchParams.put("mesuringPoint.meaType", 1);
     }
 
-    /**
-     * 挖掘整个测点树
-     * @param branch
-     * @param level
-     */
-    private static void dumpTree(final Branch branch, final int level) {
-        for (final Leaf leaf : branch.getLeaves()) {
-            /*dumpLeaf(leaf, level);*/
-        }
-        for (final Branch subBranch : branch.getBranches()) {
-            dumpBranch(subBranch, level);
-            dumpTree(subBranch, level + 1);
-        }
-    }
-
-    /**
-     * 打印Tab符
-     * @param level
-     * @return
-     */
-    private static String printTab(int level) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < level; i++) {
-            sb.append("\t");
-        }
-        return sb.toString();
-    }
-
-    /**
-     * 打印Item
-     *
-     * @param leaf
-     */
-    private static void dumpLeaf(final Leaf leaf, final int level) {
-        System.out.println(printTab(level) + "Leaf: " + leaf.getName() + ":"
-                + leaf.getItemId());
-    }
-
-    /**
-     * 打印Group
-     *
-     * @param branch
-     */
-    private static void dumpBranch(final Branch branch, final int level) {
-        System.out.println(printTab(level) + "Branch: " + branch.getName());
-    }
 }

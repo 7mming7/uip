@@ -1,5 +1,6 @@
 package com.sq.protocol.opc.component;
 
+import com.sq.protocol.opc.domain.OpcServerInfomation;
 import org.openscada.opc.lib.common.ConnectionInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,9 +50,6 @@ public class BaseConfiguration {
     /** 字符串连接符 */
     public static final String connOper = "->";
 
-    /** opc连接配置信息  K：clientID V：配置信息*/
-    public static Map<Integer, ConnectionInformation> conInfoMap = new HashMap<Integer, ConnectionInformation>();
-
     /**
      * 加载配置文件
      */
@@ -79,12 +77,11 @@ public class BaseConfiguration {
      * 将配置文件中配置的客户端连接信息全都填充到MAP对象中
      * @return 包含了所有的OPC 客户端连接信息的MAP对象
      */
-    private static Map<Integer,ConnectionInformation> fillOpcConnInformation () {
+    private static void fillOpcConnInformation () {
         while (CONFIG_CLIENT_ID <= CONFIG_CLIENT_MAX) {
             assembleConfigKeyValue(CONFIG_CLIENT_ID);
             CONFIG_CLIENT_ID++;
         }
-        return conInfoMap;
     }
 
     /**
@@ -92,6 +89,7 @@ public class BaseConfiguration {
      * @param client_id 客户端ID
      */
     public static void assembleConfigKeyValue (Integer client_id) {
+        OpcServerInfomation opcServerInfomation = new OpcServerInfomation();
         ConnectionInformation connectionInformation = new ConnectionInformation();
         String slink = connOper + client_id.toString();
         CONFIG_USERNAME = CONFIG_USERNAME + slink;
@@ -106,7 +104,9 @@ public class BaseConfiguration {
         connectionInformation.setDomain(getEntryValue(CONFIG_DOMAIN));
         connectionInformation.setHost(getEntryValue(CONFIG_HOST));
         connectionInformation.setProgId(getEntryValue(CONFIG_PROGID));
-        conInfoMap.put(client_id, connectionInformation);
+        opcServerInfomation.setC_id(client_id);
+        opcServerInfomation.setConnectionInformation(connectionInformation);
+        OpcRegisterFactory.registerServerInfo(client_id, opcServerInfomation);
     }
 
     /**
@@ -125,7 +125,7 @@ public class BaseConfiguration {
      * @return
      */
     public static ConnectionInformation getCLSIDConnectionInfomation(Integer client_id) {
-        ConnectionInformation ci = conInfoMap.get(client_id);
+        ConnectionInformation ci = OpcRegisterFactory.fetchConnInfo(client_id);
         ci.setProgId(null);
         ci.setClsid(ci.getClsid());
         return ci;
@@ -137,7 +137,7 @@ public class BaseConfiguration {
      * @return
      */
     public static ConnectionInformation getPROGIDConnectionInfomation(Integer client_id) {
-        ConnectionInformation ci = conInfoMap.get(client_id);
+        ConnectionInformation ci = OpcRegisterFactory.fetchConnInfo(client_id);
         ci.setClsid(null);
         ci.setProgId(ci.getProgId());
         return ci;

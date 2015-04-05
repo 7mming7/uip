@@ -24,6 +24,6 @@ public class MesuringPointTest extends TestCase {
 
     @Test
     public void readBrunch () {
-        this.mesuringPointService.fetchSyncItems(1);
+        this.mesuringPointService.fetchReadSyncItems(1);
     }
 }

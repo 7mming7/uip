@@ -75,7 +75,7 @@ public class UtgardOpcHelper {
         Collection<ClassDetails> classDetails = null;
 
         try {
-            ConnectionInformation connectionInformation = BaseConfiguration.conInfoMap.get(sid);
+            ConnectionInformation connectionInformation = OpcRegisterFactory.fetchConnInfo(sid);
             ServerList serverList = new ServerList(connectionInformation.getHost(),
                     connectionInformation.getUser(), connectionInformation.getPassword(),
                     connectionInformation.getDomain());
