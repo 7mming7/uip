@@ -4,7 +4,9 @@ import com.sq.inject.annotation.BaseComponent;
 import com.sq.protocol.opc.component.OpcRegisterFactory;
 import com.sq.protocol.opc.domain.MesuringPoint;
 import com.sq.protocol.opc.domain.OpcServerInfomation;
+import com.sq.protocol.opc.domain.OriginalData;
 import com.sq.protocol.opc.repository.MesuringPointRepository;
+import com.sq.protocol.opc.repository.OriginalDataRepository;
 import com.sq.service.BaseService;
 import org.jinterop.dcom.common.JIException;
 import org.openscada.opc.lib.common.NotConnectedException;
@@ -16,9 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.net.UnknownHostException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 测点相关业务类.
@@ -41,9 +41,15 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
     @BaseComponent
     private MesuringPointRepository mesuringPointRepository;
 
+    @Autowired
+    @BaseComponent
+    private OriginalDataRepository originalDataRepository;
+
     public void fetchReadSyncItems (int cid) {
-        OpcRegisterFactory.registerConfigItems(cid);
         OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
+        if (null == opcServerInfomation.getLeafs()) {
+            OpcRegisterFactory.registerConfigItems(cid);
+        }
         Collection<Leaf> leafs = opcServerInfomation.getLeafs();
         Server server = opcServerInfomation.getServer();
         Group group = null;
@@ -56,21 +62,43 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
                 itemArr[item_flag] = item;
                 item_flag++;
             }
-            Map<Item, ItemState> syncItems = group.read(false, itemArr);
-            for (Map.Entry<Item, ItemState> entry : syncItems.entrySet()) {
-                System.out.println("key= " + entry.getKey().getId() + " and value= " + entry.getValue().getValue());
-            }
+            readItemState(cid, group, itemArr);
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+            log.error("Host unknow error.",e);
         } catch (NotConnectedException e) {
-            e.printStackTrace();
+            log.error("Connnect to opc error.",e);
         } catch (JIException e) {
-            e.printStackTrace();
+            log.error("Opc server connect error.",e);
         } catch (DuplicateGroupException e) {
-            e.printStackTrace();
+            log.error("Group duplicate error.",e);
         } catch (AddFailedException e) {
-            e.printStackTrace();
+            log.error("Group add item faild.",e);
         }
+    }
+
+    /**
+     * group读取item的同步值
+     * @param group   opc group
+     * @param itemArr item数组
+     */
+    public void readItemState (int cid, Group group, Item[] itemArr) {
+        Map<Item, ItemState> syncItems = null;
+        try {
+            syncItems = group.read(false, itemArr);
+        } catch (JIException e) {
+            log.error("Read item error.",e);
+        }
+        List<OriginalData> originalDataList = new LinkedList<OriginalData>();
+        OriginalData originalData = new OriginalData();
+        for (Map.Entry<Item, ItemState> entry : syncItems.entrySet()) {
+            log.error("key= " + entry.getKey().getId() + " and value= " + entry.getValue().getValue().toString());
+            originalData.setItemCode(entry.getKey().getId());
+            originalData.setInstanceTime(entry.getValue().getTimestamp());
+            originalData.setItemValue(entry.getValue().getValue().toString());
+            originalData.setSysId(cid);
+            originalDataList.add(originalData);
+        }
+        originalDataRepository.save(originalDataList);
     }
 
     /**
