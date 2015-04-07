@@ -1,9 +1,11 @@
 package com.sq.protocol.opc.domain;
 
+import com.sq.entity.AbstractEntity;
 import com.sq.entity.BaseEntity;
+import org.hibernate.validator.constraints.NotBlank;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * 实时测点.
@@ -19,21 +21,39 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "T_MesuringPoint")
-public class MesuringPoint extends BaseEntity<Long> {
+public class MesuringPoint extends AbstractEntity<Long> implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id", unique=true, nullable=false, precision=10)
+    private Long id;
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     /**
      * 源code，DCS或者PLC系统上测点的编码
      */
+    @NotBlank
     private String sourceCode;
 
     /**
      * 目标code, 接口对接方编码
      */
+    @NotBlank
     private String targetCode;
 
     /**
      * 测点名称
      */
+    @NotBlank
     private String pointName;
 
     /**
@@ -97,5 +117,12 @@ public class MesuringPoint extends BaseEntity<Long> {
 
     public void setSysId(int sysId) {
         this.sysId = sysId;
+    }
+
+    public MesuringPoint() {
+    }
+
+    public MesuringPoint(Long id) {
+        setId(id);
     }
 }

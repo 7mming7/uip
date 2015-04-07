@@ -42,12 +42,15 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
     private MesuringPointRepository mesuringPointRepository;
 
     @Autowired
-    @BaseComponent
     private OriginalDataRepository originalDataRepository;
 
+    /**
+     * 读取server下所有的ITEM
+     * @param cid
+     */
     public void fetchReadSyncItems (int cid) {
         OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
-        if (null == opcServerInfomation.getLeafs()) {
+        if (opcServerInfomation.getLeafs() == null) {
             OpcRegisterFactory.registerConfigItems(cid);
         }
         Collection<Leaf> leafs = opcServerInfomation.getLeafs();
@@ -97,6 +100,7 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
             originalData.setItemValue(entry.getValue().getValue().toString());
             originalData.setSysId(cid);
             originalDataList.add(originalData);
+
         }
         originalDataRepository.save(originalDataList);
     }

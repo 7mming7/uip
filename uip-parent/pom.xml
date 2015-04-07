@@ -59,6 +59,8 @@
 
         <javassist.version>3.18.0-GA</javassist.version>
 
+        <quartz.version>2.2.1</quartz.version>
+
         <ehcache.core.version>2.6.6</ehcache.core.version>
 
         <shiro.version>1.2.2</shiro.version>
@@ -190,6 +192,18 @@
                     <groupId>org.apache.ant</groupId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <!-- quartz依赖 -->
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>${quartz.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz-jobs</artifactId>
+            <version>${quartz.version}</version>
         </dependency>
 
         <!-- data source 相关jar包-->

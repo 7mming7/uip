@@ -1,4 +1,4 @@
-package com.sq.dashbord.web;
+package com.sq.dashbord.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

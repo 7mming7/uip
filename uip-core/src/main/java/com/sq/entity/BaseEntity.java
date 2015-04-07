@@ -1,9 +1,6 @@
 package com.sq.entity;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -22,7 +19,8 @@ import java.io.Serializable;
 public abstract class BaseEntity<ID extends Serializable> extends AbstractEntity<ID> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name="id", unique=true, nullable=false, precision=10)
     private ID id;
 
     @Override
@@ -34,5 +32,4 @@ public abstract class BaseEntity<ID extends Serializable> extends AbstractEntity
     public void setId(ID id) {
         this.id = id;
     }
-
 }
