@@ -1,5 +1,6 @@
 package com.sq.protocol.opc.component;
 
+import com.sq.protocol.opc.domain.ItemFillType;
 import com.sq.protocol.opc.domain.OpcServerInfomation;
 import org.openscada.opc.lib.common.ConnectionInformation;
 import org.slf4j.Logger;
@@ -44,6 +45,12 @@ public class BaseConfiguration {
     /** 支持的最大的客户端的数量 */
     public static String CONFIG_MAX_CLIENT = "max_client";
 
+    /** 需要同步读取的ITEM的初始化方式 默认为1 */
+    public static int CONFIG_INIT_ITEM = ItemFillType.AutoGenerate;
+
+    /** 需要同步读取的ITEM的初始化方式 */
+    public static String CONFIG_INIT_ITEM_TYPE = "init_item_type";
+
     /** 配置文件路径 */
     private final static String CONFIG_FILE_NAME = "/conf/utgard-opc-config.properties";
 
@@ -67,6 +74,7 @@ public class BaseConfiguration {
         try {
             prop.load(BaseConfiguration.class.getResourceAsStream(CONFIG_FILE_NAME));
             CONFIG_CLIENT_MAX = Integer.parseInt(getEntryValue(CONFIG_MAX_CLIENT));
+            CONFIG_INIT_ITEM = Integer.parseInt(getEntryValue(CONFIG_INIT_ITEM_TYPE));
         } catch (IOException e) {
             log.error("Utgard opc 加载" + CONFIG_FILE_NAME + "配置文件出错.", e);
         }

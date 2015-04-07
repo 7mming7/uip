@@ -164,4 +164,5 @@
     </bean>
 
     <import resource="springContext-config-monitor.xml"/>
+    <import resource="springContext-schedule.xml"/>
 </beans>

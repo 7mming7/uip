@@ -1,8 +1,14 @@
 package com.sq.protocol.opc.component;
 
+import com.sq.protocol.opc.domain.ItemFillType;
+import com.sq.protocol.opc.domain.MesuringPoint;
 import com.sq.protocol.opc.domain.OpcServerInfomation;
 import org.jinterop.dcom.common.JIException;
 import org.openscada.opc.lib.common.ConnectionInformation;
+import org.openscada.opc.lib.common.NotConnectedException;
+import org.openscada.opc.lib.da.AddFailedException;
+import org.openscada.opc.lib.da.DuplicateGroupException;
+import org.openscada.opc.lib.da.Group;
 import org.openscada.opc.lib.da.Server;
 import org.openscada.opc.lib.da.browser.Branch;
 import org.openscada.opc.lib.da.browser.Leaf;
@@ -12,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -50,6 +57,22 @@ public class OpcRegisterFactory {
         Server server = UtgardOpcHelper.connect(cid);
         OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
         opcServerInfomation.setServer(server);
+        fillItemAutoGenerate(opcServerInfomation,server);
+    }
+
+    public static void registerConfigItems (int cid, List<MesuringPoint> mesuringPointList) {
+        Server server = UtgardOpcHelper.connect(cid);
+        OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
+        opcServerInfomation.setServer(server);
+        fillItemDbRecord(opcServerInfomation, mesuringPointList);
+    }
+
+    /**
+     * 根据opc服务上的item自动填充同步ITEM
+     * @param opcServerInfomation
+     * @param server
+     */
+    private static void fillItemAutoGenerate (OpcServerInfomation opcServerInfomation, Server server) {
         Collection<Leaf> leafs = new LinkedList<Leaf>();
         try {
             Branch branch  = server.getTreeBrowser().browse();
@@ -60,6 +83,19 @@ public class OpcRegisterFactory {
         } catch (JIException e) {
             log.error("Connect to server error.", e);
         }
+    }
+
+    /**
+     * 根据sysId获取opc服务的item
+     */
+    private static void fillItemDbRecord (OpcServerInfomation opcServerInfomation,
+                                           List<MesuringPoint> mesuringPointList) {
+        Collection<Leaf> leafs = new LinkedList<Leaf>();
+        for (MesuringPoint mesuringPoint:mesuringPointList) {
+            Leaf leaf = new Leaf(null, mesuringPoint.getSourceCode(), mesuringPoint.getSourceCode());
+            leafs.add(leaf);
+        }
+        opcServerInfomation.setLeafs(leafs);
     }
 
     public static OpcServerInfomation fetchOpcInfo (int c_id) {

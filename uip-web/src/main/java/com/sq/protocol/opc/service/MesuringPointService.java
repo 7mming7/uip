@@ -1,7 +1,11 @@
 package com.sq.protocol.opc.service;
 
+import com.sq.entity.pageAndSort.PageResult;
+import com.sq.entity.search.Searchable;
 import com.sq.inject.annotation.BaseComponent;
+import com.sq.protocol.opc.component.BaseConfiguration;
 import com.sq.protocol.opc.component.OpcRegisterFactory;
+import com.sq.protocol.opc.domain.ItemFillType;
 import com.sq.protocol.opc.domain.MesuringPoint;
 import com.sq.protocol.opc.domain.OpcServerInfomation;
 import com.sq.protocol.opc.domain.OriginalData;
@@ -19,6 +23,8 @@ import org.springframework.stereotype.Service;
 
 import java.net.UnknownHostException;
 import java.util.*;
+
+import static com.sq.protocol.opc.domain.ItemFillType.*;
 
 /**
  * 测点相关业务类.
@@ -51,7 +57,16 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
     public void fetchReadSyncItems (int cid) {
         OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
         if (opcServerInfomation.getLeafs() == null) {
-            OpcRegisterFactory.registerConfigItems(cid);
+            switch (BaseConfiguration.CONFIG_INIT_ITEM) {
+                case AutoGenerate:
+                    OpcRegisterFactory.registerConfigItems(cid);
+                    break;
+                case DbRecord:
+                    List<MesuringPoint> mesuringPointList = this.registerMesuringPoint(cid);
+                    OpcRegisterFactory.registerConfigItems(cid, mesuringPointList);
+                    break;
+            }
+
         }
         Collection<Leaf> leafs = opcServerInfomation.getLeafs();
         Server server = opcServerInfomation.getServer();
@@ -92,9 +107,9 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
             log.error("Read item error.",e);
         }
         List<OriginalData> originalDataList = new LinkedList<OriginalData>();
-        OriginalData originalData = new OriginalData();
         for (Map.Entry<Item, ItemState> entry : syncItems.entrySet()) {
             log.error("key= " + entry.getKey().getId() + " and value= " + entry.getValue().getValue().toString());
+            OriginalData originalData = new OriginalData();
             originalData.setItemCode(entry.getKey().getId());
             originalData.setInstanceTime(entry.getValue().getTimestamp());
             originalData.setItemValue(entry.getValue().getValue().toString());
@@ -108,9 +123,10 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
     /**
      * 注册测点到指定的opc server group.
      */
-    private void registerMesuringPoint(Server server) {
+    private List<MesuringPoint> registerMesuringPoint(int cid) {
         Map<String, Object> searchParams = new HashMap<String, Object>();
         searchParams.put("mesuringPoint.meaType", 1);
+        Searchable searchable = Searchable.newSearchable(searchParams);
+        return this.findAllWithNoPageNoSort(searchable);
     }
-
 }
