@@ -14,6 +14,7 @@ import org.openscada.opc.lib.da.browser.Branch;
 import org.openscada.opc.lib.da.browser.Leaf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.net.UnknownHostException;
 import java.util.Collection;
@@ -34,6 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * |_)._ _
  * | o| (_
  */
+@Component
 public class OpcRegisterFactory {
 
     private static final Logger log = LoggerFactory.getLogger(OpcRegisterFactory.class);
@@ -57,9 +59,14 @@ public class OpcRegisterFactory {
         Server server = UtgardOpcHelper.connect(cid);
         OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
         opcServerInfomation.setServer(server);
-        fillItemAutoGenerate(opcServerInfomation,server);
+        fillItemAutoGenerate(opcServerInfomation, server);
     }
 
+    /**
+     * 填充注册中心关于server下的item,根据数据库中的测点名称
+     * @param cid
+     * @param mesuringPointList
+     */
     public static void registerConfigItems (int cid, List<MesuringPoint> mesuringPointList) {
         Server server = UtgardOpcHelper.connect(cid);
         OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);

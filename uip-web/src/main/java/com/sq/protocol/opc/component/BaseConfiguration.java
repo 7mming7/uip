@@ -5,6 +5,7 @@ import com.sq.protocol.opc.domain.OpcServerInfomation;
 import org.openscada.opc.lib.common.ConnectionInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ import java.util.Properties;
  * |_)._ _
  * | o| (_
  */
+@Component
 public class BaseConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(BaseConfiguration.class);

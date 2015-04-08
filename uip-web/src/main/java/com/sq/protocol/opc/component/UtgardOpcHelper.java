@@ -142,9 +142,41 @@ public class UtgardOpcHelper {
 
     public static void main (String args[]) {
         UtgardOpcHelper ut = new UtgardOpcHelper();
-        ut.fetchClassDetails(1);
+        Collection<ClassDetails> classDetails = null;
 
-        Server server = new Server(
+        try {
+            ConnectionInformation connectionInformation = new ConnectionInformation();
+            connectionInformation.setHost("127.0.0.1");
+            connectionInformation.setUser("Administrator");
+            connectionInformation.setPassword("700103");
+            connectionInformation.setDomain("");
+            ServerList serverList = new ServerList(connectionInformation.getHost(),
+                    connectionInformation.getUser(), connectionInformation.getPassword(),
+                    connectionInformation.getDomain());
+
+            /** According the progid get the clsid, then get the classdetail */
+            /** Whatever the using DA agreement */
+            classDetails = serverList
+                    .listServersWithDetails(new Category[] {
+                            Categories.OPCDAServer10, Categories.OPCDAServer20,
+                            Categories.OPCDAServer30 }, new Category[] {});
+
+            log.info("-----------------------------------------------------------");
+            log.info("--------开始获取目标Ip：" + connectionInformation.getHost() + "下所有on service的opc服务.-----");
+            for (ClassDetails cds : classDetails) {
+                log.info("ClassDetails  Show.   ");
+                log.info("    ProgId--->>" + cds.getProgId());
+                log.info("    Desp  --->>" + cds.getDescription());
+                log.info("    ClsId --->>" + cds.getClsId());
+            }
+            log.info("-----------------------------------------------------------");
+        } catch (JIException e) {
+            log.error("获取配置文件中内容时出错",e);
+        } catch (UnknownHostException e1) {
+            log.error("Host无法识别或者格式错误",e1);
+        }
+
+        /*Server server = new Server(
                 BaseConfiguration.getCLSIDConnectionInfomation(1),
                 Executors.newSingleThreadScheduledExecutor());
         try {
@@ -160,6 +192,6 @@ public class UtgardOpcHelper {
         } catch (AlreadyConnectedException e) {
             e.printStackTrace();
         }
-        ut.dumpServerStatus(server);
+        ut.dumpServerStatus(server);*/
     }
 }

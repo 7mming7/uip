@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<configuration debug="false">
+<configuration debug="true">
 
     <!-- 控制台 -->
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender" >
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
         </encoder>
@@ -47,7 +47,7 @@
         </encoder>
     </appender>
 
-    <root level="info"/>
+    <root level="error"/>
 
     <!--错误日志-->
     <logger name="uip-error" level="error">
@@ -60,5 +60,9 @@
     <!--系统用户操作日志-->
     <logger name="uip-sys-user" level="error">
         <appender-ref ref="SYS-USER"/>
+    </logger>
+
+    <logger name="**" level="ERROR">
+        <appender-ref ref="STDOUT"/>
     </logger>
 </configuration>
