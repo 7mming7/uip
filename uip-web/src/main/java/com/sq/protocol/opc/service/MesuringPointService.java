@@ -74,12 +74,12 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
         try {
             int item_flag = 0;
             group = server.addGroup();
-            /*for(Leaf leaf:leafs){
+            for(Leaf leaf:leafs){
                 Item item = group.addItem(leaf.getItemId());
                 itemArr[item_flag] = item;
                 item_flag++;
             }
-            readItemState(cid, group, itemArr);*/
+            readItemState(cid, group, itemArr);
         } catch (UnknownHostException e) {
             log.error("Host unknow error.",e);
         } catch (NotConnectedException e) {
@@ -88,6 +88,8 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
             log.error("Opc server connect error.",e);
         } catch (DuplicateGroupException e) {
             log.error("Group duplicate error.",e);
+        } catch (AddFailedException e) {
+            log.error("Group add error.",e);
         }
     }
 

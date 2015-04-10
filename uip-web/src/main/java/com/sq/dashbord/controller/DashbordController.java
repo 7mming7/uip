@@ -26,7 +26,6 @@ public class DashbordController {
      */
     @RequestMapping("dashbord/toDashBord.do")
     public String list(Model model) {
-        System.out.print(11111);
         return "dashbord/dashbord";
     }
 }
