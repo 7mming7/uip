@@ -14,4 +14,6 @@ import com.sq.repository.BaseRepository;
  * | o| (_
  */
 public interface OriginalDataRepository extends BaseRepository<OriginalData, Long> {
+
+    public void dcsDataMigration(String calculateDay);
 }

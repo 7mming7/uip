@@ -19,9 +19,6 @@
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
-    <!-- 开启AOP监听 只对当前配置文件有效 -->
-    <aop:aspectj-autoproxy proxy-target-class="true" expose-proxy="true"/>
-
     <!-- 数据源 -->
     <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
         <!-- 基本属性 url、user、password -->
@@ -143,6 +140,15 @@
         </tx:attributes>
     </tx:advice>
 
+    <!-- 开启AOP监听 只对当前配置文件有效 -->
+    <aop:aspectj-autoproxy proxy-target-class="true" expose-proxy="true"/>
+
+    <aop:config expose-proxy="true" proxy-target-class="true">
+        <!-- 只对业务逻辑层实施事务 -->
+        <aop:pointcut id="txPointcut" expression="execution(* com.sq..service..*+.*(..))"/>
+        <aop:advisor id="txAdvisor" advice-ref="txAdvice" pointcut-ref="txPointcut"/>
+    </aop:config>
+
     <!-- 以下 validator  ConversionService 在使用 mvc:annotation-driven 会 自动注册-->
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
         <property name="providerClass" value="org.hibernate.validator.HibernateValidator"/>
@@ -162,6 +168,8 @@
                   value="com.sq.repository.RepositoryHelper.setEntityManagerFactory"/>
         <property name="arguments" ref="entityManagerFactory"/>
     </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager" />
 
     <import resource="springContext-config-monitor.xml"/>
     <import resource="springContext-schedule.xml"/>

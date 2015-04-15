@@ -1,6 +1,7 @@
 package junit.task;
 
 import com.sq.jobschedule.service.SchedulerExecuteService;
+import com.sq.protocol.opc.repository.OriginalDataRepository;
 import junit.base.TestCase;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,21 @@ public class TaskTest extends TestCase{
     @Autowired
     private SchedulerExecuteService schedulerExecuteService;
 
+    @Autowired
+    private OriginalDataRepository originalDataRepository;
+
     @Test
     public void syncItem () {
         schedulerExecuteService.syncOpcItem();
+    }
+
+    @Test
+    public void testProcedure () {
+        originalDataRepository.dcsDataMigration("20150410");
+    }
+
+    @Test
+    public void testDataMigration () {
+        schedulerExecuteService.execDcsDataMigration();
     }
 }

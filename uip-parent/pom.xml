@@ -77,6 +77,8 @@
         <joda-time.version>2.3</joda-time.version>
         <prettytime.version>3.2.3.Final</prettytime.version>
 
+        <jeval.version>0.9.4</jeval.version>
+
         <jsoup.version>1.7.3</jsoup.version>
         <jinterop.version>2.0.5</jinterop.version>
         <utgard-dcom.version>1.2</utgard-dcom.version>
@@ -204,6 +206,13 @@
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz-jobs</artifactId>
             <version>${quartz.version}</version>
+        </dependency>
+
+        <!-- 表达式计算jeval -->
+        <dependency>
+            <groupId>net.sourceforge.jeval</groupId>
+            <artifactId>jeval</artifactId>
+            <version>${jeval.version}</version>
         </dependency>
 
         <!-- data source 相关jar包-->
