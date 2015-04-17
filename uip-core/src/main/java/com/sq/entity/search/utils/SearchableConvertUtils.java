@@ -59,7 +59,7 @@ public final class SearchableConvertUtils {
                     } catch (Exception e) {
                         throw new SearchException("conversionService is null, " +
                                 "search param convert must use conversionService. " +
-                                "please see [com.sishuok.es.common.entity.search.utils." +
+                                "please see [com.sq.common.entity.search.utils." +
                                 "SearchableConvertUtils#setConversionService]");
                     }
                 }

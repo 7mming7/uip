@@ -57,10 +57,20 @@ public class IndicatorInstance extends IndicatorBase {
      */
     private int statDateNum;
 
-    @OneToOne
-    @JoinColumn(name="parentIndiInsId")
-    @ForeignKey(name="fk_ii_parentIndiInsId")
-    private IndicatorInstance parentIndiIns;
+    public IndicatorInstance(IndicatorTemp indicatorTemplate) {
+        this.categoryId = indicatorTemplate.getIndicatorCategory() != null ? indicatorTemplate
+                .getIndicatorCategory().getId() : null;
+        this.setDataSource(indicatorTemplate.getDataSource());
+        this.setDecimalNum(indicatorTemplate.getDecimalNum());
+        this.setDescription(indicatorTemplate.getDescription());
+        this.setFetchCycle(indicatorTemplate.getFetchCycle());
+        this.setIndicatorCode(indicatorTemplate.getIndicatorCode());
+        this.setIndicatorName(indicatorTemplate.getIndicatorName());
+        this.indicatorTempId = indicatorTemplate.getId();
+        this.setUnit(indicatorTemplate.getUnit());
+        this.setCalType(indicatorTemplate.getCalType());
+        this.setOperCalType(indicatorTemplate.getOperCalType());
+    }
 
     public Long getId() {
         return id;
@@ -124,13 +134,5 @@ public class IndicatorInstance extends IndicatorBase {
 
     public void setStatDateNum(int statDateNum) {
         this.statDateNum = statDateNum;
-    }
-
-    public IndicatorInstance getParentIndiIns() {
-        return parentIndiIns;
-    }
-
-    public void setParentIndiIns(IndicatorInstance parentIndiIns) {
-        this.parentIndiIns = parentIndiIns;
     }
 }

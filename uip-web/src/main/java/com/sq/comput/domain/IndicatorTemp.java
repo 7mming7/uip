@@ -19,6 +19,8 @@ import java.util.Calendar;
  * |_)._ _
  * | o| (_
  */
+@Entity
+@Table(name = "t_IndicatorTemp")
 public class IndicatorTemp extends IndicatorBase {
 
     private static final long serialVersionUID = -832754349061708675L;
