@@ -2,6 +2,7 @@ package com.sq.protocol.opc.repository;
 
 import com.sq.protocol.opc.domain.MesuringPoint;
 import com.sq.repository.BaseRepository;
+import org.springframework.data.jpa.repository.Query;
 
 /**
  * 测点仓库.

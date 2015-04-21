@@ -5,10 +5,7 @@ import com.sq.entity.search.Searchable;
 import com.sq.inject.annotation.BaseComponent;
 import com.sq.protocol.opc.component.BaseConfiguration;
 import com.sq.protocol.opc.component.OpcRegisterFactory;
-import com.sq.protocol.opc.domain.ItemFillType;
-import com.sq.protocol.opc.domain.MesuringPoint;
-import com.sq.protocol.opc.domain.OpcServerInfomation;
-import com.sq.protocol.opc.domain.OriginalData;
+import com.sq.protocol.opc.domain.*;
 import com.sq.protocol.opc.repository.MesuringPointRepository;
 import com.sq.protocol.opc.repository.OriginalDataRepository;
 import com.sq.service.BaseService;
@@ -105,6 +102,7 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
         } catch (JIException e) {
             log.error("Read item error.",e);
         }
+        Long batchNum = originalDataRepository.gernateNextBatchNumber();
         List<OriginalData> originalDataList = new LinkedList<OriginalData>();
         for (Map.Entry<Item, ItemState> entry : syncItems.entrySet()) {
             log.error("key= " + entry.getKey().getId() + " and value= " + entry.getValue().getValue().toString());
@@ -113,8 +111,8 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
             originalData.setInstanceTime(entry.getValue().getTimestamp());
             originalData.setItemValue(entry.getValue().getValue().toString());
             originalData.setSysId(cid);
+            originalData.setBatchNum(batchNum);
             originalDataList.add(originalData);
-
         }
         originalDataRepository.save(originalDataList);
     }
@@ -124,7 +122,7 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
      */
     private List<MesuringPoint> registerMesuringPoint(int cid) {
         Map<String, Object> searchParams = new HashMap<String, Object>();
-        searchParams.put("mesuringPoint.meaType", 1);
+        searchParams.put("mesuringPoint.meaType", MeaType.OriginalMea.index());
         Searchable searchable = Searchable.newSearchable(searchParams);
         return this.findAllWithNoPageNoSort(searchable);
     }

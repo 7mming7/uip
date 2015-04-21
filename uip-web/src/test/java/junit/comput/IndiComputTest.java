@@ -5,6 +5,8 @@ import junit.base.TestCase;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Calendar;
+
 /**
  * Created with IntelliJ IDEA.
  * User: shuiqing
@@ -24,6 +26,7 @@ public class IndiComputTest extends TestCase {
 
     @Test
     public void testInterfaceDataGather () {
-        this.indiComputService.interfaceDataGather();
+        Calendar cal = Calendar.getInstance();
+        this.indiComputService.interfaceDataGather(cal);
     }
 }

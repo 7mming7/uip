@@ -7,6 +7,8 @@ import com.sq.comput.service.IndiComputService;
 import com.sq.util.SpringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Calendar;
 
@@ -48,16 +50,68 @@ public class IndiComputThread extends Thread {
 
     private IndicatorTemp indicatorTemp;
 
+    public IndiComputThread(){}
+
     public IndiComputThread (IComputStrategy iComputStrategy, Calendar computCal) {
         this.iComputStrategy = iComputStrategy;
         this.computCal = computCal;
     }
 
+    public String getSemaphore() {
+        return semaphore;
+    }
+
+    public void setSemaphore(String semaphore) {
+        this.semaphore = semaphore;
+    }
+
+    public long getAssignMillions() {
+        return assignMillions;
+    }
+
+    public void setAssignMillions(long assignMillions) {
+        this.assignMillions = assignMillions;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
+    public Calendar getComputCal() {
+        return computCal;
+    }
+
+    public void setComputCal(Calendar computCal) {
+        this.computCal = computCal;
+    }
+
+    public IComputStrategy getiComputStrategy() {
+        return iComputStrategy;
+    }
+
+    public void setiComputStrategy(IComputStrategy iComputStrategy) {
+        this.iComputStrategy = iComputStrategy;
+    }
+
+    public IndicatorTemp getIndicatorTemp() {
+        return indicatorTemp;
+    }
+
+    public void setIndicatorTemp(IndicatorTemp indicatorTemp) {
+        this.indicatorTemp = indicatorTemp;
+    }
+
+    @Transactional(propagation= Propagation.REQUIRED)
     @Override
     public void run() {
-        log.info("Module Comput " + iComputStrategy.getClass().getName() + ":发送计算请求.");
+        log.info("Module Comput " + indicatorTemp.getIndicatorCode() + ":发送计算请求.");
         IndicatorInstance indicatorInstance = new IndicatorInstance(indicatorTemp);
         Object computResult = iComputStrategy.execIndiComput(indicatorTemp, computCal);
+        System.out.println(indicatorTemp.getIndicatorCode() + "计算结果为：--" + computResult.toString());
         if (computResult instanceof String) {
             indicatorInstance.setValueType(IndicatorConsts.VALUE_TYPE_STRING);
             indicatorInstance.setStringValue(computResult.toString());

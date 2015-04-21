@@ -56,6 +56,10 @@ public class ComputHelper {
      * 2014年10月23日 下午4:05:22 ShuiQing PM 添加此方法
      */
     public static ThreadPoolExecutor initThreadPooSingleInstance() {
+
+        if (null != _instance) {
+            return _instance;
+        }
         /**
          * 初始化请求线程池
          * @param indicatorThreadPoolSize coreThreadSize
@@ -149,5 +153,14 @@ public class ComputHelper {
                     EvaluationConstants.OPEN_VARIABLE);
         }
         return variableList;
+    }
+
+    /**
+     * 校验计算表达式是否符合规范
+     * @param calculateExp 计算表达式
+     * @return 校验表达式的结果
+     */
+    private boolean validCalculateExp(String calculateExp) {
+        return true;
     }
 }

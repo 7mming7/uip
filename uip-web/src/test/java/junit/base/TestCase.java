@@ -17,7 +17,7 @@ import javax.persistence.PersistenceContext;
  * 2014年9月13日 下午5:22:42
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"classpath:spring/springContext-*.xml"})
+@ContextConfiguration(locations={"classpath:spring/springContext-*.xml", "classpath:springContext-common.xml"})
 @WebAppConfiguration
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 public class TestCase{

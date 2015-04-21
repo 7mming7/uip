@@ -47,22 +47,18 @@
         </encoder>
     </appender>
 
-    <root level="error"/>
+    <root level="INFO"/>
 
     <!--错误日志-->
-    <logger name="uip-error" level="error">
+    <logger name="uip-error" additivity="false" level="ERROR">
         <appender-ref ref="ERROR"/>
     </logger>
     <!--访问日志-->
-    <logger name="uip-access" level="error">
+    <logger name="uip-access" additivity="false" level="ERROR">
         <appender-ref ref="ACCESS"/>
     </logger>
     <!--系统用户操作日志-->
-    <logger name="uip-sys-user" level="error">
+    <logger name="uip-sys-user" additivity="false" level="ERROR">
         <appender-ref ref="SYS-USER"/>
-    </logger>
-
-    <logger name="**" level="ERROR">
-        <appender-ref ref="STDOUT"/>
     </logger>
 </configuration>

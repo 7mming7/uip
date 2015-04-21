@@ -1,5 +1,6 @@
 package com.sq.jobschedule.service;
 
+import com.sq.inject.annotation.BaseComponent;
 import com.sq.protocol.opc.component.BaseConfiguration;
 import com.sq.protocol.opc.service.MesuringPointService;
 import com.sq.protocol.opc.service.OriginalDataService;

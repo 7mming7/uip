@@ -29,77 +29,68 @@ public class DateUtil {
 
     public static final String DATE_FORMAT_YMDHMS = "yyyy-MM-dd HH:mm:ss";
 
+    public static final String DATE_FORMAT_DAFAULTYMDHMS = "yyyyMMddHHmmss";
+
     public static final String DATE_FORMAT_YYMM = "yyMM";
+
+    public static final String DATE_FORMAT_YY_MM = "yy-MM";
+
+    public static final String DATE_FORMAT_MM_DD = "MM-dd";
+
+    public static final String DATE_FORMAT_MMDD = "MMdd";
+
+    public static final String DATE_FORMAT_DD = "dd";
 
     /**
      * 默认日期类型格式.
      */
     private static SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_DAFAULT);
 
-    public static String formatDate(Date d) {
-        if (d == null)
-        {
-            return "";
-        }
-        return dateFormat.format(d);
-    }
-
-
     /**
-     * 格式化整数型日期
-     * @param intDate
-     * @return
+     * 格式化日期为yyyyMMdd格式
+     * @param date 需要格式化的日期
+     * @return 返回格式化后的字符串
      */
-    public static String formatIntDate(Integer intDate) {
-        if (intDate == null)
-        {
+    public static String formatDate(Date date) {
+        if (date == null) {
             return "";
         }
-        Calendar c = newCalendar(intDate);
-        return formatCalendar(c);
+        return dateFormat.format(date);
     }
 
     /**
      * 根据指定格式化来格式日期.
      * 2014年1月26日 下午3:44:23 shuiqing添加此方法
-     * @param date
-     *            待格式化的日期.
-     * @param pattern
-     *            格式化样式或分格,如yyMMddHHmmss
+     * @param date 待格式化的日期,如date为空，则返回空字符串
+     * @param pattern 格式化样式或分格,如yyMMddHHmmss。如该参数为空或者不符合要求，则使用默认的yyyyMMdd格式进行转换
      * @return 字符串型日期.
      */
     public static String formatDate(Date date, String pattern) {
-        if (date == null)
-        {
+        if (date == null) {
             return "";
         }
-        if (StringUtils.isBlank(pattern))
-        {
+        if (StringUtils.isBlank(pattern)) {
             return formatDate(date);
         }
         SimpleDateFormat simpleDateFormat = null;
-        try
-        {
+        try {
             simpleDateFormat = new SimpleDateFormat(pattern);
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             return formatDate(date);
         }
         return simpleDateFormat.format(date);
     }
 
-
     /**
      * 根据整型日期生成Calendar
-     * 2014年1月26日 下午3:44:00 shuiqing添加此方法
-     * @param date
+     * @param intDate 整形格式的日期；如20140124
      * @return
      */
-    public static Calendar newCalendar(int date) {
-        int year = date / 10000;
-        int month = (date % 10000) / 100;
-        int day = date % 100;
+    public static Calendar intDate2Calendar(int intDate) {
+        int year = intDate / 10000;
+        int month = (intDate % 10000) / 100;
+        int day = intDate % 100;
 
         Calendar ret = Calendar.getInstance();
         ret.set(year, month - 1, day);
@@ -107,30 +98,31 @@ public class DateUtil {
     }
 
     /**
-     * 格式化Calendar
-     * 2014年1月26日 下午3:44:00 shuiqing添加此方法
-     * @param calendar
+     * 格式化Calendar,返回默认的日期格式字符串
+     * 本方法不指定format，采用默认的format，DateUtil.DATE_FORMAT_DAFAULT；如果需要制定format，
+     * 请调用formatCalendar(Calendar calendar,String fomart)
+     * @param calendar 需要格式化的日历对象
      * @return
      */
     public static String formatCalendar(Calendar calendar) {
-        if (calendar == null)
-        {
-            return "";
-        }
-        return dateFormat.format(calendar.getTime());
+        return formatCalendar(calendar, DATE_FORMAT_DAFAULT);
     }
 
-    public static String formatCalendar(Calendar calendar, SimpleDateFormat df) {
-        if (calendar == null)
-        {
+    /**
+     * 格式化Calendar,返回指定的日期格式字符串
+     * @param calendar 需要格式化的日历对象
+     * @param fomart 格式化日历格式
+     * @return
+     */
+    public static String formatCalendar(Calendar calendar,String fomart) {
+        if (calendar == null) {
             return "";
         }
-        return df.format(calendar.getTime());
+        return formatDate(calendar.getTime(), fomart);
     }
 
     /**
      * 将java.util.Date类型转换成java.util.Calendar类型
-     *
      * @param date
      * @return
      */
@@ -141,12 +133,12 @@ public class DateUtil {
     }
 
     /**
-     * 指定日期的月第一天
+     * 指定日期月份的第一天
      * 2014年2月13日 下午7:57:15 shuiqing添加此方法
      * @param date
      * @return
      */
-    public static Date getMonthStart(Date date) {
+    public static Date getStartDayOfMonth(Date date) {
         Calendar cdate = dateToCalendar(date);
         cdate.set(Calendar.DAY_OF_MONTH, 1);
         return cdate.getTime();
@@ -155,23 +147,16 @@ public class DateUtil {
     /**
      * 计算指定日期的月最后一天
      * 2014年2月13日 下午7:45:21 shuiqing添加此方法
-     * @param date1
+     * @param date
      * @return
      */
-    public static Date getLastDayOfMonth(Date date1) {
-        Calendar date = Calendar.getInstance();
-        date.setTime(date1);
-        date.set(Calendar.DAY_OF_MONTH, 1);
-        date.add(Calendar.MONTH, 1);
-        date.add(Calendar.DAY_OF_YEAR, -1);
-        return date.getTime();
-    }
-
-    public static Date getLastDayOfMonth(Calendar date) {
-        date.set(Calendar.DAY_OF_MONTH, 1);
-        date.add(Calendar.MONTH, 1);
-        date.add(Calendar.DAY_OF_YEAR, -1);
-        return date.getTime();
+    public static Date getLastDayOfMonth(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        cal.add(Calendar.MONTH, 1);
+        cal.add(Calendar.DAY_OF_YEAR, -1);
+        return cal.getTime();
     }
 
     /**
@@ -181,36 +166,19 @@ public class DateUtil {
      * @param endDate
      * @return
      */
-    @SuppressWarnings("static-access")
     public static List<String> dayListBetweenDate (int startDate, int endDate) {
-        if (startDate == 0 || endDate == 0)
+        if (startDate == 0 || endDate == 0) {
             return null;
-        List<String> dayList = new LinkedList<String>();
-        Calendar startCar = newCalendar(startDate);
-        Calendar endCar = newCalendar(endDate);
-        while (!startCar.getTime().equals(endCar.getTime())) {
-            dayList.add(formatDate(startCar.getTime(), DATE_FORMAT_DAFAULT));
-            startCar.add(startCar.DATE, 1);
         }
-        dayList.add(formatDate(startCar.getTime(), DATE_FORMAT_DAFAULT));
-
-        return dayList;
-    }
-
-    /**
-     * 计算两个Date日期之间所有的日期
-     * 2014年5月13日 下午5:19:08 ShuiQing添加此方法
-     * @param startDate
-     * @param endDate
-     * @return
-     */
-    public static List<String> dayListBetweenDate (Date startDate, Date endDate) {
+        if (startDate > endDate) {
+            return null;
+        }
         List<String> dayList = new LinkedList<String>();
-        Calendar startCar = dateToCalendar(startDate);
-        Calendar endCar = dateToCalendar(endDate);
+        Calendar startCar = intDate2Calendar(startDate);
+        Calendar endCar = intDate2Calendar(endDate);
         while (!startCar.getTime().equals(endCar.getTime())) {
             dayList.add(formatDate(startCar.getTime(), DATE_FORMAT_DAFAULT));
-            startCar.add(startCar.DATE, 1);
+            startCar.add(Calendar.DATE, 1);
         }
         dayList.add(formatDate(startCar.getTime(), DATE_FORMAT_DAFAULT));
 
@@ -219,19 +187,18 @@ public class DateUtil {
 
     /**
      * 计算一个日期所在月份的所有的天数
-     * 2014年5月13日 下午5:20:41 ShuiQing添加此方法
      * @param currentDate 当前时间
      * @return
      */
-    public static List<String> dayListByDate (Date currentDate) {
-        Date startDate = getMonthStart(currentDate);
+    public static List<String> getAllDaysOfMonth (Date currentDate) {
+        Date startDate = getStartDayOfMonth(currentDate);
         Date endDate = getLastDayOfMonth(currentDate);
         List<String> dayList = new LinkedList<String>();
         Calendar startCar = dateToCalendar(startDate);
         Calendar endCar = dateToCalendar(endDate);
         while (!startCar.getTime().equals(endCar.getTime())) {
             dayList.add(formatDate(startCar.getTime(), DATE_FORMAT_DAFAULT));
-            startCar.add(startCar.DATE, 1);
+            startCar.add(Calendar.DATE, 1);
         }
         dayList.add(formatDate(startCar.getTime(), DATE_FORMAT_DAFAULT));
 
@@ -239,95 +206,98 @@ public class DateUtil {
     }
 
     /**
-     * 计算两个int日期之间所有的月份
-     * 2014年2月13日 下午4:12:57 shuiqing添加此方法
-     * @param startDate
-     * @param endDate
+     * 把字符串转成Date
+     * @param formt  指定的格式
      * @return
+     * @throws ParseException
      */
-    public static List<Date> dayMonthListBetweenDate (int startDate, int endDate) {
-        if (startDate == 0 || endDate == 0)
-            return null;
-        List<Date> monthList = new LinkedList<Date>();
-        Calendar startCar = newCalendar(startDate);
-        Calendar endCar = newCalendar(endDate);
-        endCar.set(endCar.DATE, 1);
-        while (startCar.before(endCar)) {
-            monthList.add(startCar.getTime());
-            startCar.add(startCar.MONTH, 1);
-        }
-        monthList.add(startCar.getTime());
-        return monthList;
-    }
-
-    /**
-     * 计算两个int日期之间所有的月份
-     * 2014年2月13日 下午4:12:57 shuiqing添加此方法
-     * @param startDate
-     * @param endDate
-     * @return
-     */
-    public static List<String> monthListBetweenDate (int startDate, int endDate) {
-        if (startDate == 0 || endDate == 0)
-            return null;
-        List<String> monthList = new LinkedList<String>();
-        Calendar startCar = newCalendar(startDate);
-        Calendar endCar = newCalendar(endDate);
-        endCar.set(endCar.DATE, 1);
-        while (startCar.before(endCar)) {
-            monthList.add(formatDate(startCar.getTime(), DATE_FORMAT_MONTH));
-            startCar.add(startCar.MONTH, 1);
-        }
-        monthList.add(formatDate(startCar.getTime(), DATE_FORMAT_MONTH));
-        return monthList;
-    }
-
-    /**
-     * 月份的首尾
-     * 2014年2月13日 下午8:08:52 shuiqing添加此方法
-     * @param monthList
-     * @return
-     */
-    public static List<String> dayMonthListBetweenDate (List<Date> monthList) {
-        List<String> monthDayList = new LinkedList<String>();
-        for (Date date : monthList) {
-            Date firstDay = getMonthStart(date);
-            monthDayList.add(formatDate(firstDay, DATE_FORMAT_DAFAULT));
-            Date lastDay = getLastDayOfMonth(date);
-            monthDayList.add(formatDate(lastDay, DATE_FORMAT_DAFAULT));
-        }
-        return monthDayList;
-    }
-
-    /**
-     * 计算两个日期之间的天数
-     * 2014年2月25日 下午4:53:55 shuiqing添加此方法
-     * @param firstDate 第一个日期
-     * @param SecondDate 第二个日期
-     * @return 日期间间隔的天数
-     */
-    public static long dayCountBetweenTwoDate(Date firstDate, Date SecondDate){
-        return (SecondDate.getTime()-firstDate.getTime())/1000/60/60/24;
-    }
-
-    /**
-     * 格式化字符串
-     * 2014年5月7日 上午9:47:50 Shuiqing添加此方法
-     * @param date
-     * @return
-     */
-    public static String parseDateToFormatString(Date date) {
-        return dateFormat.format(date);
+    public static Date stringToDate(String strDate, String formt) throws ParseException{
+        SimpleDateFormat sdf= new SimpleDateFormat(formt);
+        Date date = sdf.parse(strDate);
+        return date;
     }
 
     /**
      * 把String字符串转换成Calendar
+     * @param dateTime 要转化的数据
+     * @param format 数据的格式
+     * @return
+     * @throws ParseException
      */
-    public static Calendar stringToCalendar(String dateTime,String format) throws ParseException {
-        SimpleDateFormat sdf= new SimpleDateFormat(format);
-        Date date =sdf.parse(dateTime);
+    public static Calendar stringToCalendar(String dateTime, String format) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        Date date = sdf.parse(dateTime);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         return calendar;
+    }
+
+    /**
+     * 将日期时间从一种格式转换为另一种格式
+     * @param srcTime 源串
+     * @param srcPattern    源串格式
+     * @param destPattern 目标串格式
+     * @return String 目标串
+     */
+    public static String transDateTime(String srcTime, String srcPattern, String destPattern) {
+        if (srcTime == null) {
+            return "";
+        }
+        try {
+            SimpleDateFormat fmt = new SimpleDateFormat();
+            fmt.applyPattern(srcPattern);
+            Date date = fmt.parse(srcTime);
+            fmt.applyPattern(destPattern);
+            return fmt.format(date);
+        } catch (Exception exp) {
+        }
+        return srcTime;
+    }
+
+    public static String getLastDayOfCurrentMonth(String sdf){
+        //获取当前月最后一天
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        return formatCalendar(calendar, sdf);
+    }
+
+    /**
+     * 计算两个时间相差的天数
+     * @param smdate
+     * @param bdate
+     * @return
+     * @throws ParseException
+     */
+    public static int daysBetween(Date smdate,Date bdate) throws ParseException {
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+        smdate=sdf.parse(sdf.format(smdate));
+        bdate=sdf.parse(sdf.format(bdate));
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(smdate);
+        long time1 = cal.getTimeInMillis();
+        cal.setTime(bdate);
+        long time2 = cal.getTimeInMillis();
+        long between_days=(time2-time1)/(1000*3600*24);
+        return Integer.parseInt(String.valueOf(between_days));
+    }
+
+    /**
+     * 获得系统当前时间
+     * @param format
+     * @return
+     */
+    public static String getCurrDateTime(String format) {
+        String currTimeStr;
+        try {
+            java.util.Date currDate = new java.util.Date();
+            SimpleDateFormat dtFmt = new SimpleDateFormat(format);
+            currTimeStr = dtFmt.format(currDate);
+        } catch (Exception e) {
+            return "";
+        }
+        return currTimeStr;
     }
 }
