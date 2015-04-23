@@ -38,10 +38,10 @@ public class ComputHelper {
     private static Evaluator evaluator = null;
 
     /** 指标请求计算线程池的初始size */
-    private static int indicatorThreadPoolSize = 50;
+    public static int indicatorThreadPoolSize = 50;
 
     /** 线程超时时长 */
-    private static Long requestWaitTimeOutValue = 10l;
+    public static Long requestWaitTimeOutValue = 10l;
 
     /** 请求线程池 */
     private static ThreadPoolExecutor _instance;
@@ -49,7 +49,7 @@ public class ComputHelper {
     /**
      * 同步Map对象记录了指标计算的进度
      */
-    private static ConcurrentHashMap<String, Boolean> threadCalculateMap = new ConcurrentHashMap<String, Boolean>();
+    public static ConcurrentHashMap<String, Integer> threadCalculateMap = new ConcurrentHashMap<String, Integer>();
 
     /**
      * 初始化指标计算线程池
