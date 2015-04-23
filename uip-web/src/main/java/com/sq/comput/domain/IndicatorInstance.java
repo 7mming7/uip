@@ -40,7 +40,7 @@ public class IndicatorInstance extends IndicatorBase {
 
     private String stringValue;
 
-    private double floatValue;
+    private Double floatValue;
 
     /**
      * 指标获取时间
@@ -104,14 +104,6 @@ public class IndicatorInstance extends IndicatorBase {
         this.stringValue = stringValue;
     }
 
-    public double getFloatValue() {
-        return floatValue;
-    }
-
-    public void setFloatValue(double floatValue) {
-        this.floatValue = floatValue;
-    }
-
     public Calendar getInstanceTime() {
         return instanceTime;
     }
@@ -134,5 +126,13 @@ public class IndicatorInstance extends IndicatorBase {
 
     public void setStatDateNum(int statDateNum) {
         this.statDateNum = statDateNum;
+    }
+
+    public Double getFloatValue() {
+        return floatValue;
+    }
+
+    public void setFloatValue(Double floatValue) {
+        this.floatValue = floatValue;
     }
 }

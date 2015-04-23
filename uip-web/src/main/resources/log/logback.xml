@@ -47,7 +47,7 @@
         </encoder>
     </appender>
 
-    <root level="INFO"/>
+    <root level="ERROR"/>
 
     <!--错误日志-->
     <logger name="uip-error" additivity="false" level="ERROR">

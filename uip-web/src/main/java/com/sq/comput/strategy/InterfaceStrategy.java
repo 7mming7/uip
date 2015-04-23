@@ -38,7 +38,7 @@ import java.util.Map;
  * |_)._ _
  * | o| (_
  */
-public class InterfaceStrategy implements IComputStrategy {
+public class InterfaceStrategy extends IComputStrategy {
 
     private Logger log = LoggerFactory.getLogger(InterfaceStrategy.class);
 
