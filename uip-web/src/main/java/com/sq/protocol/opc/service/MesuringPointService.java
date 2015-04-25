@@ -1,11 +1,13 @@
 package com.sq.protocol.opc.service;
 
-import com.sq.entity.pageAndSort.PageResult;
 import com.sq.entity.search.Searchable;
 import com.sq.inject.annotation.BaseComponent;
 import com.sq.protocol.opc.component.BaseConfiguration;
 import com.sq.protocol.opc.component.OpcRegisterFactory;
-import com.sq.protocol.opc.domain.*;
+import com.sq.protocol.opc.domain.MeaType;
+import com.sq.protocol.opc.domain.MesuringPoint;
+import com.sq.protocol.opc.domain.OpcServerInfomation;
+import com.sq.protocol.opc.domain.OriginalData;
 import com.sq.protocol.opc.repository.MesuringPointRepository;
 import com.sq.protocol.opc.repository.OriginalDataRepository;
 import com.sq.service.BaseService;
@@ -21,7 +23,8 @@ import org.springframework.stereotype.Service;
 import java.net.UnknownHostException;
 import java.util.*;
 
-import static com.sq.protocol.opc.domain.ItemFillType.*;
+import static com.sq.protocol.opc.domain.ItemFillType.AutoGenerate;
+import static com.sq.protocol.opc.domain.ItemFillType.DbRecord;
 
 /**
  * 测点相关业务类.

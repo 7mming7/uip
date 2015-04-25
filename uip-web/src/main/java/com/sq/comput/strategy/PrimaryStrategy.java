@@ -1,6 +1,7 @@
 package com.sq.comput.strategy;
 
 import com.sq.comput.component.ComputHelper;
+import com.sq.comput.domain.IndicatorConsts;
 import com.sq.comput.domain.IndicatorInstance;
 import com.sq.comput.domain.IndicatorTemp;
 import com.sq.comput.repository.IndicatorInstanceRepository;
@@ -42,15 +43,19 @@ public class PrimaryStrategy extends IComputStrategy {
         List<String> variableList = ComputHelper.getVariableList(calculateExp,evaluator);
         Assert.notEmpty(variableList, "表达式：" + calculateExp + " 没有动态参数!");
 
-        Searchable searchable = Searchable.newSearchable();
+        Searchable searchable = Searchable.newSearchable()
+                .addSearchFilter("valueType", MatchType.EQ, IndicatorConsts.VALUE_TYPE_DOUBLE);
         int fetchCycle = indicatorTemp.getFetchCycle();
         fillSearchConditionByFetchType(searchable,fetchCycle,computCal);
 
         for (String variable : variableList) {
-            searchable.addSearchFilter("itemCode", MatchType.EQ, variable);
+            searchable.addSearchFilter("indicatorCode", MatchType.EQ, variable);
             List<IndicatorInstance> indicatorInstances = indicatorInstanceRepository.findAll(searchable).getContent();
 
-            Assert.notEmpty(indicatorInstances, "关联指标：" + variable + " 没有数据!");
+            if (indicatorInstances.isEmpty()) {
+                log.error("关联指标：" + variable + " 没有数据!");
+                return null;
+            }
 
             if (indicatorInstances.size() == 1) {
                 evaluator.putVariable(variable, indicatorInstances.get(0).getFloatValue().toString());
@@ -67,7 +72,7 @@ public class PrimaryStrategy extends IComputStrategy {
 
                 calculateExp = calculateExp.replace(replaceVariable, variableBuilder.toString());
             }
-            searchable.removeSearchFilter("itemCode", MatchType.EQ);
+            searchable.removeSearchFilter("indicatorCode", MatchType.EQ);
         }
 
         Double result = null;

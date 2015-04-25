@@ -4,6 +4,7 @@ import com.sq.comput.domain.IndicatorConsts;
 import com.sq.comput.domain.IndicatorTemp;
 import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
+import com.sq.protocol.opc.repository.OriginalDataRepository;
 import com.sq.util.DateUtil;
 import org.springframework.util.Assert;
 

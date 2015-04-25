@@ -61,6 +61,8 @@
 
         <quartz.version>2.2.1</quartz.version>
 
+        <org.apache.cxf.version>3.0.2</org.apache.cxf.version>
+
         <ehcache.core.version>2.6.6</ehcache.core.version>
 
         <shiro.version>1.2.2</shiro.version>
@@ -237,6 +239,18 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>${logback.version}</version>
+        </dependency>
+
+        <!-- CXF依赖 -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxws</artifactId>
+            <version>${org.apache.cxf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http</artifactId>
+            <version>${org.apache.cxf.version}</version>
         </dependency>
 
         <!-- web相关jar包 -->

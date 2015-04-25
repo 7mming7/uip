@@ -1,8 +1,5 @@
 package com.sq.comput.domain;
 
-import org.hibernate.annotations.ForeignKey;
-import org.hibernate.annotations.Type;
-
 import javax.persistence.*;
 import java.util.Calendar;
 
@@ -56,6 +53,8 @@ public class IndicatorInstance extends IndicatorBase {
      * 统计日期
      */
     private int statDateNum;
+
+    public IndicatorInstance() {}
 
     public IndicatorInstance(IndicatorTemp indicatorTemplate) {
         this.categoryId = indicatorTemplate.getIndicatorCategory() != null ? indicatorTemplate

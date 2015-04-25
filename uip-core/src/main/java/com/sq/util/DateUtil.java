@@ -582,7 +582,7 @@ public class DateUtil {
 
     public static void main(String[] args) {
         Calendar cal = Calendar.getInstance();
-        Calendar[] calArray = DateUtil.getYearFirstAndLastCal(cal);
+        Calendar[] calArray = DateUtil.getDayFirstAndLastCal(cal);
         System.out.println(formatCalendar(calArray[0],DateUtil.DATE_FORMAT_YMDHMS) + "---------" + formatCalendar(calArray[1],DateUtil.DATE_FORMAT_YMDHMS));
     }
 }

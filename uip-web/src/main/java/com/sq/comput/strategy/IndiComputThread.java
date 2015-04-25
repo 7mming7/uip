@@ -4,11 +4,11 @@ import com.sq.comput.domain.IndicatorConsts;
 import com.sq.comput.domain.IndicatorInstance;
 import com.sq.comput.domain.IndicatorTemp;
 import com.sq.comput.service.IndiComputService;
+import com.sq.util.DateUtil;
 import com.sq.util.SpringUtils;
+import com.sq.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Calendar;
 
@@ -105,19 +105,23 @@ public class IndiComputThread extends Thread {
         this.indicatorTemp = indicatorTemp;
     }
 
-    @Transactional(propagation= Propagation.REQUIRED)
     @Override
     public void run() {
         log.info("Module Comput " + indicatorTemp.getIndicatorCode() + ":发送计算请求.");
         IndicatorInstance indicatorInstance = new IndicatorInstance(indicatorTemp);
+        indicatorInstance.setInstanceTime(Calendar.getInstance());
+        indicatorInstance.setStatDateNum(Integer.parseInt(DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULT)));
         Object computResult = iComputStrategy.execIndiComput(indicatorTemp, computCal);
-        System.out.println(indicatorTemp.getIndicatorCode() + "计算结果为：--" + computResult.toString());
+        if (null == computResult) {
+            return;
+        }
+        System.out.println(indicatorTemp.getIndicatorCode() + "计算结果为：--" + (null != computResult ? computResult.toString() : "null"));
         if (computResult instanceof String) {
             indicatorInstance.setValueType(IndicatorConsts.VALUE_TYPE_STRING);
             indicatorInstance.setStringValue(computResult.toString());
         } else {
             indicatorInstance.setValueType(IndicatorConsts.VALUE_TYPE_DOUBLE);
-            indicatorInstance.setFloatValue(IndicatorConsts.VALUE_TYPE_DOUBLE);
+            indicatorInstance.setFloatValue(Double.parseDouble(computResult.toString()));
         }
         indiComputService.save(indicatorInstance);
     }

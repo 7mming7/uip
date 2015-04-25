@@ -62,11 +62,12 @@ public interface IndicatorConsts {
 
     /** ======================
      *     数据类型
-     *        1、double
-     *        2、string
+     *        1、string
+     *        2、double
      *
      */
-    public static final int VALUE_TYPE_DOUBLE = 1;
+    public static final int VALUE_TYPE_STRING = 1;
 
-    public static final int VALUE_TYPE_STRING = 2;
+    public static final int VALUE_TYPE_DOUBLE = 2;
+
 }

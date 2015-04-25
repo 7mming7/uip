@@ -91,6 +91,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
             log.info("indicatorTemp:->" + indicatorTemp.getIndicatorName());
             indicatorSyncQueue.add(indicatorTemp);
         }
+        stepCalculateIndicator(indicatorSyncQueue, computCal);
     }
 
     /**
@@ -101,7 +102,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
     public synchronized void stepCalculateIndicator (LinkedBlockingQueue<IndicatorTemp> indicatorSyncQueue, Calendar computCal) {
         Long costTime = 0L;
         Long now = System.currentTimeMillis();
-        while(!indicatorSyncQueue.isEmpty() && costTime <= ComputHelper.requestWaitTimeOutValue*1000L){
+        while(!indicatorSyncQueue.isEmpty() && costTime <= ComputHelper.requestWaitTimeOutValue*10000L){
             IndicatorTemp head = indicatorSyncQueue.poll();
             try {
                 Thread.sleep(100l);
@@ -166,10 +167,10 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
         indiComputThread.setAssignMillions(System.currentTimeMillis());
         indiComputThread.setiComputStrategy(iComputStrategy);
         indiComputThread.setIndicatorTemp(indicatorTemplate);
-
-        ThreadPoolExecutor _instance = ComputHelper.initThreadPooSingleInstance();
+        indiComputThread.run();
+        /*ThreadPoolExecutor _instance = ComputHelper.initThreadPooSingleInstance();
         if (!_instance.isTerminated()) {
             _instance.execute(indiComputThread);
-        }
+        }*/
     }
 }

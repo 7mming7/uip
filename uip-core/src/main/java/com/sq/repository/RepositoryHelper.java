@@ -101,9 +101,6 @@ public class RepositoryHelper {
 
     /**
      * <p>按条件统计<br/>
-     * 测试用例请参考：{@see com.sishuok.es.common.repository.UserRepositoryImplForCustomSearchIT}
-     * 和{@see com.sishuok.es.common.repository.UserRepositoryImplForDefaultSearchIT}
-     *
      * @param ql
      * @param searchable
      * @param searchCallback

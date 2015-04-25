@@ -4,14 +4,13 @@ import com.sq.protocol.opc.domain.OriginalData;
 import com.sq.repository.support.SimpleBaseRepository;
 import org.hibernate.Session;
 import org.hibernate.jdbc.Work;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import javax.persistence.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -30,16 +29,21 @@ import java.util.List;
  */
 public class OriginalDataRepositoryImpl{
 
-    @PersistenceContext
-    private EntityManager em;
+    private EntityManagerFactory emf;
+    @PersistenceUnit
+    public void setEntityManagerFactory(EntityManagerFactory emf) {
+        this.emf = emf;
+    }
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void dcsDataMigration(final String calculateDay) {
+        EntityManager em = this.emf.createEntityManager();
         em.createNativeQuery("call data_migration_indicator(" + calculateDay + ") ").executeUpdate();
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
     public List<OriginalData> listAnHourPreOriginalData(final String indiCode){
+        EntityManager em = this.emf.createEntityManager();
         StringBuilder nativeSql = new StringBuilder();
         nativeSql.append(" SELECT ")
                  .append("       icm.targetCode AS targetCode, ")

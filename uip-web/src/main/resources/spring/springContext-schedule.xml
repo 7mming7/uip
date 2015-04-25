@@ -8,8 +8,8 @@
     <bean name="startQuertz" lazy-init="false" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
-                <ref bean="opcSyncDataJobTrigger" />
-                <ref bean="dcsDataMigrationJobTrigger" />
+               <!-- <ref bean="opcSyncDataJobTrigger" />
+                <ref bean="dcsDataMigrationJobTrigger" />-->
             </list>
         </property>
     </bean>

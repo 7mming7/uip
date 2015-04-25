@@ -17,6 +17,8 @@ import net.sourceforge.jeval.Evaluator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -42,7 +44,7 @@ public class InterfaceStrategy extends IComputStrategy {
 
     private Logger log = LoggerFactory.getLogger(InterfaceStrategy.class);
 
-    private OriginalDataRepository originalDataRepository = SpringUtils.getBean(OriginalDataRepository.class);
+    private static OriginalDataRepository originalDataRepository = SpringUtils.getBean(OriginalDataRepository.class);
 
     @Override
     public Object execIndiComput(IndicatorTemp indicatorTemp, Calendar computCal) {
@@ -52,14 +54,21 @@ public class InterfaceStrategy extends IComputStrategy {
         Assert.notEmpty(variableList, "表达式：" + calculateExp + " 没有动态参数!");
         String checkPoint = variableList.get(0);
 
-        String computDate = DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_Y_M_D);
+        Calendar[] computDate = DateUtil.getDayFirstAndLastCal(computCal);
+        System.out.println(DateUtil.formatCalendar(computDate[0], DateUtil.DATE_FORMAT_YMDHMS) + "---------" + DateUtil.formatCalendar(computDate[1], DateUtil.DATE_FORMAT_YMDHMS));
 
         Searchable searchable = Searchable.newSearchable()
-                .addSearchFilter("itemCode", MatchType.EQ, checkPoint);
+                .addSearchFilter("itemCode", MatchType.LIKE, "%" + checkPoint)
+                .addSearchFilter("instanceTime", MatchType.LTE, computDate[1])
+                .addSearchFilter("instanceTime", MatchType.GTE, computDate[0]);
         List<OriginalData> originalDataList = originalDataRepository.findAll(searchable).getContent();
 
+        System.out.println("&&&&&&&&&&&&&&&&&&&-->" + originalDataList.size());
         StringBuilder variableBuilder = new StringBuilder();
-        Assert.notEmpty(originalDataList, "测点：" + checkPoint + " 没有数据!");
+        if (originalDataList.isEmpty()) {
+            log.error("测点：" + checkPoint + " 没有数据!");
+            return "";
+        }
         for (OriginalData originalData : originalDataList) {
             String itemValue = originalData.getItemValue();
             variableBuilder.append(itemValue).append(",");
@@ -76,7 +85,7 @@ public class InterfaceStrategy extends IComputStrategy {
         } catch (EvaluationException e) {
             log.error("**计算指标: " + indicatorTemp.getIndicatorCode(), e);
         }
-        Double calResult = Double.parseDouble(calculateExp);
+        Double calResult = Double.parseDouble(result);
         return calResult;
     }
 }
