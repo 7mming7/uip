@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="war" build-on-make="true" name="uip">
+    <output-path>$PROJECT_DIR$/classes/artifacts/uip</output-path>
+    <root id="archive" name="uip.war" />
+  </artifact>
+</component>

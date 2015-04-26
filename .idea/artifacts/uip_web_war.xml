@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" build-on-make="true" name="uip-web:war">
+    <output-path>$PROJECT_DIR$/uip-web/target</output-path>
+    <root id="archive" name="uip-web.war">
+      <element id="artifact" artifact-name="uip-web:war exploded" />
+    </root>
+  </artifact>
+</component>

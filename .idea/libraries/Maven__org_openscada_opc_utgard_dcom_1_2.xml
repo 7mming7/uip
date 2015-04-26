@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="Maven: org.openscada.opc:utgard-dcom:1.2">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openscada/opc/utgard-dcom/1.2/utgard-dcom-1.2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openscada/opc/utgard-dcom/1.2/utgard-dcom-1.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/openscada/opc/utgard-dcom/1.2/utgard-dcom-1.2-sources.jar!/" />
+      <root url="jar://F:/Doc/workDoc/Technology/opc/utgard/plugins/org.openscada.opc.dcom.source_1.2.0.201407132254.jar!/" />
+    </SOURCES>
+  </library>
+</component>
