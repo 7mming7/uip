@@ -1,0 +1,22 @@
+<%--
+  Created with IntelliJ IDEA. 
+  User: shuiqing
+  Date: 2014/12/13 
+  Time: 0:40 
+  Email: shuiqing301@gmail.com
+   _      
+  |_)._ _ 
+  | o| (_
+--%>
+<%@page contentType="text/html;charset=UTF-8" language="java" %>
+<!-- Bootstrap Core CSS -->
+<link rel="stylesheet" type="text/css" href="<c:url value="/static/framework/css/bootstrap.min.css"/>" ></link>
+
+<!-- MetisMenu CSS -->
+<link rel="stylesheet" type="text/css" href="<c:url value="/static/framework/css/plugins/metisMenu/metisMenu.min.css"/>" ></link>
+
+<!-- Custom CSS -->
+<link rel="stylesheet" type="text/css" href="<c:url value="/static/framework/css/sb-admin-2.css"/>" ></link>
+
+<!-- Custom Fonts -->
+<link rel="stylesheet" type="text/css" href="<c:url value="/static/framework/font-awesome-4.1.0/css/font-awesome.min.css"/>" ></link>

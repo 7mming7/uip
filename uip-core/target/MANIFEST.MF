@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Implementation-Title: uip-core
+Implementation-Version: 1.0-SNAPSHOT
+Implementation-Vendor-Id: com.sq
+Build-Jdk: 1.7.0_09
+Built-By: Administrator
+Created-By: IntelliJ IDEA
+
