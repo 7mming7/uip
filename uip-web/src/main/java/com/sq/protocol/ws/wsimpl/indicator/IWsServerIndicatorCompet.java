@@ -13,9 +13,15 @@ public interface IWsServerIndicatorCompet {
 	
 	/**
 	 * 接受指标计算请求
-	 * 2014年12月9日 下午5:10:17 ShuiQing PM 添加此方法
 	 * @param xmlStr 请求报文
 	 * @return 响应报文
 	 */
 	public String receiveIndicatorCompetInfo(String xmlStr);
+
+	/**
+	 * 接受指标重新计算的请求
+	 * @param xmlStr 请求报文
+	 * @return 响应报文
+	 */
+	public String receiveReComputIndicatorInfo(String xmlStr);
 }

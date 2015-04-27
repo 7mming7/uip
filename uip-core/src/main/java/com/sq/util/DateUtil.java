@@ -191,6 +191,42 @@ public class DateUtil {
     }
 
     /**
+     * 计算两个calendar之间的所有日期
+     * @param startCal 开始日期
+     * @param endCal 结束日期
+     * @return
+     */
+    public static List<Calendar> dayListSinceCal(Calendar startCal, Calendar endCal) {
+        if (null == startCal || null == endCal) {
+            return null;
+        }
+        if (endCal.before(startCal)) {
+            return null;
+        }
+        List<Calendar> calendarList = new LinkedList<Calendar>();
+        try {
+            calendarList.add(DateUtil.stringToCalendar(formatDate(startCal.getTime(), DATE_FORMAT_DAFAULT),DateUtil.DATE_FORMAT_DAFAULT));
+            while (startCal.getTime().before(endCal.getTime())) {
+                startCal.add(Calendar.DATE, 1);
+                calendarList.add(DateUtil.stringToCalendar(formatDate(startCal.getTime(), DATE_FORMAT_DAFAULT),DateUtil.DATE_FORMAT_DAFAULT));
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return calendarList;
+    }
+
+    /**
+     * 计算输入日期和当前日期之间的所有的日期
+     * @param startCal 开始日期
+     * @return
+     */
+    public static List<Calendar> dayListSinceCal(Calendar startCal) {
+        Calendar nowCal = Calendar.getInstance();
+        return dayListSinceCal(startCal,nowCal);
+    }
+
+    /**
      * 计算一个日期所在月份的所有的天数
      * @param currentDate 当前时间
      * @return
@@ -582,7 +618,10 @@ public class DateUtil {
 
     public static void main(String[] args) {
         Calendar cal = Calendar.getInstance();
-        Calendar[] calArray = DateUtil.getDayFirstAndLastCal(cal);
-        System.out.println(formatCalendar(calArray[0],DateUtil.DATE_FORMAT_YMDHMS) + "---------" + formatCalendar(calArray[1],DateUtil.DATE_FORMAT_YMDHMS));
+        cal.set(Calendar.DAY_OF_MONTH, 27);
+        List<Calendar> calendarList = DateUtil.dayListSinceCal(cal, Calendar.getInstance());
+        for (Calendar calendar : calendarList) {
+            System.out.println(formatCalendar(calendar,DateUtil.DATE_FORMAT_YMDHMS));
+        }
     }
 }

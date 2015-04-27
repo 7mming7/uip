@@ -20,7 +20,7 @@ public class OrCondition implements SearchFilter {
 
     private List<SearchFilter> orFilters = Lists.newArrayList();
 
-    OrCondition() {
+    public OrCondition() {
     }
 
     public OrCondition add(SearchFilter filter) {

@@ -9,6 +9,9 @@ import com.sq.comput.repository.IndicatorTempRepository;
 import com.sq.comput.strategy.*;
 import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
+import com.sq.entity.search.condition.Condition;
+import com.sq.entity.search.condition.OrCondition;
+import com.sq.entity.search.condition.SearchFilterHelper;
 import com.sq.inject.annotation.BaseComponent;
 import com.sq.service.BaseService;
 import com.sq.util.DateUtil;
@@ -19,10 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -172,5 +172,60 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
         if (!_instance.isTerminated()) {
             _instance.execute(indiComputThread);
         }*/
+    }
+
+    /**
+     * 重新计算指标集合关联的指标集合，自计算日期至当前日期
+     * @param computCal 计算日期
+     * @param indicatorTempList 需要重新计算的指标基
+     * @return 重新计算是否成功
+     */
+    public void reComputIndicator (Calendar computCal, List<IndicatorTemp> indicatorTempList) {
+        TreeMap<Integer,List<IndicatorTemp>> integerListTreeMap = new TreeMap<>();
+        integerListTreeMap = buildIndiSortTreeMap(integerListTreeMap,indicatorTempList,0);
+        List<Calendar> calendarList = DateUtil.dayListSinceCal(computCal);
+
+        Iterator iterator = integerListTreeMap.entrySet().iterator();
+        while(iterator.hasNext()){
+            Map.Entry ent = (Map.Entry )iterator.next();
+            List<IndicatorTemp> indicatorTemps = (List<IndicatorTemp>)ent.getValue();
+            for (IndicatorTemp indicatorTemp:indicatorTemps){
+                for (Calendar reComputCal:calendarList){
+                    switch (indicatorTemp.getCalType()) {
+                        case IndicatorConsts.CALTYPE_INVENTORY:
+                            sendCalculateComm(indicatorTemp, reComputCal, new InventoryStrategy());
+                            break;
+                        case IndicatorConsts.CALTYPE_ORIGINAL:
+                            sendCalculateComm(indicatorTemp, reComputCal, new PrimaryStrategy());
+                            break;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 根据指定的指标模板列表，构建指标排序二叉树
+     * @param integerListTreeMap  指标排序二叉树
+     * @param indicatorTempList   给定的指标模板列表
+     * @param level  层级
+     * @return
+     */
+    public TreeMap<Integer,List<IndicatorTemp>> buildIndiSortTreeMap (TreeMap<Integer,List<IndicatorTemp>> integerListTreeMap, List<IndicatorTemp> indicatorTempList, Integer level) {
+        if (indicatorTempList.isEmpty())
+            return integerListTreeMap;
+
+        Searchable searchable = Searchable.newSearchable()
+                .addSearchFilter("dataSource", MatchType.NE, IndicatorConsts.DATASOURCE_INTERFACE);
+        level = level + 1;
+        OrCondition orCondition = new OrCondition();
+        for (IndicatorTemp indicatorTemp:indicatorTempList) {
+            orCondition.add(Condition.newCondition("calculateExpression",MatchType.LIKE, "%" + indicatorTemp.getIndicatorCode() + "%"));
+        }
+        searchable.or(orCondition);
+        List<IndicatorTemp> indicatorTemps = indicatorTempRepository.findAll(searchable).getContent();
+        integerListTreeMap.put(level,indicatorTemps);
+
+        return buildIndiSortTreeMap(integerListTreeMap,indicatorTemps,level);
     }
 }
