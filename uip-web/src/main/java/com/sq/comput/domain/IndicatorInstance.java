@@ -44,6 +44,9 @@ public class IndicatorInstance extends IndicatorBase {
      */
     private Calendar instanceTime;
 
+    /** 创建时间 */
+    private Calendar createTime = Calendar.getInstance();
+
     /**
      * 所属指标分类
      */
@@ -133,5 +136,13 @@ public class IndicatorInstance extends IndicatorBase {
 
     public void setFloatValue(Double floatValue) {
         this.floatValue = floatValue;
+    }
+
+    public Calendar getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Calendar createTime) {
+        this.createTime = createTime;
     }
 }

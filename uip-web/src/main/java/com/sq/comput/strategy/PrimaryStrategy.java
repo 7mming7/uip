@@ -79,7 +79,7 @@ public class PrimaryStrategy extends IComputStrategy {
         try {
             result = Double.valueOf(evaluator.evaluate(calculateExp));
         } catch (EvaluationException e) {
-            e.printStackTrace();
+            log.error("计算结果cast to double error.", e);
         }
         return result;
     }

@@ -55,7 +55,7 @@ public class IndiComputTest extends TestCase {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DATE, 20);
         List<IndicatorTemp> indicatorTempList = new ArrayList<IndicatorTemp>();
-        Searchable searchable = Searchable.newSearchable().addSearchFilter("indicatorCode", MatchType.LIKE,"%TE%");
+        Searchable searchable = Searchable.newSearchable().addSearchFilter("indicatorCode", MatchType.LIKE,"%PT%");
         indicatorTempList = indicatorTempService.findAll(searchable).getContent();
         this.indiComputService.reComputIndicator(cal,indicatorTempList);
     }

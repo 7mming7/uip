@@ -109,7 +109,7 @@ public class IndiComputThread extends Thread {
     public void run() {
         log.info("Module Comput " + indicatorTemp.getIndicatorCode() + ":发送计算请求.");
         IndicatorInstance indicatorInstance = new IndicatorInstance(indicatorTemp);
-        indicatorInstance.setInstanceTime(Calendar.getInstance());
+        indicatorInstance.setInstanceTime(computCal);
         indicatorInstance.setStatDateNum(Integer.parseInt(DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULT)));
         Object computResult = iComputStrategy.execIndiComput(indicatorTemp, computCal);
         if (null == computResult) {

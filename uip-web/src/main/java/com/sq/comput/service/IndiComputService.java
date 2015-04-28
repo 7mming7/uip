@@ -11,7 +11,6 @@ import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
 import com.sq.entity.search.condition.Condition;
 import com.sq.entity.search.condition.OrCondition;
-import com.sq.entity.search.condition.SearchFilterHelper;
 import com.sq.inject.annotation.BaseComponent;
 import com.sq.service.BaseService;
 import com.sq.util.DateUtil;
@@ -185,6 +184,9 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
         integerListTreeMap = buildIndiSortTreeMap(integerListTreeMap,indicatorTempList,0);
         List<Calendar> calendarList = DateUtil.dayListSinceCal(computCal);
 
+        /** 删除需要重新计算的指标实例的数据 */
+        deleteNeedReComputIndicator(computCal, indicatorTempList);
+
         Iterator iterator = integerListTreeMap.entrySet().iterator();
         while(iterator.hasNext()){
             Map.Entry ent = (Map.Entry )iterator.next();
@@ -202,6 +204,23 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
                 }
             }
         }
+    }
+
+    /**
+     * 删除需要重新计算的指标实例的数据
+     * @param computCal          指定时间
+     * @param indicatorTempList  关联指标对象
+     */
+    public void deleteNeedReComputIndicator (Calendar computCal, List<IndicatorTemp> indicatorTempList) {
+        Searchable searchable = Searchable.newSearchable();
+        int startComputDateNum = Integer.parseInt(DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_DAFAULT));
+        searchable.addSearchFilter("statDateNum",MatchType.GTE,startComputDateNum);
+        List<String> indicatorCodeList = new ArrayList<String>();
+        for (IndicatorTemp indicatorTemp:indicatorTempList){
+            indicatorCodeList.add(indicatorTemp.getIndicatorCode());
+        }
+        searchable.addSearchFilter("indicatorCode",MatchType.IN, indicatorCodeList);
+        indicatorInstanceRepository.delete(indicatorInstanceRepository.findAll(searchable).getContent());
     }
 
     /**

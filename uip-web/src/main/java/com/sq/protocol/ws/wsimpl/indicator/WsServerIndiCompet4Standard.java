@@ -45,7 +45,12 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 
 	@Autowired
 	private IndicatorTempService indicatorTempService;
-	
+
+	/**
+	 * 接受指标计算请求
+	 * @param xmlStr 请求报文
+	 * @return
+	 */
 	@SuppressWarnings({ "unchecked", "static-access" })
 	@Override
 	public String receiveIndicatorCompetInfo(String xmlStr) {
@@ -116,6 +121,11 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 		}
 	}
 
+	/**
+	 * 接受指标重新计算
+	 * @param xmlStr 请求报文
+	 * @return
+	 */
 	@SuppressWarnings({ "unchecked", "static-access" })
 	@Override
 	public String receiveReComputIndicatorInfo(String xmlStr) {
@@ -141,7 +151,7 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 			List<IndicatorReqElement> indicatorEleList = requestBean.getAny();
 
 			Searchable searchable = Searchable.newSearchable();
-			Calendar cal = DateUtil.stringToCalendar(xmlStr, DateUtil.DATE_FORMAT_DAFAULT);
+			Calendar cal = DateUtil.stringToCalendar(reqHeader.getActionTime(), DateUtil.DATE_FORMAT_DAFAULT);
 			List<IndicatorTemp> itemCodeList = new ArrayList<IndicatorTemp>();
 			for (IndicatorReqElement ir : indicatorEleList) {
 				OrCondition orCondition = (OrCondition) SearchFilterHelper.newCondition("indicatorCode", MatchType.EQ, "ir.getItemCode()");
