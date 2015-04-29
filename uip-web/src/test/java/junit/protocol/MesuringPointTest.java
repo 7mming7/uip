@@ -27,7 +27,7 @@ public class MesuringPointTest extends TestCase {
     @Autowired
     private OriginalDataRepository originalDataRepository;
 
-    @Test
+    /*@Test
     public void readBrunch () {
         this.mesuringPointService.fetchReadSyncItems(1);
     }
@@ -36,5 +36,5 @@ public class MesuringPointTest extends TestCase {
     public void fetchNextBatchNum () {
         Long nextBatchNum = originalDataRepository.gernateNextBatchNumber();
         System.out.println("****--->>>" + nextBatchNum);
-    }
+    }*/
 }

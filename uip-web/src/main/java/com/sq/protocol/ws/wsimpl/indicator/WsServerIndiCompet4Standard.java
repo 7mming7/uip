@@ -8,7 +8,6 @@ import com.sq.entity.search.Searchable;
 import com.sq.entity.search.condition.OrCondition;
 import com.sq.entity.search.condition.SearchFilterHelper;
 import com.sq.exception.BaseException;
-import com.sq.inject.annotation.BaseComponent;
 import com.sq.protocol.ws.component.WsProtocalParser;
 import com.sq.protocol.ws.domain.*;
 import com.sq.util.DateUtil;
@@ -55,7 +54,7 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 	@Override
 	public String receiveIndicatorCompetInfo(String xmlStr) {
 		WsProtocalParser wsProtocalParser = WsProtocalParser.createInstance();
-		
+		System.out.println("677777777777777777777777777777777777777");
 		MrpElementResponse<StandardResponse> mrpElementResponse = wsProtocalParser.createRpsMrpObject(true, null);
 		String responseXml = "";
 		StringWriter sw = new StringWriter();

@@ -26,7 +26,7 @@ public class TaskTest extends TestCase{
     @Autowired
     private OriginalDataRepository originalDataRepository;
 
-    @Test
+    /*@Test
     public void syncItem () {
         schedulerExecuteService.syncOpcItem();
     }
@@ -39,5 +39,6 @@ public class TaskTest extends TestCase{
     @Test
     public void testDataMigration () {
         schedulerExecuteService.execDcsDataMigration();
-    }
+    }*/
+
 }

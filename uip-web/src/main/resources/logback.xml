@@ -47,6 +47,13 @@
         </encoder>
     </appender>
 
+    <!-- show parameters for hibernate sql 专为 Hibernate 定制 -->
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder"  level="ERROR" />
+    <logger name="org.hibernate.type.descriptor.sql.BasicExtractor"  level="ERROR" />
+    <logger name="org.hibernate.SQL" level="ERROR" />
+    <logger name="org.hibernate.engine.QueryParameters" level="ERROR" />
+    <logger name="org.hibernate.engine.query.HQLQueryPlan" level="ERROR" />
+
     <root level="ERROR"/>
 
     <!--错误日志-->

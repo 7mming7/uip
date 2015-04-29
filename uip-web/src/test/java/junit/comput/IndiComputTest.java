@@ -34,7 +34,7 @@ public class IndiComputTest extends TestCase {
     @Autowired
     private IndicatorTempService indicatorTempService;
 
-    @Test
+    /*@Test
     public void testInterfaceDataGather () {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DATE, 20);
@@ -58,5 +58,5 @@ public class IndiComputTest extends TestCase {
         Searchable searchable = Searchable.newSearchable().addSearchFilter("indicatorCode", MatchType.LIKE,"%PT%");
         indicatorTempList = indicatorTempService.findAll(searchable).getContent();
         this.indiComputService.reComputIndicator(cal,indicatorTempList);
-    }
+    }*/
 }

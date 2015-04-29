@@ -78,7 +78,7 @@ public class WsProtocalParser {
         
         rpsHeader.setSuccess(success);
         rpsHeader.setRemark(remark);
-        rpsHeader.setActionTime(DateUtil.formatDate(Calendar.getInstance().getTime(), DateUtil.DATE_FORMAT_YMDHMS));
+        rpsHeader.setActionTime(DateUtil.formatCalendar(Calendar.getInstance(), DateUtil.DATE_FORMAT_YMDHMS));
         
         response.setRpsHeader(rpsHeader);
         
@@ -87,7 +87,7 @@ public class WsProtocalParser {
     
     public static void main(String[] args) throws FileNotFoundException, JAXBException {
     	ReqHeader reqHeader = new ReqHeader();
-    	reqHeader.setActionTime("2014:10:21");
+    	reqHeader.setActionTime(DateUtil.formatDate(Calendar.getInstance().getTime(), DateUtil.DATE_FORMAT_YMDHMS));
     	reqHeader.setAuthenCode("snmis");
     	
     	IndicatorReqElement indicatorReqElement = new IndicatorReqElement();

@@ -148,7 +148,7 @@ public class UtgardOpcHelper {
             ConnectionInformation connectionInformation = new ConnectionInformation();
             connectionInformation.setHost("127.0.0.1");
             connectionInformation.setUser("Administrator");
-            connectionInformation.setPassword("700103");
+            connectionInformation.setPassword("sn1234!@");
             connectionInformation.setDomain("");
             ServerList serverList = new ServerList(connectionInformation.getHost(),
                     connectionInformation.getUser(), connectionInformation.getPassword(),

@@ -60,7 +60,7 @@ public abstract class IndicatorBase extends AbstractEntity<Long> implements Clon
      * 数据聚合方式
      *   最大值、最小值、算术平均值、加权平均值、积分值、累计值、差值
      */
-    private int operCalType;
+    private Integer operCalType;
 
     public String getIndicatorCode() {
         return indicatorCode;
@@ -126,11 +126,11 @@ public abstract class IndicatorBase extends AbstractEntity<Long> implements Clon
         this.calType = calType;
     }
 
-    public int getOperCalType() {
+    public Integer getOperCalType() {
         return operCalType;
     }
 
-    public void setOperCalType(int operCalType) {
+    public void setOperCalType(Integer operCalType) {
         this.operCalType = operCalType;
     }
 }

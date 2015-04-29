@@ -42,7 +42,9 @@ public class InventoryStrategy extends IComputStrategy {
         Evaluator evaluator = ComputHelper.getEvaluatorInstance();
         String calculateExp = indicatorTemp.getCalculateExpression();
         List<String> variableList = ComputHelper.getVariableList(calculateExp,evaluator);
-        Assert.notEmpty(variableList, "表达式：" + calculateExp + " 没有动态参数!");
+        if (variableList.isEmpty()) {
+            log.error("表达式：" + calculateExp + " 没有动态参数!");
+        }
 
         Searchable searchable = Searchable.newSearchable()
                 .addSearchFilter("valueType", MatchType.EQ, IndicatorConsts.VALUE_TYPE_DOUBLE);
