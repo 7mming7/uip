@@ -42,7 +42,7 @@ public abstract class IndicatorBase extends AbstractEntity<Long> implements Clon
      *    2、累计计算
      *    3、库存计算
      */
-    private int calType;
+    private Integer calType;
 
     /**
      * 指标数值单位
@@ -118,19 +118,19 @@ public abstract class IndicatorBase extends AbstractEntity<Long> implements Clon
         this.fetchCycle = fetchCycle;
     }
 
-    public int getCalType() {
-        return calType;
-    }
-
-    public void setCalType(int calType) {
-        this.calType = calType;
-    }
-
     public Integer getOperCalType() {
         return operCalType;
     }
 
     public void setOperCalType(Integer operCalType) {
         this.operCalType = operCalType;
+    }
+
+    public Integer getCalType() {
+        return calType;
+    }
+
+    public void setCalType(Integer calType) {
+        this.calType = calType;
     }
 }

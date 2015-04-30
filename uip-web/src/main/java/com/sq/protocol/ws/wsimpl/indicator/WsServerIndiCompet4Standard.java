@@ -54,7 +54,7 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 	@Override
 	public String receiveIndicatorCompetInfo(String xmlStr) {
 		WsProtocalParser wsProtocalParser = WsProtocalParser.createInstance();
-		System.out.println("677777777777777777777777777777777777777");
+		System.out.println(xmlStr);
 		MrpElementResponse<StandardResponse> mrpElementResponse = wsProtocalParser.createRpsMrpObject(true, null);
 		String responseXml = "";
 		StringWriter sw = new StringWriter();
@@ -63,11 +63,12 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
             log.error("请求收到同步时间---" + DateUtil.formatCalendar(Calendar.getInstance()));
 
             Calendar cal = DateUtil.stringToCalendar(xmlStr, DateUtil.DATE_FORMAT_DAFAULT);
+			cal.set(Calendar.DATE, 16);
             this.indicatorComputService.calculateDataGater(cal);
             
             sw = wsProtocalParser.beanToXml(mrpElementResponse, StandardResponse.class);
             responseXml = sw.toString();
-            
+			System.out.println(sw.toString());
             return responseXml;
         } catch (BaseException e) {
             String msg = "解析报文失败: " + e.getMessage();
@@ -80,6 +81,7 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 				String msgEx = "解析报文失败: " + e1.getMessage();
 	            log.error(msgEx, e1);
 			}
+			System.out.println(sw.toString());
             return sw.toString();
         } catch (JAXBException e) {
         	String msg = "解析报文失败: " + e.getMessage();
@@ -92,6 +94,7 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 				String msgEx = "解析报文失败: " + e1.getMessage();
 	            log.error(msgEx, e1);
 			}
+			System.out.println(sw.toString());
             return sw.toString();
 		} catch (FileNotFoundException e) {
 			String msg = "bean2XML转化出错: " + e.getMessage();
@@ -104,6 +107,7 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 				String msgEx = "bean2XML转化出错: " + e1.getMessage();
 	            log.error(msgEx, e1);
 			}
+			System.out.println(sw.toString());
             return sw.toString();
 		} catch (ParseException e) {
 			String msg = "时间转化出现错误。";
@@ -116,7 +120,8 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 				String msgEx = "bean2XML转化出错: " + e1.getMessage();
 	            log.error(msgEx, e1);
 			}
-            return sw.toString();
+			System.out.println(sw.toString());
+			return sw.toString();
 		}
 	}
 

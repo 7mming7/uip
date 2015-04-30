@@ -43,14 +43,6 @@ public class IndiComputTest extends TestCase {
     }
 
     @Test
-    public void testCalculateDataGather () {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.DATE, 20);
-        System.out.println("uuuuuuuuuuuuu" + DateUtil.formatCalendar(cal, DateUtil.DATE_FORMAT_Y_M_D));
-        this.indiComputService.calculateDataGater(cal);
-    }
-
-    @Test
     public void testReComput(){
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DATE, 20);
@@ -59,4 +51,12 @@ public class IndiComputTest extends TestCase {
         indicatorTempList = indicatorTempService.findAll(searchable).getContent();
         this.indiComputService.reComputIndicator(cal,indicatorTempList);
     }*/
+
+    @Test
+    public void testCalculateDataGather () {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DATE, 16);
+        System.out.println("uuuuuuuuuuuuu" + DateUtil.formatCalendar(cal, DateUtil.DATE_FORMAT_Y_M_D));
+        this.indiComputService.calculateDataGater(cal);
+    }
 }

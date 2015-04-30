@@ -85,6 +85,10 @@
         <jinterop.version>2.0.5</jinterop.version>
         <utgard-dcom.version>1.2</utgard-dcom.version>
         <utgard-lib.version>1.2</utgard-lib.version>
+
+        <jna.version>4.1</jna.version>
+
+        <hik.version>1.0</hik.version>
     </properties>
 
     <dependencies>
@@ -528,6 +532,20 @@
             <groupId>org.openscada.opc</groupId>
             <artifactId>utgard-dcom</artifactId>
             <version>${utgard-dcom.version}</version>
+        </dependency>
+
+        <!-- jna相关jar -->
+        <dependency>
+            <groupId>com.hikvision</groupId>
+            <artifactId>jna</artifactId>
+            <version>${jna.version}</version>
+        </dependency>
+
+        <!-- hikvision相关jar -->
+        <dependency>
+            <groupId>com.hikvision</groupId>
+            <artifactId>hik</artifactId>
+            <version>${hik.version}</version>
         </dependency>
     </dependencies>
 

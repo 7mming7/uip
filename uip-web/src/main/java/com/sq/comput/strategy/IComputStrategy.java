@@ -53,8 +53,8 @@ public abstract class IComputStrategy {
                 dayArray = DateUtil.getYearFirstAndLastInt(computCal);
                 break;
         }
-        searchable.addSearchFilter("statDateNum", MatchType.GTE, dayArray[0])
-                .addSearchFilter("statDateNum", MatchType.LTE, dayArray[1]);
+        searchable.addSearchFilter("statDateNum", MatchType.GTE, dayArray[0]);
+        searchable.addSearchFilter("statDateNum", MatchType.LTE, dayArray[1]);
         return searchable;
     }
 }

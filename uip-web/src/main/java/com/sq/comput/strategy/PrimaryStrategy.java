@@ -48,7 +48,7 @@ public class PrimaryStrategy extends IComputStrategy {
         Searchable searchable = Searchable.newSearchable()
                 .addSearchFilter("valueType", MatchType.EQ, IndicatorConsts.VALUE_TYPE_DOUBLE);
         int fetchCycle = indicatorTemp.getFetchCycle();
-        fillSearchConditionByFetchType(searchable,fetchCycle,computCal);
+        searchable = fillSearchConditionByFetchType(searchable,fetchCycle,computCal);
 
         for (String variable : variableList) {
             searchable.addSearchFilter("indicatorCode", MatchType.EQ, variable);
