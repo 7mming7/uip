@@ -1,5 +1,6 @@
 package com.sq.comput.component;
 
+import com.sq.comput.domain.IndicatorInstance;
 import com.sq.comput.function.AvgFunction;
 import com.sq.comput.function.MaxAllFunction;
 import com.sq.comput.function.SubFunction;

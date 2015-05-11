@@ -1,5 +1,6 @@
 package junit.comput;
 
+import com.sq.comput.domain.IndicatorInstance;
 import com.sq.comput.domain.IndicatorTemp;
 import com.sq.comput.service.IndiComputService;
 import com.sq.comput.service.IndicatorTempService;
@@ -58,5 +59,26 @@ public class IndiComputTest extends TestCase {
         cal.set(Calendar.DATE, 16);
         System.out.println("uuuuuuuuuuuuu" + DateUtil.formatCalendar(cal, DateUtil.DATE_FORMAT_Y_M_D));
         this.indiComputService.calculateDataGater(cal);
+    }
+
+    @Test
+    public void batchSave(){
+        for (int i=1;i<100;i++) {
+            IndicatorInstance indicatorInstance = new IndicatorInstance();
+            indicatorInstance.setDataSource(2);
+            indicatorInstance.setDecimalNum(2);
+            indicatorInstance.setFloatValue(23d);
+            indicatorInstance.setCategoryId(201l);
+            indicatorInstance.setCreateTime(Calendar.getInstance());
+            indicatorInstance.setIndicatorTempId(275l);
+            indicatorInstance.setStatDateNum(20150504);
+            indicatorInstance.setValueType(1);
+            indicatorInstance.setFetchCycle(1);
+            indicatorInstance.setOperCalType(1);
+            indicatorInstance.setIndicatorCode("asdasdsa");
+            indicatorInstance.setIndicatorName("test");
+            indicatorInstance.setUnit(5);
+            this.indiComputService.save(indicatorInstance);
+        }
     }
 }

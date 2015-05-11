@@ -13,7 +13,6 @@ import net.sourceforge.jeval.EvaluationException;
 import net.sourceforge.jeval.Evaluator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
 
 import java.util.Calendar;
 import java.util.List;
@@ -55,7 +54,7 @@ public class PrimaryStrategy extends IComputStrategy {
             List<IndicatorInstance> indicatorInstances = indicatorInstanceRepository.findAll(searchable).getContent();
 
             if (indicatorInstances.isEmpty()) {
-                log.error("关联指标：" + variable + " 没有数据!");
+                log.error("计算指标：" + indicatorTemp.getIndicatorCode() + "-》关联指标：" + variable + " 没有数据!");
                 return null;
             }
 
@@ -81,7 +80,7 @@ public class PrimaryStrategy extends IComputStrategy {
         try {
             result = Double.valueOf(evaluator.evaluate(calculateExp));
         } catch (EvaluationException e) {
-            log.error("计算结果cast to double error.", e);
+            log.error("计算结果cast to double error." + calculateExp, e);
         }
         return result;
     }

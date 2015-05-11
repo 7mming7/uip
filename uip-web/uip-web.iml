@@ -16,7 +16,15 @@
       </configuration>
     </facet>
     <facet type="Spring" name="Spring">
-      <configuration />
+      <configuration>
+        <fileset id="fileset" name="Spring Application Context" removed="false">
+          <file>file://$MODULE_DIR$/src/main/resources/spring/springContext-config.xml</file>
+          <file>file://$MODULE_DIR$/src/main/resources/spring/springContext-config-monitor.xml</file>
+          <file>file://$MODULE_DIR$/src/main/resources/spring/springContext-cxf.xml</file>
+          <file>file://$MODULE_DIR$/src/main/resources/spring/springContext-schedule.xml</file>
+          <file>file://$MODULE_DIR$/src/main/resources/spring/springContext-springmvc.xml</file>
+        </fileset>
+      </configuration>
     </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7" inherit-compiler-output="false">
@@ -26,7 +34,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
-      <excludeFolder url="file://$MODULE_DIR$/src/main/webapp/WEB-INF/classes" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />

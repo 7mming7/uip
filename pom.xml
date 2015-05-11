@@ -40,13 +40,13 @@
   <repositories>
     <repository>
       <id>thirdparty</id>
-      <url>http://192.168.1.239:8081/nexus/content/groups/public/</url>
+      <url>http://snmis.xicp.net:8081/nexus/content/groups/public/</url>
     </repository>
   </repositories>
   <pluginRepositories>
     <pluginRepository>
       <id>thirdparty</id>
-      <url>http://192.168.1.239:8081/nexus/content/repositories/thirdparty</url>
+      <url>http://snmis.xicp.net:8081/nexus/content/repositories/thirdparty</url>
     </pluginRepository>
   </pluginRepositories>
 

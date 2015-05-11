@@ -70,6 +70,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
      * @param computCal 计算时间
      */
     public void calculateDataGater (Calendar computCal) {
+        ComputHelper.threadCalculateMap = new ConcurrentHashMap<String, Integer>();
         ConcurrentHashMap<String, Integer> threadCalculateMap = ComputHelper.threadCalculateMap;
 
         Searchable searchable = Searchable.newSearchable()
@@ -101,10 +102,10 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
     public synchronized void stepCalculateIndicator (LinkedBlockingQueue<IndicatorTemp> indicatorSyncQueue, Calendar computCal) {
         Long costTime = 0L;
         Long now = System.currentTimeMillis();
-        while(!indicatorSyncQueue.isEmpty() && costTime <= ComputHelper.requestWaitTimeOutValue*10000L){
+        while(!indicatorSyncQueue.isEmpty() && costTime <= ComputHelper.requestWaitTimeOutValue*1000L){
             IndicatorTemp head = indicatorSyncQueue.poll();
             try {
-                Thread.sleep(100l);
+                Thread.sleep(10l);
             } catch (InterruptedException e) {
                 log.error("线程停顿出错!", e);
             }
@@ -118,7 +119,6 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
                         sendCalculateComm(head, computCal, new PrimaryStrategy());
                         break;
                 }
-                ComputHelper.threadCalculateMap.put(head.getIndicatorCode(), IndicatorConsts.VALUE_TYPE_DOUBLE);
             } else {
                 try {
                     indicatorSyncQueue.put(head);
@@ -129,6 +129,11 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
             costTime = System.currentTimeMillis() - now;
             log.error("costTime-------" + costTime);
         }
+
+        ThreadPoolExecutor _instance = ComputHelper.initThreadPooSingleInstance();
+        log.error("已完成线程数：" + _instance.getCompletedTaskCount());
+        log.error("Task 总数：" + _instance.getTaskCount());
+        log.error("map：" + ComputHelper.threadCalculateMap.size());
     }
 
     /**
@@ -140,14 +145,14 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
         Evaluator evaluator = ComputHelper.getEvaluatorInstance();
         log.error("indicatorTemplate=====" + indicatorTemplate.getIndicatorCode());
         List<String> variableList = ComputHelper.getVariableList(indicatorTemplate.getCalculateExpression(), evaluator);
-        boolean flag = true;
+        boolean flag = false;
         for (String variable : variableList) {
             log.error("variable======" + variable);
             if (ComputHelper.threadCalculateMap.get(variable) == null) {
                 log.error(indicatorTemplate.getIndicatorName() + "---" + indicatorTemplate.getIndicatorCode() +
                         " 指标的关联指标==" + variable + "不存在！");
             } else {
-                flag = flag && ComputHelper.threadCalculateMap.get(variable) != null;
+                flag = ComputHelper.threadCalculateMap.get(variable) != null;
             }
             log.error("flag======" + flag);
         }
@@ -166,11 +171,11 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
         indiComputThread.setAssignMillions(System.currentTimeMillis());
         indiComputThread.setiComputStrategy(iComputStrategy);
         indiComputThread.setIndicatorTemp(indicatorTemplate);
-        indiComputThread.run();
-        /*ThreadPoolExecutor _instance = ComputHelper.initThreadPooSingleInstance();
+        /*indiComputThread.start();*/
+        ThreadPoolExecutor _instance = ComputHelper.initThreadPooSingleInstance();
         if (!_instance.isTerminated()) {
             _instance.execute(indiComputThread);
-        }*/
+        }
     }
 
     /**

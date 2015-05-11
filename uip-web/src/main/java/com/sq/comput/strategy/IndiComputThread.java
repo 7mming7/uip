@@ -1,14 +1,16 @@
 package com.sq.comput.strategy;
 
+import com.sq.comput.component.ComputHelper;
 import com.sq.comput.domain.IndicatorConsts;
 import com.sq.comput.domain.IndicatorInstance;
 import com.sq.comput.domain.IndicatorTemp;
 import com.sq.comput.service.IndiComputService;
 import com.sq.util.DateUtil;
 import com.sq.util.SpringUtils;
-import com.sq.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Calendar;
 
@@ -25,7 +27,7 @@ import java.util.Calendar;
  * |_)._ _
  * | o| (_
  */
-public class IndiComputThread extends Thread {
+public class IndiComputThread extends Thread implements Thread.UncaughtExceptionHandler {
 
     private Logger log = LoggerFactory.getLogger(IndiComputThread.class);
 
@@ -106,12 +108,18 @@ public class IndiComputThread extends Thread {
     }
 
     @Override
-    public void run() {
+    public void uncaughtException(Thread t, Throwable e) {
+        e.printStackTrace();
+    }
+
+    @Override
+    public  void run() {
         log.info("Module Comput " + indicatorTemp.getIndicatorCode() + ":发送计算请求.");
         IndicatorInstance indicatorInstance = new IndicatorInstance(indicatorTemp);
         indicatorInstance.setInstanceTime(computCal);
         indicatorInstance.setStatDateNum(Integer.parseInt(DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULT)));
-        Object computResult = iComputStrategy.execIndiComput(indicatorTemp, computCal);
+        Calendar tempCal = (Calendar) computCal.clone();
+        Object computResult = iComputStrategy.execIndiComput(indicatorTemp, tempCal);
         if (null == computResult) {
             return;
         }
@@ -123,6 +131,7 @@ public class IndiComputThread extends Thread {
             indicatorInstance.setValueType(IndicatorConsts.VALUE_TYPE_DOUBLE);
             indicatorInstance.setFloatValue(Double.parseDouble(computResult.toString()));
         }
-        indiComputService.save(indicatorInstance);
+        indiComputService.saveAndFlush(indicatorInstance);
+        ComputHelper.threadCalculateMap.put(indicatorTemp.getIndicatorCode(), IndicatorConsts.VALUE_TYPE_DOUBLE);
     }
 }

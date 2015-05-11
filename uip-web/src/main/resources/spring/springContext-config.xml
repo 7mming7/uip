@@ -100,6 +100,7 @@
                 <entry key="hibernate.cache.region.factory_class" value="${hibernate.cache.region.factory_class}"/>
                 <entry key="net.sf.ehcache.configurationResourceName" value="${net.sf.ehcache.configurationResourceName}"/>
                 <entry key="hibernate.cache.use_structured_entries" value="${hibernate.cache.use_structured_entries}"/>
+                <entry key="hibernate.connection.autocommit" value="true"/>
             </map>
         </property>
     </bean>
@@ -126,22 +127,14 @@
 
     <tx:advice id="txAdvice" transaction-manager="transactionManager">
         <tx:attributes>
-            <tx:method name="doReweight" propagation="REQUIRES_NEW"/>
-            <tx:method name="doClear*" propagation="REQUIRES_NEW"/>
-            <tx:method name="doSend*" propagation="REQUIRES_NEW"/>
-            <tx:method name="doBatchSave*" propagation="REQUIRES_NEW"/>
-
             <!--hibernate4必须配置为开启事务 否则 getCurrentSession()获取不到-->
             <tx:method name="get*" propagation="REQUIRED" read-only="true"/>
             <tx:method name="count*" propagation="REQUIRED" read-only="true"/>
             <tx:method name="find*" propagation="REQUIRED" read-only="true"/>
             <tx:method name="list*" propagation="REQUIRED" read-only="true"/>
-            <tx:method name="*" propagation="REQUIRES_NEW"/>
+            <tx:method name="*" propagation="NEVER"/>
         </tx:attributes>
     </tx:advice>
-
-    <!-- 开启AOP监听 只对当前配置文件有效 -->
-    <aop:aspectj-autoproxy proxy-target-class="true" expose-proxy="true"/>
 
     <aop:config expose-proxy="true" proxy-target-class="true">
         <!-- 只对业务逻辑层实施事务 -->
@@ -175,8 +168,6 @@
                   value="com.sq.repository.RepositoryHelper.setEntityManagerFactory"/>
         <property name="arguments" ref="entityManagerFactory"/>
     </bean>
-
-    <tx:annotation-driven transaction-manager="transactionManager" />
 
     <import resource="springContext-config-monitor.xml"/>
     <import resource="springContext-schedule.xml"/>

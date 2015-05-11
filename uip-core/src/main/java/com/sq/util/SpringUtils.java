@@ -76,16 +76,6 @@ public final class SpringUtils implements BeanFactoryPostProcessor {
     }
 
     /**
-     * @param name
-     * @return Class 注册对象的类型
-     * @throws org.springframework.beans.factory.NoSuchBeanDefinitionException
-     *
-     */
-    public static Class<?> getType(String name) throws NoSuchBeanDefinitionException {
-        return beanFactory.getType(name);
-    }
-
-    /**
      * 如果给定的bean名字在bean定义中有别名，则返回这些别名
      *
      * @param name

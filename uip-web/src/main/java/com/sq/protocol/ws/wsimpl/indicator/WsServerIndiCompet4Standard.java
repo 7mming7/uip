@@ -63,7 +63,6 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
             log.error("请求收到同步时间---" + DateUtil.formatCalendar(Calendar.getInstance()));
 
             Calendar cal = DateUtil.stringToCalendar(xmlStr, DateUtil.DATE_FORMAT_DAFAULT);
-			cal.set(Calendar.DATE, 16);
             this.indicatorComputService.calculateDataGater(cal);
             
             sw = wsProtocalParser.beanToXml(mrpElementResponse, StandardResponse.class);

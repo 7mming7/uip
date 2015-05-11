@@ -136,12 +136,7 @@ public final class SearchRequest extends Searchable {
             String key = condition.getKey();
             searchFilterMap.put(key, condition);
         }
-        int index = searchFilters.indexOf(searchFilter);
-        if(index != -1) {
-            searchFilters.set(index, searchFilter);
-        } else {
-            searchFilters.add(searchFilter);
-        }
+        searchFilters.add(searchFilter);
         return this;
 
     }

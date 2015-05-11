@@ -54,7 +54,11 @@
     <logger name="org.hibernate.engine.QueryParameters" level="ERROR" />
     <logger name="org.hibernate.engine.query.HQLQueryPlan" level="ERROR" />
 
-    <root level="ERROR"/>
+    <!-- 日志输出级别 -->
+    <root level="ERROR">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="ERROR" />
+    </root>
 
     <!--错误日志-->
     <logger name="uip-error" additivity="false" level="ERROR">
