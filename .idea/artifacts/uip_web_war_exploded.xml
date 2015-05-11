@@ -110,6 +110,8 @@
           <element id="library" level="project" name="Maven: org.jsoup:jsoup:1.7.3" />
           <element id="library" level="project" name="Maven: org.openscada.opc:lib:1.2" />
           <element id="library" level="project" name="Maven: org.openscada.opc:utgard-dcom:1.2" />
+          <element id="library" level="project" name="Maven: com.hikvision:jna:4.1" />
+          <element id="library" level="project" name="Maven: com.hikvision:hik:1.0" />
         </element>
       </element>
       <element id="directory" name="META-INF">

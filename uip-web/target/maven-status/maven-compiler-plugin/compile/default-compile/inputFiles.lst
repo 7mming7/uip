@@ -7,6 +7,7 @@ D:\ideaWorkSpace\uip\uip-web\src\main\java\com\sq\protocol\ws\wsimpl\indicator\I
 D:\ideaWorkSpace\uip\uip-web\src\main\java\com\sq\protocol\opc\component\OpcRegisterFactory.java
 D:\ideaWorkSpace\uip\uip-web\src\main\java\com\sq\protocol\ws\domain\MrpElementResponse.java
 D:\ideaWorkSpace\uip\uip-web\src\main\java\com\sq\protocol\opc\repository\OriginalDataRepository.java
+D:\ideaWorkSpace\uip\uip-web\src\main\java\com\sq\comput\service\IndicatorTempService.java
 D:\ideaWorkSpace\uip\uip-web\src\main\java\com\sq\comput\domain\IndicatorConsts.java
 D:\ideaWorkSpace\uip\uip-web\src\main\java\com\sq\comput\strategy\PrimaryStrategy.java
 D:\ideaWorkSpace\uip\uip-web\src\main\java\com\sq\comput\strategy\IndiComputThread.java
