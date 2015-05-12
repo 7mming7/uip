@@ -22,8 +22,8 @@ public class OriginalDataTest extends TestCase {
     @Autowired
     private OriginalDataRepository originalDataRepository;
 
-    @Test
+    /*@Test
     public void listAnHourPreOriginalDataTest () {
         originalDataRepository.listAnHourPreOriginalData("Macsv5.Device3.Group3.B1PT1312A");
-    }
+    }*/
 }

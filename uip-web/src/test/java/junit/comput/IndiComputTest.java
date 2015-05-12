@@ -53,15 +53,15 @@ public class IndiComputTest extends TestCase {
         this.indiComputService.reComputIndicator(cal,indicatorTempList);
     }*/
 
-    @Test
+    /*@Test
     public void testCalculateDataGather () {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DATE, 16);
         System.out.println("uuuuuuuuuuuuu" + DateUtil.formatCalendar(cal, DateUtil.DATE_FORMAT_Y_M_D));
         this.indiComputService.calculateDataGater(cal);
-    }
+    }*/
 
-    @Test
+    /*@Test
     public void batchSave(){
         for (int i=1;i<100;i++) {
             IndicatorInstance indicatorInstance = new IndicatorInstance();
@@ -80,5 +80,5 @@ public class IndiComputTest extends TestCase {
             indicatorInstance.setUnit(5);
             this.indiComputService.save(indicatorInstance);
         }
-    }
+    }*/
 }

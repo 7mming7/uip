@@ -18,7 +18,7 @@ import org.junit.Test;
  */
 public class OpcServiceTest extends TestCase{
 
-    @Test
+    /*@Test
     public void fetchAllOpcOnService () {
-    }
+    }*/
 }

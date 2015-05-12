@@ -22,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -49,6 +50,8 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
 
     @Autowired
     private IndicatorTempRepository indicatorTempRepository;
+
+    private static LinkedBlockingQueue<IndicatorTemp> indicatorSyncQueue = new LinkedBlockingQueue<IndicatorTemp>();
 
     /**
      * 接口数据汇集到系统的最小维度小时级
@@ -86,7 +89,6 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
             threadCalculateMap.put(indicatorInstance.getIndicatorCode(), indicatorInstance.getValueType());
         }
 
-        LinkedBlockingQueue<IndicatorTemp> indicatorSyncQueue = new LinkedBlockingQueue<IndicatorTemp>();
         for (IndicatorTemp indicatorTemp:indicatorTempList) {
             log.info("indicatorTemp:->" + indicatorTemp.getIndicatorName());
             indicatorSyncQueue.add(indicatorTemp);
@@ -131,6 +133,13 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
         }
 
         ThreadPoolExecutor _instance = ComputHelper.initThreadPooSingleInstance();
+        while(!indicatorSyncQueue.isEmpty()) {
+            IndicatorTemp indicatorTemp = (IndicatorTemp) indicatorSyncQueue.poll();
+            log.error("indicatorName->" + indicatorTemp.getIndicatorName());
+            log.error("indicatorCode->" + indicatorTemp.getIndicatorCode());
+            log.error("calculateExpression->" + indicatorTemp.getCalculateExpression());
+            log.error("----------------------------------------");
+        }
         log.error("已完成线程数：" + _instance.getCompletedTaskCount());
         log.error("Task 总数：" + _instance.getTaskCount());
         log.error("map：" + ComputHelper.threadCalculateMap.size());
@@ -145,18 +154,20 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
         Evaluator evaluator = ComputHelper.getEvaluatorInstance();
         log.error("indicatorTemplate=====" + indicatorTemplate.getIndicatorCode());
         List<String> variableList = ComputHelper.getVariableList(indicatorTemplate.getCalculateExpression(), evaluator);
-        boolean flag = false;
+        boolean result = true;
         for (String variable : variableList) {
-            log.error("variable======" + variable);
+            boolean flag = false;
+            log.error(indicatorTemplate.getIndicatorCode() + "，variable======" + variable);
             if (ComputHelper.threadCalculateMap.get(variable) == null) {
                 log.error(indicatorTemplate.getIndicatorName() + "---" + indicatorTemplate.getIndicatorCode() +
                         " 指标的关联指标==" + variable + "不存在！");
             } else {
                 flag = ComputHelper.threadCalculateMap.get(variable) != null;
             }
-            log.error("flag======" + flag);
+            log.error(indicatorTemplate.getIndicatorCode() + ",variable->" + variable + "，flag======" + flag);
+            result = result&&flag;
         }
-        return flag;
+        return result;
     }
 
     /**
@@ -187,10 +198,11 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
     public void reComputIndicator (Calendar computCal, List<IndicatorTemp> indicatorTempList) {
         TreeMap<Integer,List<IndicatorTemp>> integerListTreeMap = new TreeMap<>();
         integerListTreeMap = buildIndiSortTreeMap(integerListTreeMap,indicatorTempList,0);
-        List<Calendar> calendarList = DateUtil.dayListSinceCal(computCal);
+        Calendar tempCal = (Calendar) computCal.clone();
+        List<Calendar> calendarList = DateUtil.dayListSinceCal(tempCal);
 
         /** 删除需要重新计算的指标实例的数据 */
-        deleteNeedReComputIndicator(computCal, indicatorTempList);
+        deleteNeedReComputIndicator(computCal, integerListTreeMap);
 
         Iterator iterator = integerListTreeMap.entrySet().iterator();
         while(iterator.hasNext()){
@@ -214,13 +226,17 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
     /**
      * 删除需要重新计算的指标实例的数据
      * @param computCal          指定时间
-     * @param indicatorTempList  关联指标对象
+     * @param integerListTreeMap  关联指标对象
      */
-    public void deleteNeedReComputIndicator (Calendar computCal, List<IndicatorTemp> indicatorTempList) {
+    public void deleteNeedReComputIndicator (Calendar computCal, TreeMap<Integer,List<IndicatorTemp>> integerListTreeMap) {
         Searchable searchable = Searchable.newSearchable();
         int startComputDateNum = Integer.parseInt(DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_DAFAULT));
         searchable.addSearchFilter("statDateNum",MatchType.GTE,startComputDateNum);
         List<String> indicatorCodeList = new ArrayList<String>();
+        List<IndicatorTemp> indicatorTempList = new ArrayList<IndicatorTemp>();
+        for (Map.Entry<Integer, List<IndicatorTemp>> entry : integerListTreeMap.entrySet()) {
+            indicatorTempList.addAll((List<IndicatorTemp>)entry.getValue());
+        }
         for (IndicatorTemp indicatorTemp:indicatorTempList){
             indicatorCodeList.add(indicatorTemp.getIndicatorCode());
         }

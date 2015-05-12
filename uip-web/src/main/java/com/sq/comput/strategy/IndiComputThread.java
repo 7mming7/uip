@@ -113,7 +113,7 @@ public class IndiComputThread extends Thread implements Thread.UncaughtException
     }
 
     @Override
-    public  void run() {
+    public void run() {
         log.info("Module Comput " + indicatorTemp.getIndicatorCode() + ":发送计算请求.");
         IndicatorInstance indicatorInstance = new IndicatorInstance(indicatorTemp);
         indicatorInstance.setInstanceTime(computCal);
@@ -123,7 +123,7 @@ public class IndiComputThread extends Thread implements Thread.UncaughtException
         if (null == computResult) {
             return;
         }
-        System.out.println(indicatorTemp.getIndicatorCode() + "计算结果为：--" + (null != computResult ? computResult.toString() : "null"));
+        log.error(indicatorTemp.getIndicatorCode() + "计算结果为：--" + (null != computResult ? computResult.toString() : "null"));
         if (computResult instanceof String) {
             indicatorInstance.setValueType(IndicatorConsts.VALUE_TYPE_STRING);
             indicatorInstance.setStringValue(computResult.toString());
@@ -132,6 +132,8 @@ public class IndiComputThread extends Thread implements Thread.UncaughtException
             indicatorInstance.setFloatValue(Double.parseDouble(computResult.toString()));
         }
         indiComputService.saveAndFlush(indicatorInstance);
-        ComputHelper.threadCalculateMap.put(indicatorTemp.getIndicatorCode(), IndicatorConsts.VALUE_TYPE_DOUBLE);
+        synchronized(ComputHelper.threadCalculateMap) {
+            ComputHelper.threadCalculateMap.put(indicatorTemp.getIndicatorCode(), IndicatorConsts.VALUE_TYPE_DOUBLE);
+        }
     }
 }

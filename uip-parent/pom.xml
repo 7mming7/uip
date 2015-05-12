@@ -89,6 +89,8 @@
         <jna.version>4.1</jna.version>
 
         <hik.version>1.0</hik.version>
+
+        <ojdbc.version>4.0</ojdbc.version>
     </properties>
 
     <dependencies>
@@ -546,6 +548,13 @@
             <groupId>com.hikvision</groupId>
             <artifactId>hik</artifactId>
             <version>${hik.version}</version>
+        </dependency>
+
+        <!-- odbc -->
+        <dependency>
+            <groupId>com.microsoft.sqlserver.jdbc</groupId>
+            <artifactId>sqljdbc</artifactId>
+            <version>${ojdbc.version}</version>
         </dependency>
     </dependencies>
 

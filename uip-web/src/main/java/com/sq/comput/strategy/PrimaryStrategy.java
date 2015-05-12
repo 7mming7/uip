@@ -80,7 +80,7 @@ public class PrimaryStrategy extends IComputStrategy {
         try {
             result = Double.valueOf(evaluator.evaluate(calculateExp));
         } catch (EvaluationException e) {
-            log.error("计算结果cast to double error." + calculateExp, e);
+            log.error("indicatorTemp->" + indicatorTemp.getIndicatorName() + ",计算结果cast to double error. calculateExp->" + calculateExp, e);
         }
         return result;
     }

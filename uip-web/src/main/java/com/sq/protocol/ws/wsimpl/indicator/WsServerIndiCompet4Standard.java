@@ -5,6 +5,7 @@ import com.sq.comput.service.IndiComputService;
 import com.sq.comput.service.IndicatorTempService;
 import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
+import com.sq.entity.search.condition.Condition;
 import com.sq.entity.search.condition.OrCondition;
 import com.sq.entity.search.condition.SearchFilterHelper;
 import com.sq.exception.BaseException;
@@ -133,7 +134,7 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 	@Override
 	public String receiveReComputIndicatorInfo(String xmlStr) {
 		WsProtocalParser wsProtocalParser = WsProtocalParser.createInstance();
-
+		System.out.println(xmlStr);
 		MrpElementResponse<IndicatorReqElement> mrpElementResponse = wsProtocalParser.createRpsMrpObject(true, null);
 		String responseXml = "";
 		StringWriter sw = new StringWriter();
@@ -157,8 +158,8 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 			Calendar cal = DateUtil.stringToCalendar(reqHeader.getActionTime(), DateUtil.DATE_FORMAT_DAFAULT);
 			List<IndicatorTemp> itemCodeList = new ArrayList<IndicatorTemp>();
 			for (IndicatorReqElement ir : indicatorEleList) {
-				OrCondition orCondition = (OrCondition) SearchFilterHelper.newCondition("indicatorCode", MatchType.EQ, "ir.getItemCode()");
-				searchable.or(orCondition);
+				Condition condition = (Condition) SearchFilterHelper.newCondition("indicatorCode", MatchType.EQ, ir.getItemCode());
+				searchable.or(condition);
 			}
 			itemCodeList = indicatorTempService.findAll(searchable).getContent();
 			indicatorComputService.reComputIndicator(cal,itemCodeList);
@@ -205,6 +206,18 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 			return sw.toString();
 		} catch (ParseException e) {
 			String msg = "时间转化出现错误。";
+			log.error(msg, e);
+			mrpElementResponse.getRpsHeader().setSuccess(false);
+			mrpElementResponse.getRpsHeader().setRemark(msg);
+			try {
+				sw = WsProtocalParser.beanToXml(mrpElementResponse, IndicatorRpsElement.class);
+			} catch (FileNotFoundException | JAXBException e1) {
+				String msgEx = "bean2XML转化出错: " + e1.getMessage();
+				log.error(msgEx, e1);
+			}
+			return sw.toString();
+		} catch (Exception e) {
+			String msg = "reComput出现错误。";
 			log.error(msg, e);
 			mrpElementResponse.getRpsHeader().setSuccess(false);
 			mrpElementResponse.getRpsHeader().setRemark(msg);

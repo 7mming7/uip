@@ -25,9 +25,9 @@ public class TestWs extends TestCase {
     @Autowired
     private WsServerIndiCompet4Standard wsServerIndiCompet4Standard;
 
-    @Test
+    /*@Test
     public void testWsServerComput4Standard() throws IOException, URISyntaxException {
-        String response = this.wsServerIndiCompet4Standard.receiveIndicatorCompetInfo("20150504");
+        String response = this.wsServerIndiCompet4Standard.receiveIndicatorCompetInfo("20150423");
         System.out.println(response);
-    }
+    }*/
 }

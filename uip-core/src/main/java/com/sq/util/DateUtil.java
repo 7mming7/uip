@@ -210,6 +210,7 @@ public class DateUtil {
                 startCal.add(Calendar.DATE, 1);
                 calendarList.add(DateUtil.stringToCalendar(formatDate(startCal.getTime(), DATE_FORMAT_DAFAULT),DateUtil.DATE_FORMAT_DAFAULT));
             }
+            calendarList.remove(calendarList.size() - 1);
         } catch (ParseException e) {
             e.printStackTrace();
         }
