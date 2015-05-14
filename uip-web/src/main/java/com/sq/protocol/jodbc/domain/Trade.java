@@ -1,4 +1,4 @@
-package com.sq.protocol.odbc.domain;
+package com.sq.protocol.jodbc.domain;
 
 import com.sq.entity.AbstractEntity;
 
@@ -80,40 +80,40 @@ public class Trade extends AbstractEntity<Long> implements Serializable {
     private String transporter;
 
     //临时称重时间
-    private Calendar firstdatetime;
+    private String firstdatetime;
 
     //交易称重时间
-    private Calendar seconddatetime;
+    private String seconddatetime;
 
     //毛重称重时间
-    private Calendar grossdatetime;
+    private String grossdatetime;
 
     //皮重称重时间
-    private Calendar taredatetime;
+    private String taredatetime;
 
     //临时重量
-    private Integer firstweight;
+    private String firstweight;
 
     //交易重量
-    private Integer secondweight;
+    private String secondweight;
 
     //毛重
-    private Integer gross;
+    private String gross;
 
     //皮重
-    private Integer tare;
+    private String tare;
 
     //净重
-    private Integer net;
+    private String net;
 
     //货物净重
-    private Integer productnet;
+    private String productnet;
 
     //扣水
-    private Integer exceptwater;
+    private String exceptwater;
 
     //扣杂
-    private Integer exceptother;
+    private String exceptother;
 
     //临时称重操作员Id
     private String userid1;
@@ -137,68 +137,68 @@ public class Trade extends AbstractEntity<Long> implements Serializable {
      * 自动处理、先皮、先毛标识
      * 0 自动处理  1 先皮重  2 先毛重
      */
-    private Integer scaleweightflag;
+    private String scaleweightflag;
 
     //备用标识
-    private Integer spareflag;
+    private String spareflag;
 
     /**
      * 上传标识'
      * 0 未上传 1 已上传
      */
-    private Integer uploadflag;
+    private String uploadflag;
 
     /**
      * 数据修改标志
      * 0 未修改  1 已经修改
      */
-    private Integer dataeditflag;
+    private String dataeditflag;
 
     /**
      * 数据状态
      * 1 正常  9 已经删除 3 表示错误
      */
-    private Integer datastatus;
+    private String datastatus;
 
     /**
      * 手工补单标志
      * 1 手工补单
      */
-    private Integer manualinputflag;
+    private String manualinputflag;
 
     /**
      * 称重模式
      * 10 称重模式的代号
      */
-    private Integer scalemode;
+    private String scalemode;
 
     /**
      * 多次称重结束的标志
      * 0 临时称重 1 交易称重
      */
-    private Integer finalflag;
+    private String finalflag;
 
     //交易余额
-    private Long leftweight;
+    private String leftweight;
 
     //皮重重量报警
-    private Integer tareweightalarmflag;
+    private String tareweightalarmflag;
 
     //皮重时间报警有效期
-    private Integer taretimealarmflag;
+    private String taretimealarmflag;
 
     //称重时间间隔报警
-    private Integer weighttimealarmflag;
+    private String weighttimealarmflag;
 
     //自动保存标识 0 未自动保存 1 自动保存
-    private Integer autosaveflag;
+    private String autosaveflag;
 
-
-
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }
@@ -323,99 +323,99 @@ public class Trade extends AbstractEntity<Long> implements Serializable {
         this.transporter = transporter;
     }
 
-    public Calendar getFirstdatetime() {
+    public String getFirstdatetime() {
         return firstdatetime;
     }
 
-    public void setFirstdatetime(Calendar firstdatetime) {
+    public void setFirstdatetime(String firstdatetime) {
         this.firstdatetime = firstdatetime;
     }
 
-    public Calendar getSeconddatetime() {
+    public String getSeconddatetime() {
         return seconddatetime;
     }
 
-    public void setSeconddatetime(Calendar seconddatetime) {
+    public void setSeconddatetime(String seconddatetime) {
         this.seconddatetime = seconddatetime;
     }
 
-    public Calendar getGrossdatetime() {
+    public String getGrossdatetime() {
         return grossdatetime;
     }
 
-    public void setGrossdatetime(Calendar grossdatetime) {
+    public void setGrossdatetime(String grossdatetime) {
         this.grossdatetime = grossdatetime;
     }
 
-    public Calendar getTaredatetime() {
+    public String getTaredatetime() {
         return taredatetime;
     }
 
-    public void setTaredatetime(Calendar taredatetime) {
+    public void setTaredatetime(String taredatetime) {
         this.taredatetime = taredatetime;
     }
 
-    public Integer getFirstweight() {
+    public String getFirstweight() {
         return firstweight;
     }
 
-    public void setFirstweight(Integer firstweight) {
+    public void setFirstweight(String firstweight) {
         this.firstweight = firstweight;
     }
 
-    public Integer getSecondweight() {
+    public String getSecondweight() {
         return secondweight;
     }
 
-    public void setSecondweight(Integer secondweight) {
+    public void setSecondweight(String secondweight) {
         this.secondweight = secondweight;
     }
 
-    public Integer getGross() {
+    public String getGross() {
         return gross;
     }
 
-    public void setGross(Integer gross) {
+    public void setGross(String gross) {
         this.gross = gross;
     }
 
-    public Integer getTare() {
+    public String getTare() {
         return tare;
     }
 
-    public void setTare(Integer tare) {
+    public void setTare(String tare) {
         this.tare = tare;
     }
 
-    public Integer getNet() {
+    public String getNet() {
         return net;
     }
 
-    public void setNet(Integer net) {
+    public void setNet(String net) {
         this.net = net;
     }
 
-    public Integer getProductnet() {
+    public String getProductnet() {
         return productnet;
     }
 
-    public void setProductnet(Integer productnet) {
+    public void setProductnet(String productnet) {
         this.productnet = productnet;
     }
 
-    public Integer getExceptwater() {
+    public String getExceptwater() {
         return exceptwater;
     }
 
-    public void setExceptwater(Integer exceptwater) {
+    public void setExceptwater(String exceptwater) {
         this.exceptwater = exceptwater;
     }
 
-    public Integer getExceptother() {
+    public String getExceptother() {
         return exceptother;
     }
 
-    public void setExceptother(Integer exceptother) {
+    public void setExceptother(String exceptother) {
         this.exceptother = exceptother;
     }
 
@@ -467,107 +467,107 @@ public class Trade extends AbstractEntity<Long> implements Serializable {
         this.bc2 = bc2;
     }
 
-    public Integer getScaleweightflag() {
+    public String getScaleweightflag() {
         return scaleweightflag;
     }
 
-    public void setScaleweightflag(Integer scaleweightflag) {
+    public void setScaleweightflag(String scaleweightflag) {
         this.scaleweightflag = scaleweightflag;
     }
 
-    public Integer getSpareflag() {
+    public String getSpareflag() {
         return spareflag;
     }
 
-    public void setSpareflag(Integer spareflag) {
+    public void setSpareflag(String spareflag) {
         this.spareflag = spareflag;
     }
 
-    public Integer getUploadflag() {
+    public String getUploadflag() {
         return uploadflag;
     }
 
-    public void setUploadflag(Integer uploadflag) {
+    public void setUploadflag(String uploadflag) {
         this.uploadflag = uploadflag;
     }
 
-    public Integer getDataeditflag() {
+    public String getDataeditflag() {
         return dataeditflag;
     }
 
-    public void setDataeditflag(Integer dataeditflag) {
+    public void setDataeditflag(String dataeditflag) {
         this.dataeditflag = dataeditflag;
     }
 
-    public Integer getDatastatus() {
+    public String getDatastatus() {
         return datastatus;
     }
 
-    public void setDatastatus(Integer datastatus) {
+    public void setDatastatus(String datastatus) {
         this.datastatus = datastatus;
     }
 
-    public Integer getManualinputflag() {
+    public String getManualinputflag() {
         return manualinputflag;
     }
 
-    public void setManualinputflag(Integer manualinputflag) {
+    public void setManualinputflag(String manualinputflag) {
         this.manualinputflag = manualinputflag;
     }
 
-    public Integer getScalemode() {
+    public String getScalemode() {
         return scalemode;
     }
 
-    public void setScalemode(Integer scalemode) {
+    public void setScalemode(String scalemode) {
         this.scalemode = scalemode;
     }
 
-    public Integer getFinalflag() {
+    public String getFinalflag() {
         return finalflag;
     }
 
-    public void setFinalflag(Integer finalflag) {
+    public void setFinalflag(String finalflag) {
         this.finalflag = finalflag;
     }
 
-    public Long getLeftweight() {
+    public String getLeftweight() {
         return leftweight;
     }
 
-    public void setLeftweight(Long leftweight) {
+    public void setLeftweight(String leftweight) {
         this.leftweight = leftweight;
     }
 
-    public Integer getTareweightalarmflag() {
+    public String getTareweightalarmflag() {
         return tareweightalarmflag;
     }
 
-    public void setTareweightalarmflag(Integer tareweightalarmflag) {
+    public void setTareweightalarmflag(String tareweightalarmflag) {
         this.tareweightalarmflag = tareweightalarmflag;
     }
 
-    public Integer getTaretimealarmflag() {
+    public String getTaretimealarmflag() {
         return taretimealarmflag;
     }
 
-    public void setTaretimealarmflag(Integer taretimealarmflag) {
+    public void setTaretimealarmflag(String taretimealarmflag) {
         this.taretimealarmflag = taretimealarmflag;
     }
 
-    public Integer getWeighttimealarmflag() {
+    public String getWeighttimealarmflag() {
         return weighttimealarmflag;
     }
 
-    public void setWeighttimealarmflag(Integer weighttimealarmflag) {
+    public void setWeighttimealarmflag(String weighttimealarmflag) {
         this.weighttimealarmflag = weighttimealarmflag;
     }
 
-    public Integer getAutosaveflag() {
+    public String getAutosaveflag() {
         return autosaveflag;
     }
 
-    public void setAutosaveflag(Integer autosaveflag) {
+    public void setAutosaveflag(String autosaveflag) {
         this.autosaveflag = autosaveflag;
     }
 }

@@ -1,6 +1,7 @@
 package com.sq.jobschedule.service;
 
 import com.sq.inject.annotation.BaseComponent;
+import com.sq.protocol.jodbc.service.TradeService;
 import com.sq.protocol.opc.component.BaseConfiguration;
 import com.sq.protocol.opc.service.MesuringPointService;
 import com.sq.protocol.opc.service.OriginalDataService;
@@ -35,6 +36,9 @@ public class SchedulerExecuteService {
     @Autowired
     private OriginalDataService originalDataService;
 
+    @Autowired
+    private TradeService tradeService;
+
     /**
      * opc实时数据同步任务
      */
@@ -55,5 +59,25 @@ public class SchedulerExecuteService {
         curr.add(Calendar.DAY_OF_MONTH, -1);
         originalDataService.opcDataMigration(DateUtil.formatCalendar(curr));
         log.error("----------- Opc原始数据迁移任务结束 -----------");
+    }
+
+    /**
+     * 地磅原始数据汇集
+     */
+    public void execLoadometerOrignalDataGathering () {
+        log.error("----------- 地磅原始数据汇集任务开始 -----------");
+        tradeService.listTradesBySearchable();
+        log.error("----------- 地磅原始数据汇集任务结束 -----------");
+    }
+
+    /**
+     * 地磅数据汇集
+     */
+    public void execLoadometerIndicatorData () {
+        log.error("----------- 地磅指标数据汇集任务开始 -----------");
+        Calendar curr = Calendar.getInstance();
+        curr.add(Calendar.DAY_OF_MONTH, -1);
+        tradeService.genTradeIndicators(curr);
+        log.error("----------- 地磅指标数据汇集任务结束 -----------");
     }
 }

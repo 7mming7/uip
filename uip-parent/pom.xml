@@ -550,7 +550,7 @@
             <version>${hik.version}</version>
         </dependency>
 
-        <!-- odbc -->
+        <!-- jodbc -->
         <dependency>
             <groupId>com.microsoft.sqlserver.jdbc</groupId>
             <artifactId>sqljdbc</artifactId>

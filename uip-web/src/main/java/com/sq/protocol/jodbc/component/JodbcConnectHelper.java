@@ -1,4 +1,4 @@
-package com.sq.protocol.odbc.component;
+package com.sq.protocol.jodbc.component;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,38 +20,34 @@ import java.util.Properties;
  * |_)._ _
  * | o| (_
  */
-public class OdbcConnectHelper {
+public class JodbcConnectHelper {
 
-    private static final Logger log = LoggerFactory.getLogger(OdbcConnectHelper.class);
+    private static final Logger log = LoggerFactory.getLogger(JodbcConnectHelper.class);
 
     /** 配置文件路径 */
-    private final static String CONFIG_FILE_NAME = "/odbc.properties";
+    private final static String CONFIG_FILE_NAME = "/conf/odbc-jdbc-config.properties";
 
     private static Properties prop;
 
     private static Connection connection;
 
-    public static Statement connect() {
+    public static Statement connect(int dbType) {
         Statement statement = null;
         try {
-            if(connection != null){
-                OdbcConfiguration configuration = new OdbcConfiguration();
-                configuration.loadConfigProperties(CONFIG_FILE_NAME);
-                connection = configuration.openCon();
-                statement = connection.createStatement();
-            }
+            DblinkConfig configuration = new DblinkConfig();
+            configuration.loadConfigProperties(CONFIG_FILE_NAME);
+            connection = configuration.openCon(dbType);
+            statement = connection.createStatement();
         } catch (SQLException e) {
             log.error("ODBC.OdbcConnectHelper connect出现异常.", e);
         }
         return statement;
     }
 
-    public static Connection connectForPst() {
-        if(connection != null){
-            OdbcConfiguration configuration = new OdbcConfiguration();
-            configuration.loadConfigProperties(CONFIG_FILE_NAME);
-            connection = configuration.openCon();
-        }
+    public static Connection connectForPst(int dbType) {
+        DblinkConfig configuration = new DblinkConfig();
+        configuration.loadConfigProperties(CONFIG_FILE_NAME);
+        connection = configuration.openCon(dbType);
         return connection;
     }
 
