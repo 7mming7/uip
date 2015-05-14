@@ -10,6 +10,8 @@
             <list>
                <!-- <ref bean="opcSyncDataJobTrigger" />
                 <ref bean="dcsDataMigrationJobTrigger" />-->
+                <ref bean="execLoadometerOrignalDataGatheringTrigger" />
+                <ref bean="execLoadometerIndicatorDataTrigger" />
             </list>
         </property>
     </bean>
