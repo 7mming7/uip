@@ -22,10 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.*;
 
 /**
  * 指标计算业务类.
@@ -62,9 +59,14 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
                 .addSearchFilter("dataSource", MatchType.EQ, IndicatorConsts.DATASOURCE_INTERFACE);
         Page<IndicatorTemp> indicatorTempPage = this.indicatorTempRepository.findAll(searchable);
         List<IndicatorTemp> indicatorTempList = indicatorTempPage.getContent();
+
+        List<IndicatorInstance> indicatorInstanceList = new LinkedList<IndicatorInstance>();
         for (IndicatorTemp indicatorTemp:indicatorTempList) {
             log.info("indicatorTemp:->" + indicatorTemp.getIndicatorName());
-            sendCalculateComm(indicatorTemp, computCal, new InterfaceStrategy());
+            IndicatorInstance indicatorInstance = sendCalculateComm(indicatorTemp, computCal, new InterfaceStrategy());
+            if (null != indicatorInstance) {
+                indicatorInstanceList.add(indicatorInstance);
+            }
         }
     }
 
@@ -175,18 +177,25 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
      * @param indicatorTemplate  指标模板
      * @param computCal          计算时间
      */
-    public synchronized void sendCalculateComm (IndicatorTemp indicatorTemplate,
+    public synchronized IndicatorInstance sendCalculateComm (IndicatorTemp indicatorTemplate,
                                                 Calendar computCal, IComputStrategy iComputStrategy) {
-        IndiComputThread indiComputThread = new IndiComputThread();
+        IndiComputTask indiComputThread = new IndiComputTask();
         indiComputThread.setComputCal(computCal);
         indiComputThread.setAssignMillions(System.currentTimeMillis());
         indiComputThread.setiComputStrategy(iComputStrategy);
         indiComputThread.setIndicatorTemp(indicatorTemplate);
         /*indiComputThread.start();*/
         ThreadPoolExecutor _instance = ComputHelper.initThreadPooSingleInstance();
-        if (!_instance.isTerminated()) {
-            _instance.execute(indiComputThread);
+        Future<IndicatorInstance> future = _instance.submit(indiComputThread);
+        IndicatorInstance indicatorInstance = null;
+        try {
+            while (future.isDone()) {
+                indicatorInstance = future.get();
+            }
+        } catch (Exception e) {
+            log.error("IndiComputService->sendCalculateComm 线程执行出现异常.",e);
         }
+        return indicatorInstance;
     }
 
     /**
@@ -259,13 +268,13 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
                 .addSearchFilter("dataSource", MatchType.NE, IndicatorConsts.DATASOURCE_INTERFACE);
         level = level + 1;
         OrCondition orCondition = new OrCondition();
-        for (IndicatorTemp indicatorTemp:indicatorTempList) {
-            orCondition.add(Condition.newCondition("calculateExpression",MatchType.LIKE, "%" + indicatorTemp.getIndicatorCode() + "%"));
+        for (IndicatorTemp indicatorTemp : indicatorTempList) {
+            orCondition.add(Condition.newCondition("calculateExpression", MatchType.LIKE, "%" + indicatorTemp.getIndicatorCode() + "%"));
         }
         searchable.or(orCondition);
         List<IndicatorTemp> indicatorTemps = indicatorTempRepository.findAll(searchable).getContent();
-        integerListTreeMap.put(level,indicatorTemps);
+        integerListTreeMap.put(level, indicatorTemps);
 
-        return buildIndiSortTreeMap(integerListTreeMap,indicatorTemps,level);
+        return buildIndiSortTreeMap(integerListTreeMap, indicatorTemps, level);
     }
 }

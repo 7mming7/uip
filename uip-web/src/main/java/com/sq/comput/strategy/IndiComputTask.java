@@ -9,10 +9,9 @@ import com.sq.util.DateUtil;
 import com.sq.util.SpringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Calendar;
+import java.util.concurrent.Callable;
 
 /**
  * 指标计算独立线程.
@@ -27,9 +26,9 @@ import java.util.Calendar;
  * |_)._ _
  * | o| (_
  */
-public class IndiComputThread extends Thread implements Thread.UncaughtExceptionHandler {
+public class IndiComputTask implements Callable<IndicatorInstance> {
 
-    private Logger log = LoggerFactory.getLogger(IndiComputThread.class);
+    private Logger log = LoggerFactory.getLogger(IndiComputTask.class);
 
     /**
      * 由于Thread非spring启动时实例化，而是根据具体的逻辑动态实例化，所以需要通过此方式从spring的context中获取相应的bean.
@@ -52,9 +51,9 @@ public class IndiComputThread extends Thread implements Thread.UncaughtException
 
     private IndicatorTemp indicatorTemp;
 
-    public IndiComputThread(){}
+    public IndiComputTask(){}
 
-    public IndiComputThread (IComputStrategy iComputStrategy, Calendar computCal) {
+    public IndiComputTask(IComputStrategy iComputStrategy, Calendar computCal) {
         this.iComputStrategy = iComputStrategy;
         this.computCal = computCal;
     }
@@ -108,12 +107,7 @@ public class IndiComputThread extends Thread implements Thread.UncaughtException
     }
 
     @Override
-    public void uncaughtException(Thread t, Throwable e) {
-        e.printStackTrace();
-    }
-
-    @Override
-    public void run() {
+    public IndicatorInstance call() throws Exception {
         log.info("Module Comput " + indicatorTemp.getIndicatorCode() + ":发送计算请求.");
         IndicatorInstance indicatorInstance = new IndicatorInstance(indicatorTemp);
         indicatorInstance.setInstanceTime(computCal);
@@ -121,7 +115,7 @@ public class IndiComputThread extends Thread implements Thread.UncaughtException
         Calendar tempCal = (Calendar) computCal.clone();
         Object computResult = iComputStrategy.execIndiComput(indicatorTemp, tempCal);
         if (null == computResult) {
-            return;
+            return null;
         }
         log.error(indicatorTemp.getIndicatorCode() + "计算结果为：--" + (null != computResult ? computResult.toString() : "null"));
         if (computResult instanceof String) {
@@ -135,5 +129,6 @@ public class IndiComputThread extends Thread implements Thread.UncaughtException
         synchronized(ComputHelper.threadCalculateMap) {
             ComputHelper.threadCalculateMap.put(indicatorTemp.getIndicatorCode(), IndicatorConsts.VALUE_TYPE_DOUBLE);
         }
+        return indicatorInstance;
     }
 }
