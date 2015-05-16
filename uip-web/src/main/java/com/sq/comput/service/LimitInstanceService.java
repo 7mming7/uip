@@ -11,6 +11,7 @@ import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
 import com.sq.inject.annotation.BaseComponent;
 import com.sq.service.BaseService;
+import com.sq.util.DateUtil;
 import net.sourceforge.jeval.EvaluationException;
 import net.sourceforge.jeval.Evaluator;
 import org.slf4j.Logger;
@@ -83,6 +84,7 @@ public class LimitInstanceService extends BaseService<LimitInstance,Integer> {
                 break;
             case IndicatorConsts.EXPRESSION_DYNAMIC:
                 limitValue = execLimitCal(limitExpression,indicatorInstanceMap).toString();
+                break;
         }
         limitInstance.setLimitValue(Double.parseDouble(limitValue));
         limitInstance.setCreateTime(Calendar.getInstance());
@@ -122,4 +124,5 @@ public class LimitInstanceService extends BaseService<LimitInstance,Integer> {
         }
         return result;
     }
+
 }

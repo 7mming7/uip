@@ -105,6 +105,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
             indicatorSyncQueue.add(indicatorTemp);
         }
         stepCalculateIndicator(indicatorSyncQueue, computCal);
+        limitAllDayComput(computCal);
     }
 
     /**
@@ -285,5 +286,18 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
         integerListTreeMap.put(level, indicatorTemps);
 
         return buildIndiSortTreeMap(integerListTreeMap, indicatorTemps, level);
+    }
+
+    /**
+     * 计算给定日期一日的所有的限值
+     * @param computCal
+     */
+    public void limitAllDayComput (Calendar computCal) {
+        Searchable searchable = Searchable.newSearchable()
+                .addSearchFilter("statDateNum", MatchType.EQ,
+                        DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_DAFAULT))
+                .addSearchFilter("fetchCycle", MatchType.NE, IndicatorConsts.FETCH_CYCLE_HOUR);
+        List<IndicatorInstance> indicatorInstanceList = indicatorInstanceRepository.findAll(searchable).getContent();
+        limitInstanceService.limitRealTimeCalculate(indicatorInstanceList);
     }
 }
