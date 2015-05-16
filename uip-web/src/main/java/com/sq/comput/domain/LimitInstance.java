@@ -48,6 +48,14 @@ public class LimitInstance extends LimitBase{
         this.id = id;
     }
 
+    public LimitInstance(LimitTemplate limitTemplate){
+        this.setAttribute(limitTemplate.getAttribute());
+        this.setDescription(limitTemplate.getDescription());
+        this.setLimitType(limitTemplate.getLimitType());
+        this.setExpType(limitTemplate.getExpType());
+        this.setExpression(limitTemplate.getExpression());
+    }
+
     public Double getLimitValue() {
         return limitValue;
     }
