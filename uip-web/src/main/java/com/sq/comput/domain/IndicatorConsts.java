@@ -80,4 +80,14 @@ public interface IndicatorConsts {
 
     public static final int EXPRESSION_DYNAMIC = 2;
 
+    /** ======================
+     *     表达式类型
+     *        1、原生不带参数
+     *        2、动态参数计算
+     *
+     */
+    public static final int LIMIT_TYPE_UPPER = 1;
+
+    public static final int LIMIT_TYPE_LOWER = 2;
+
 }

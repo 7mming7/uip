@@ -42,6 +42,7 @@ public class PrimaryStrategy extends IComputStrategy {
         List<String> variableList = ComputHelper.getVariableList(calculateExp,evaluator);
         if (variableList.isEmpty()) {
             log.error("表达式：" + calculateExp + " 没有动态参数!");
+            return null;
         }
 
         Searchable searchable = Searchable.newSearchable()

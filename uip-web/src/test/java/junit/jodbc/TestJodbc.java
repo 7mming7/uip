@@ -26,7 +26,7 @@ public class TestJodbc extends TestCase {
     @Autowired
     private TradeService tradeService;
 
-    @Test
+    /*@Test
     public void testDataMig(){
         try {
             tradeService.listTradesBySearchable();
@@ -42,6 +42,6 @@ public class TestJodbc extends TestCase {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
 }

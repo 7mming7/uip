@@ -35,15 +35,19 @@ public class IndiComputTest extends TestCase {
     @Autowired
     private IndicatorTempService indicatorTempService;
 
-    /*@Test
+    @Test
     public void testInterfaceDataGather () {
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.DATE, 20);
+        cal.set(Calendar.DATE, 06);
+        cal.set(Calendar.HOUR, 00);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
         System.out.println("uuuuuuuuuuuuu" + DateUtil.formatCalendar(cal, DateUtil.DATE_FORMAT_Y_M_D));
         this.indiComputService.interfaceDataGather(cal);
     }
 
-    @Test
+    /*@Test
+
     public void testReComput(){
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DATE, 20);
@@ -53,13 +57,14 @@ public class IndiComputTest extends TestCase {
         this.indiComputService.reComputIndicator(cal,indicatorTempList);
     }*/
 
-    /*@Test
+    @Test
     public void testCalculateDataGather () {
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.DATE, 16);
+        cal.set(Calendar.DATE, 31);
+        cal.add(Calendar.MONTH, -1);
         System.out.println("uuuuuuuuuuuuu" + DateUtil.formatCalendar(cal, DateUtil.DATE_FORMAT_Y_M_D));
         this.indiComputService.calculateDataGater(cal);
-    }*/
+    }
 
     /*@Test
     public void batchSave(){

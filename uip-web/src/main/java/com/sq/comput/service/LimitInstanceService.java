@@ -5,6 +5,7 @@ import com.sq.comput.domain.IndicatorConsts;
 import com.sq.comput.domain.IndicatorInstance;
 import com.sq.comput.domain.LimitInstance;
 import com.sq.comput.domain.LimitTemplate;
+import com.sq.comput.repository.IndicatorInstanceRepository;
 import com.sq.comput.repository.LimitInstanceRepository;
 import com.sq.comput.repository.LimitTempRepository;
 import com.sq.entity.search.MatchType;
@@ -12,11 +13,13 @@ import com.sq.entity.search.Searchable;
 import com.sq.inject.annotation.BaseComponent;
 import com.sq.service.BaseService;
 import com.sq.util.DateUtil;
+import net.sourceforge.jeval.EvaluationConstants;
 import net.sourceforge.jeval.EvaluationException;
 import net.sourceforge.jeval.Evaluator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,6 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * |_)._ _
  * | o| (_
  */
+@Service
 public class LimitInstanceService extends BaseService<LimitInstance,Integer> {
 
     private static Logger log = LoggerFactory.getLogger(LimitInstanceService.class);
@@ -42,7 +46,14 @@ public class LimitInstanceService extends BaseService<LimitInstance,Integer> {
     private LimitInstanceRepository limitInstanceRepository;
 
     @Autowired
+    private LimitInstanceService limitInstanceService;
+
+    @Autowired
     private LimitTempRepository limitTempRepository;
+
+    @Autowired
+    private IndicatorInstanceRepository indicatorInstanceRepository;
+
 
     /**
      * 计算指标限值，并生成记录
@@ -55,12 +66,16 @@ public class LimitInstanceService extends BaseService<LimitInstance,Integer> {
             indicatorInstanceMap.put(indicatorInstance.getIndicatorCode(),indicatorInstance);
             indicatorTempIdList.add(indicatorInstance.getIndicatorTempId());
         }
+        if (indicatorTempIdList.isEmpty()) {
+            return;
+        }
         Searchable searchable = Searchable.newSearchable()
                 .addSearchFilter("indicatorTemp.id", MatchType.IN, indicatorTempIdList);
         List<LimitTemplate> limitTemplateList = limitTempRepository.findAll(searchable).getContent();
 
         List<LimitInstance> limitInstanceList = new ArrayList<LimitInstance>();
         for (LimitTemplate limitTemplate:limitTemplateList) {
+            if (null != generateCalculateSingleLimitRecord(limitTemplate,indicatorInstanceMap))
             limitInstanceList.add(generateCalculateSingleLimitRecord(limitTemplate,indicatorInstanceMap));
         }
 
@@ -83,6 +98,7 @@ public class LimitInstanceService extends BaseService<LimitInstance,Integer> {
                 limitValue = limitExpression;
                 break;
             case IndicatorConsts.EXPRESSION_DYNAMIC:
+                if (null == execLimitCal(limitExpression,indicatorInstanceMap)) return null;
                 limitValue = execLimitCal(limitExpression,indicatorInstanceMap).toString();
                 break;
         }
@@ -90,8 +106,12 @@ public class LimitInstanceService extends BaseService<LimitInstance,Integer> {
         limitInstance.setCreateTime(Calendar.getInstance());
 
         IndicatorInstance indicatorInstance = indicatorInstanceMap.get(limitTemplate.getIndicatorTemp().getIndicatorCode());
-        if (null != indicatorInstance) {
-            limitInstance.setIndicatorInstance(indicatorInstance);
+        if (null == indicatorInstance) return null;
+
+        limitInstance.setIndicatorInstance(indicatorInstance);
+        if (limitTemplate.getLimitType() == IndicatorConsts.LIMIT_TYPE_UPPER) {
+            limitInstance.setTransfinite(Double.parseDouble(limitValue)>indicatorInstance.getFloatValue());
+        } else if (limitTemplate.getLimitType() == IndicatorConsts.LIMIT_TYPE_LOWER) {
             limitInstance.setTransfinite(Double.parseDouble(limitValue)<indicatorInstance.getFloatValue());
         }
 
@@ -113,7 +133,9 @@ public class LimitInstanceService extends BaseService<LimitInstance,Integer> {
             if (null == indicatorInstance & null == indicatorInstance.getFloatValue()) {
                 return null;
             }
-            dynamicExpression.replace(variable,indicatorInstance.getFloatValue().toString());
+            String replaceVariable = EvaluationConstants.OPEN_VARIABLE + variable + EvaluationConstants.CLOSED_BRACE;
+
+            dynamicExpression = dynamicExpression.replace(replaceVariable,indicatorInstance.getFloatValue().toString());
         }
 
         Double result = null;
@@ -125,4 +147,30 @@ public class LimitInstanceService extends BaseService<LimitInstance,Integer> {
         return result;
     }
 
+    /**
+     * 基于某个日期进行限值计算
+     * @param limitTemplate  限值配置模板
+     * @param computCal      计算日期
+     * @return  限值计算记录
+     */
+    public LimitInstance execLimitComput(LimitTemplate limitTemplate, Calendar computCal) {
+        LimitInstance limitInstance = new LimitInstance(limitTemplate);
+        String dynamicExpression = limitInstance.getExpression();
+        Evaluator evaluator = ComputHelper.getEvaluatorInstance();
+        List<String> variableList = ComputHelper.getVariableList(dynamicExpression,evaluator);
+        for (String variable:variableList) {
+            Searchable searchable = Searchable.newSearchable()
+                    .addSearchFilter("indicatorCode", MatchType.EQ, variable)
+                    .addSearchFilter("instanceTime", MatchType.EQ, computCal);
+            List<IndicatorInstance> indicatorInstanceList = indicatorInstanceRepository.findAll(searchable).getContent();
+
+            Map<String,IndicatorInstance> indicatorInstanceMap = new HashMap<String,IndicatorInstance>();
+            for (IndicatorInstance indicatorInstance:indicatorInstanceList) {
+                indicatorInstanceMap.put(indicatorInstance.getIndicatorCode(),indicatorInstance);
+                limitInstance = limitInstanceService.generateCalculateSingleLimitRecord(limitTemplate, indicatorInstanceMap);
+            }
+        }
+        limitInstanceService.saveAndFlush(limitInstance);
+        return limitInstance;
+    }
 }

@@ -101,6 +101,7 @@
                 <entry key="net.sf.ehcache.configurationResourceName" value="${net.sf.ehcache.configurationResourceName}"/>
                 <entry key="hibernate.cache.use_structured_entries" value="${hibernate.cache.use_structured_entries}"/>
                 <entry key="hibernate.connection.autocommit" value="true"/>
+                <entry key="hibernate.current_session_context_class" value="thread"/>
             </map>
         </property>
     </bean>

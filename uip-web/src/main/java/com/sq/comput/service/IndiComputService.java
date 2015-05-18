@@ -199,7 +199,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
         Future<IndicatorInstance> future = _instance.submit(indiComputThread);
         IndicatorInstance indicatorInstance = null;
         try {
-            while (future.isDone()) {
+            while (!future.isDone()) {
                 indicatorInstance = future.get();
             }
         } catch (Exception e) {
@@ -236,6 +236,13 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
                         case IndicatorConsts.CALTYPE_ORIGINAL:
                             sendCalculateComm(indicatorTemp, reComputCal, new PrimaryStrategy());
                             break;
+                    }
+
+                    LimitComputTask limitComputTask = new LimitComputTask(indicatorTemp,reComputCal);
+                    try {
+                        limitComputTask.call();
+                    } catch (Exception e) {
+                        log.error("limitComputTask call()执行出现异常->" + indicatorTemp.getIndicatorCode(),e);
                     }
                 }
             }

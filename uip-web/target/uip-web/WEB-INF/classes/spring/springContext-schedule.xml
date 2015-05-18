@@ -10,6 +10,8 @@
             <list>
                <!-- <ref bean="opcSyncDataJobTrigger" />
                 <ref bean="dcsDataMigrationJobTrigger" />-->
+                <ref bean="execLoadometerOrignalDataGatheringTrigger" />
+                <ref bean="execLoadometerIndicatorDataTrigger" />
             </list>
         </property>
     </bean>
@@ -51,6 +53,44 @@
         </property>
         <property name="cronExpression">
             <value>0 5 0 * * ?</value>
+        </property>
+    </bean>
+
+    <!-- 地磅数据汇集 -->
+    <bean id="execLoadometerOrignalDataGatheringJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <!-- 调用的类 -->
+        <property name="targetObject" ref="schedulerExecuteService"/>
+        <!-- 调用类中的方法 -->
+        <property name="targetMethod" value="execLoadometerOrignalDataGathering" />
+        <!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <bean id="execLoadometerOrignalDataGatheringTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="execLoadometerOrignalDataGatheringJob"/>
+        </property>
+        <property name="cronExpression">
+            <value>0 5 0 * * ?</value>
+        </property>
+    </bean>
+
+    <!-- 地磅指标数据计算 -->
+    <bean id="execLoadometerIndicatorDataJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <!-- 调用的类 -->
+        <property name="targetObject" ref="schedulerExecuteService"/>
+        <!-- 调用类中的方法 -->
+        <property name="targetMethod" value="execLoadometerOrignalDataGathering" />
+        <!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <bean id="execLoadometerIndicatorDataTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="execLoadometerIndicatorDataJob"/>
+        </property>
+        <property name="cronExpression">
+            <value>0 10 0 * * ?</value>
         </property>
     </bean>
 </beans>

@@ -51,11 +51,13 @@ public class InterfaceStrategy extends IComputStrategy {
         Evaluator evaluator = ComputHelper.getEvaluatorInstance();
         String calculateExp = indicatorTemp.getCalculateExpression();
         List<String> variableList = ComputHelper.getVariableList(calculateExp,evaluator);
-        Assert.notEmpty(variableList, "表达式：" + calculateExp + " 没有动态参数!");
+        if (variableList.isEmpty()) {
+            log.error("指标：" + indicatorTemp.getIndicatorCode() + "-的表达式没有动态参数!");
+            return null;
+        }
         String checkPoint = variableList.get(0);
 
         Calendar[] computDate = DateUtil.getDayFirstAndLastCal(computCal);
-        System.out.println(DateUtil.formatCalendar(computDate[0], DateUtil.DATE_FORMAT_YMDHMS) + "---------" + DateUtil.formatCalendar(computDate[1], DateUtil.DATE_FORMAT_YMDHMS));
 
         Searchable searchable = Searchable.newSearchable()
                 .addSearchFilter("itemCode", MatchType.LIKE, "%" + checkPoint)
@@ -63,11 +65,10 @@ public class InterfaceStrategy extends IComputStrategy {
                 .addSearchFilter("instanceTime", MatchType.GTE, computDate[0]);
         List<OriginalData> originalDataList = originalDataRepository.findAll(searchable).getContent();
 
-        System.out.println("&&&&&&&&&&&&&&&&&&&-->" + originalDataList.size());
         StringBuilder variableBuilder = new StringBuilder();
         if (originalDataList.isEmpty()) {
-            log.error("测点：" + checkPoint + " 没有数据!");
-            return "";
+            log.error("指标" + indicatorTemp.getIndicatorCode() + "关联测点->" + checkPoint + " 没有数据!");
+            return null;
         }
         for (OriginalData originalData : originalDataList) {
             String itemValue = originalData.getItemValue();

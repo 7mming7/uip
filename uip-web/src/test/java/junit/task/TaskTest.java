@@ -41,8 +41,8 @@ public class TaskTest extends TestCase{
         schedulerExecuteService.execDcsDataMigration();
     }*/
 
-    @Test
+    /*@Test
     public void testExecLoadometerData(){
-        schedulerExecuteService.execLoadometerData();
-    }
+        schedulerExecuteService.execDcsDataMigration();
+    }*/
 }
