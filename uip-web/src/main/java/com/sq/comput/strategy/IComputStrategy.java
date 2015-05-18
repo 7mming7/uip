@@ -41,16 +41,16 @@ public abstract class IComputStrategy {
                 dayArray = DateUtil.getDayFirstAndLastInt(computCal);
                 break;
             case IndicatorConsts.FETCH_CYCLE_WEEK:
-                dayArray = DateUtil.getWeekFirstAndLastInt(computCal);
+                dayArray = DateUtil.getWeekFirstAndInputInt(computCal);
                 break;
             case IndicatorConsts.FETCH_CYCLE_Month:
-                dayArray = DateUtil.getMonthFirstAndLastInt(computCal);
+                dayArray = DateUtil.getMonthFirstAndInputInt(computCal);
                 break;
             case IndicatorConsts.FETCH_CYCLE_Quarter:
-                dayArray = DateUtil.getQuarterFirstAndLastInt(computCal);
+                dayArray = DateUtil.getQuarterFirstAndInputInt(computCal);
                 break;
             case IndicatorConsts.FETCH_CYCLE_Year:
-                dayArray = DateUtil.getYearFirstAndLastInt(computCal);
+                dayArray = DateUtil.getYearFirstAndInputInt(computCal);
                 break;
         }
         searchable.addSearchFilter("statDateNum", MatchType.GTE, dayArray[0]);

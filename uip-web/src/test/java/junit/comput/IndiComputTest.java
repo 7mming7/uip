@@ -60,8 +60,8 @@ public class IndiComputTest extends TestCase {
     @Test
     public void testCalculateDataGather () {
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.DATE, 31);
-        cal.add(Calendar.MONTH, -1);
+        cal.set(Calendar.DATE, 1);
+        cal.add(Calendar.MONTH, 1);
         System.out.println("uuuuuuuuuuuuu" + DateUtil.formatCalendar(cal, DateUtil.DATE_FORMAT_Y_M_D));
         this.indiComputService.calculateDataGater(cal);
     }

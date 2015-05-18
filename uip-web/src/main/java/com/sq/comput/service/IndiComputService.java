@@ -1,10 +1,11 @@
 package com.sq.comput.service;
 
 import com.sq.comput.component.ComputHelper;
-import com.sq.comput.domain.*;
+import com.sq.comput.domain.IndicatorConsts;
+import com.sq.comput.domain.IndicatorInstance;
+import com.sq.comput.domain.IndicatorTemp;
 import com.sq.comput.repository.IndicatorInstanceRepository;
 import com.sq.comput.repository.IndicatorTempRepository;
-import com.sq.comput.repository.LimitTempRepository;
 import com.sq.comput.strategy.*;
 import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
@@ -13,17 +14,18 @@ import com.sq.entity.search.condition.OrCondition;
 import com.sq.inject.annotation.BaseComponent;
 import com.sq.service.BaseService;
 import com.sq.util.DateUtil;
-import net.sourceforge.jeval.EvaluationException;
 import net.sourceforge.jeval.Evaluator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * 指标计算业务类.
@@ -51,9 +53,6 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
 
     @Autowired
     private LimitInstanceService limitInstanceService;
-
-    @Autowired
-    private LimitTempRepository limitTempRepository;
 
     private static LinkedBlockingQueue<IndicatorTemp> indicatorSyncQueue = new LinkedBlockingQueue<IndicatorTemp>();
 

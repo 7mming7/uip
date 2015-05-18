@@ -46,9 +46,6 @@ public class LimitInstanceService extends BaseService<LimitInstance,Integer> {
     private LimitInstanceRepository limitInstanceRepository;
 
     @Autowired
-    private LimitInstanceService limitInstanceService;
-
-    @Autowired
     private LimitTempRepository limitTempRepository;
 
     @Autowired
@@ -167,10 +164,10 @@ public class LimitInstanceService extends BaseService<LimitInstance,Integer> {
             Map<String,IndicatorInstance> indicatorInstanceMap = new HashMap<String,IndicatorInstance>();
             for (IndicatorInstance indicatorInstance:indicatorInstanceList) {
                 indicatorInstanceMap.put(indicatorInstance.getIndicatorCode(),indicatorInstance);
-                limitInstance = limitInstanceService.generateCalculateSingleLimitRecord(limitTemplate, indicatorInstanceMap);
+                limitInstance = generateCalculateSingleLimitRecord(limitTemplate, indicatorInstanceMap);
             }
         }
-        limitInstanceService.saveAndFlush(limitInstance);
+        limitInstanceRepository.saveAndFlush(limitInstance);
         return limitInstance;
     }
 }
