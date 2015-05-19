@@ -40,13 +40,9 @@ public class SumFunction implements Function {
         ArrayList<Double> numbers = FunctionHelper.getDoubles(arguments,
                 EvaluationConstants.FUNCTION_ARGUMENT_SEPARATOR);
 
-        if (numbers.size() < 2) {
-            result = numbers.get(0);
-        }
-
         try {
             for (double num : numbers) {
-                result = result + num;
+                result += num;
             }
         } catch (Exception e) {
             throw new FunctionException("参数列表格式或数量出错!", e);

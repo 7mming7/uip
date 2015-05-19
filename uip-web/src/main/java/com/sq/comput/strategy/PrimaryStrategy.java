@@ -49,7 +49,6 @@ public class PrimaryStrategy extends IComputStrategy {
                 .addSearchFilter("valueType", MatchType.EQ, IndicatorConsts.VALUE_TYPE_DOUBLE);
         int fetchCycle = indicatorTemp.getFetchCycle();
         searchable = fillSearchConditionByFetchType(searchable,fetchCycle,computCal);
-
         for (String variable : variableList) {
             searchable.addSearchFilter("indicatorCode", MatchType.EQ, variable);
             List<IndicatorInstance> indicatorInstances = indicatorInstanceRepository.findAll(searchable).getContent();
@@ -59,11 +58,7 @@ public class PrimaryStrategy extends IComputStrategy {
                 return null;
             }
 
-            if (indicatorInstances.size() == 1) {
-                evaluator.putVariable(variable, indicatorInstances.get(0).getFloatValue().toString());
-            }
-
-            if (indicatorInstances.size() > 1) {
+            if (indicatorInstances.size() >= 1) {
                 StringBuilder variableBuilder = new StringBuilder();
                 for (IndicatorInstance indicatorInstance : indicatorInstances) {
                     String itemValue = indicatorInstance.getFloatValue().toString();
