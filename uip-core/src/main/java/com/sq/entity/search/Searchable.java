@@ -245,6 +245,4 @@ public abstract class Searchable {
      * @return
      */
     public abstract <T> T getValue(final String key);
-
-
 }

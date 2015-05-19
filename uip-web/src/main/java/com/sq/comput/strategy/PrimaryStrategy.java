@@ -54,7 +54,7 @@ public class PrimaryStrategy extends IComputStrategy {
             List<IndicatorInstance> indicatorInstances = indicatorInstanceRepository.findAll(searchable).getContent();
 
             if (indicatorInstances.isEmpty()) {
-                log.error("计算指标：" + indicatorTemp.getIndicatorCode() + "-》关联指标：" + variable + " 没有数据!");
+                log.error(searchable.toString() + "计算指标：" + indicatorTemp.getIndicatorCode() + "-》关联指标：" + variable + " 没有数据!");
                 return null;
             }
 
