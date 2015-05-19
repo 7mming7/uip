@@ -227,7 +227,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
             Map.Entry ent = (Map.Entry )iterator.next();
             List<IndicatorTemp> indicatorTemps = (List<IndicatorTemp>)ent.getValue();
             for (IndicatorTemp indicatorTemp:indicatorTemps){
-                for (Calendar reComputCal:calendarList){
+                    for (Calendar reComputCal:calendarList){
                     switch (indicatorTemp.getCalType()) {
                         case IndicatorConsts.CALTYPE_INVENTORY:
                             sendCalculateComm(indicatorTemp, reComputCal, new InventoryStrategy());

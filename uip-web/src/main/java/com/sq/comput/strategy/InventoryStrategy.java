@@ -49,24 +49,15 @@ public class InventoryStrategy extends IComputStrategy {
 
         Searchable searchable = Searchable.newSearchable()
                 .addSearchFilter("valueType", MatchType.EQ, IndicatorConsts.VALUE_TYPE_DOUBLE);
-        int fetchCycle = indicatorTemp.getFetchCycle();
-        fillSearchConditionByFetchType(searchable, fetchCycle, computCal);
 
         for (String variable : variableList) {
             searchable.addSearchFilter("indicatorCode", MatchType.EQ, variable);
-
-            if (variable.equals(indicatorTemp.getIndicatorCode())) {
-                searchable.addSearchFilter("statDateNum", MatchType.EQ, DateUtil.getPreDay(computCal));
-                IndicatorInstance indicatorInstance = indicatorInstanceRepository.findAll(searchable).getContent().get(0);
-                evaluator.putVariable(variable, indicatorInstance.getFloatValue().toString());
-                break;
-            }
-
+            searchable.addSearchFilter("statDateNum", MatchType.EQ, DateUtil.getCurrDay(computCal));
             List<IndicatorInstance> indicatorInstances = indicatorInstanceRepository.findAll(searchable).getContent();
 
             if (indicatorInstances.isEmpty()) {
-                log.error("关联指标：" + variable + " 没有数据!");
-                return "";
+                log.error("关联指标：" + variable + " 没有数据!默认为0.");
+                evaluator.putVariable(variable, "0");
             }
 
             if (indicatorInstances.size() == 1) {
@@ -85,11 +76,18 @@ public class InventoryStrategy extends IComputStrategy {
                 calculateExp = calculateExp.replace(replaceVariable, variableBuilder.toString());
             }
             searchable.removeSearchFilter("indicatorCode", MatchType.EQ);
+            searchable.removeSearchFilter("statDateNum", MatchType.EQ);
         }
 
         Double result = null;
         try {
             result = Double.valueOf(evaluator.evaluate(calculateExp));
+            searchable.addSearchFilter("indicatorCode", MatchType.EQ, indicatorTemp.getIndicatorCode());
+            searchable.addSearchFilter("statDateNum", MatchType.EQ, DateUtil.getPreDay(computCal));
+            if (!indicatorInstanceRepository.findAll(searchable).getContent().isEmpty()
+                    && indicatorInstanceRepository.findAll(searchable).getContent().get(0).getValueType() == IndicatorConsts.VALUE_TYPE_DOUBLE) {
+                result = result + indicatorInstanceRepository.findAll(searchable).getContent().get(0).getFloatValue();
+            }
         } catch (EvaluationException e) {
             e.printStackTrace();
         }
