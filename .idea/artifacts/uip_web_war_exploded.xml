@@ -112,6 +112,7 @@
           <element id="library" level="project" name="Maven: org.openscada.opc:utgard-dcom:1.2" />
           <element id="library" level="project" name="Maven: com.hikvision:jna:4.1" />
           <element id="library" level="project" name="Maven: com.hikvision:hik:1.0" />
+          <element id="library" level="project" name="Maven: com.microsoft.sqlserver.jdbc:sqljdbc:4.0" />
         </element>
       </element>
       <element id="directory" name="META-INF">

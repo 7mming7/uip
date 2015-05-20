@@ -1,19 +1,14 @@
 package junit.comput;
 
-import com.sq.comput.domain.IndicatorInstance;
-import com.sq.comput.domain.IndicatorTemp;
 import com.sq.comput.service.IndiComputService;
 import com.sq.comput.service.IndicatorTempService;
-import com.sq.entity.search.MatchType;
-import com.sq.entity.search.Searchable;
+import com.sq.protocol.socket.SocketServer;
 import com.sq.util.DateUtil;
 import junit.base.TestCase;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -34,6 +29,9 @@ public class IndiComputTest extends TestCase {
 
     @Autowired
     private IndicatorTempService indicatorTempService;
+
+    @Autowired
+    private SocketServer socketServerComp;
 
     @Test
     public void testInterfaceDataGather () {
@@ -86,4 +84,11 @@ public class IndiComputTest extends TestCase {
             this.indiComputService.save(indicatorInstance);
         }
     }*/
+
+    @Test
+    public void testSocketService() {
+        SocketServer socketServerComp1 = new SocketServer();
+        socketServerComp1.start();
+        System.out.println(System.currentTimeMillis());
+    }
 }
