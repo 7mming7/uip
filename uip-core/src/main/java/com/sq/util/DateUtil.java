@@ -377,6 +377,19 @@ public class DateUtil {
     }
 
     /**
+     * 根据提供的日期，获取一天的开始和输入时间
+     * @param calendar
+     * @return
+     */
+    public static int[] getDayFirstAndInputInt(Calendar calendar) {
+        Calendar[] calendarArray = getDayFirstAndLastCal(calendar);
+        int[] dayArray = new int[2];
+        dayArray[0] = Integer.parseInt(formatCalendar(calendarArray[0], DateUtil.DATE_FORMAT_DAFAULT));
+        dayArray[1] = Integer.parseInt(formatCalendar(calendarArray[1], DateUtil.DATE_FORMAT_DAFAULT));
+        return dayArray;
+    }
+
+    /**
      *  根据提供的日期，获取一周的开始和结束时间
      * @param calendar
      * @return
@@ -384,11 +397,7 @@ public class DateUtil {
     public static Calendar[] getWeekFirstAndLastCal(Calendar calendar) {
         Calendar[] calArray = new Calendar[2];
         try {
-            int weekday = calendar.get(Calendar.DAY_OF_WEEK) - 2;
-            calendar.add(Calendar.DATE, -weekday);
-            SimpleDateFormat sdf = new SimpleDateFormat(DateUtil.DATE_FORMAT_Y_M_D);
-            Date startDate = sdf.parse(stringToSdf(DateUtil.DATE_FORMAT_Y_M_D).format(calendar.getTime()) + " 00:00:00");
-            calArray[0] = dateToCalendar(startDate);
+            calArray[0] = getWeekFirstCal(calendar);
 
             int weekday1 = calendar.get(Calendar.DAY_OF_WEEK);
             calendar.add(Calendar.DATE, 8 - weekday1);
@@ -399,6 +408,25 @@ public class DateUtil {
             e.printStackTrace();
         }
         return calArray;
+    }
+
+    /**
+     * 获取周的第一天
+     * @param calendar
+     * @return
+     */
+    public static Calendar getWeekFirstCal(Calendar calendar) {
+        Calendar cal = (Calendar) calendar.clone();
+        try {
+            int weekday = calendar.get(Calendar.DAY_OF_WEEK) - 2;
+            cal.add(Calendar.DATE, -weekday);
+            SimpleDateFormat sdf = new SimpleDateFormat(DateUtil.DATE_FORMAT_Y_M_D);
+            Date startDate = sdf.parse(stringToSdf(DateUtil.DATE_FORMAT_Y_M_D).format(calendar.getTime()) + " 00:00:00");
+            cal = dateToCalendar(startDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return cal;
     }
 
     /**
@@ -414,6 +442,19 @@ public class DateUtil {
     }
 
     /**
+     * 根据提供的日期，获取一周的开始和输入的时间
+     * @param calendar
+     * @return
+     */
+    public static int[] getWeekFirstAndInputInt(Calendar calendar) {
+        Calendar[] calendarArray = getWeekFirstAndLastCal(calendar);
+        int[] dayArray = new int[2];
+        dayArray[0] = Integer.parseInt(formatCalendar(calendarArray[0], DateUtil.DATE_FORMAT_DAFAULT));
+        dayArray[1] = Integer.parseInt(formatCalendar(calendar, DateUtil.DATE_FORMAT_DAFAULT));
+        return dayArray;
+    }
+
+    /**
      * 根据提供的日期，获取一月的开始和结束时间
      * @param calendar
      * @return
@@ -422,11 +463,7 @@ public class DateUtil {
         Calendar[] calArray = new Calendar[2];
         try {
             Calendar cal = (Calendar) calendar.clone();
-            cal.set(Calendar.DATE, 1);
-            Date inputDate = cal.getTime();
-            SimpleDateFormat sdf = new SimpleDateFormat(DateUtil.DATE_FORMAT_Y_M_D);
-            Date startDate = sdf.parse(sdf.format(inputDate));
-            calArray[0] = dateToCalendar(startDate);
+            calArray[0] = getMonthFirstCal(cal);
 
             calendar.set(Calendar.DATE, 1);
             calendar.add(Calendar.MONTH, 1);
@@ -441,6 +478,25 @@ public class DateUtil {
     }
 
     /**
+     * 获取月的第一天
+     * @param calendar
+     * @return
+     */
+    public static Calendar getMonthFirstCal(Calendar calendar) {
+        Calendar cal = (Calendar) calendar.clone();
+        try {
+            cal.set(Calendar.DATE, 1);
+            Date inputDate = cal.getTime();
+            SimpleDateFormat sdf = new SimpleDateFormat(DateUtil.DATE_FORMAT_Y_M_D);
+            Date startDate = sdf.parse(sdf.format(inputDate));
+            cal = dateToCalendar(startDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return cal;
+    }
+
+    /**
      * 根据提供的日期，获取一月的开始和结束时间
      * @return
      */
@@ -449,6 +505,20 @@ public class DateUtil {
         int[] dayArray = new int[2];
         dayArray[0] = Integer.parseInt(formatCalendar(calendarArray[0], DateUtil.DATE_FORMAT_DAFAULT));
         dayArray[1] = Integer.parseInt(formatCalendar(calendarArray[1], DateUtil.DATE_FORMAT_DAFAULT));
+        return dayArray;
+    }
+
+    /**
+     * 月的开始时间和输入时间
+     * @param calendar
+     * @return
+     */
+    public static int[] getMonthFirstAndInputInt(Calendar calendar) {
+        Calendar cal = (Calendar) calendar.clone();
+        Calendar[] calendarArray = getMonthFirstAndLastCal(cal);
+        int[] dayArray = new int[2];
+        dayArray[0] = Integer.parseInt(formatCalendar(calendarArray[0], DateUtil.DATE_FORMAT_DAFAULT));
+        dayArray[1] = Integer.parseInt(formatCalendar(calendar, DateUtil.DATE_FORMAT_DAFAULT));
         return dayArray;
     }
 
@@ -477,6 +547,19 @@ public class DateUtil {
         int[] dayArray = new int[2];
         dayArray[0] = Integer.parseInt(formatCalendar(calendarArray[0], DateUtil.DATE_FORMAT_DAFAULT));
         dayArray[1] = Integer.parseInt(formatCalendar(calendarArray[1], DateUtil.DATE_FORMAT_DAFAULT));
+        return dayArray;
+    }
+
+    /**
+     * 根据提供的日期，获取一季度的开始和输入时间
+     * @param calendar
+     * @return
+     */
+    public static int[] getQuarterFirstAndInputInt(Calendar calendar) {
+        Calendar[] calendarArray = getQuarterFirstAndLastCal(calendar);
+        int[] dayArray = new int[2];
+        dayArray[0] = Integer.parseInt(formatCalendar(calendarArray[0], DateUtil.DATE_FORMAT_DAFAULT));
+        dayArray[1] = Integer.parseInt(formatCalendar(calendar, DateUtil.DATE_FORMAT_DAFAULT));
         return dayArray;
     }
 
@@ -568,6 +651,19 @@ public class DateUtil {
     }
 
     /**
+     * 根据提供的日期，获取一年的开始和输入时间
+     * @param calendar
+     * @return
+     */
+    public static int[] getYearFirstAndInputInt(Calendar calendar) {
+        Calendar[] calendarArray = getYearFirstAndLastCal(calendar);
+        int[] dayArray = new int[2];
+        dayArray[0] = Integer.parseInt(formatCalendar(calendarArray[0], DateUtil.DATE_FORMAT_DAFAULT));
+        dayArray[1] = Integer.parseInt(formatCalendar(calendar, DateUtil.DATE_FORMAT_DAFAULT));
+        return dayArray;
+    }
+
+    /**
      * 根据提供的日期，获取一年的开始时间
      * @param calendar
      * @return
@@ -617,12 +713,23 @@ public class DateUtil {
         return Integer.parseInt(formatCalendar(calendar));
     }
 
+    /**
+     * 获取当天
+     * @param calendar
+     * @return
+     */
+    public static int getCurrDay(Calendar calendar) {
+        int day = calendar.get(Calendar.DATE);
+        return Integer.parseInt(formatCalendar(calendar));
+    }
+
     public static void main(String[] args) {
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.DAY_OF_MONTH, 27);
-        List<Calendar> calendarList = DateUtil.dayListSinceCal(cal, Calendar.getInstance());
-        for (Calendar calendar : calendarList) {
-            System.out.println(formatCalendar(calendar,DateUtil.DATE_FORMAT_YMDHMS));
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        cal.add(Calendar.MONTH, -4);
+        int[] calendarList = DateUtil.getMonthFirstAndInputInt(cal);
+        for (Integer it : calendarList) {
+            System.out.println(it);
         }
     }
 }
