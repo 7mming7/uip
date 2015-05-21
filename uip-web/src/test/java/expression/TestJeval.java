@@ -26,6 +26,8 @@ public class TestJeval {
             eva.putVariable("a","23");
             eva.putVariable("b","5");
             System.out.println(eva.evaluate("sum(10.0,sum(#{a},2,sum(#{b},3)))"));
+            System.out.println(eva.evaluate("div(mul(#{a},#{b}),100)"));
+
         } catch (EvaluationException e) {
             e.printStackTrace();
         }

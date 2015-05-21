@@ -7,6 +7,7 @@ import com.sq.comput.domain.IndicatorTemp;
 import com.sq.comput.repository.IndicatorInstanceRepository;
 import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
+import com.sq.util.DateUtil;
 import com.sq.util.SpringUtils;
 import net.sourceforge.jeval.EvaluationConstants;
 import net.sourceforge.jeval.EvaluationException;
@@ -76,7 +77,9 @@ public class PrimaryStrategy extends IComputStrategy {
         try {
             result = Double.valueOf(evaluator.evaluate(calculateExp));
         } catch (EvaluationException e) {
-            log.error("indicatorTemp->" + indicatorTemp.getIndicatorName() + ",计算结果cast to double error. calculateExp->" + calculateExp, e);
+            log.error("indicatorTemp->" + indicatorTemp.getIndicatorName()
+                    + "，computCal->" + DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULT)
+                    + ",计算结果cast to double error. calculateExp->" + calculateExp, e);
         }
         return result;
     }
