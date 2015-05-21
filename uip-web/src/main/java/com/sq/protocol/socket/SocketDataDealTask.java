@@ -1,6 +1,5 @@
 package com.sq.protocol.socket;
 
-import com.sq.comput.service.IndiComputService;
 import com.sq.protocol.opc.domain.OriginalData;
 import com.sq.protocol.opc.repository.OriginalDataRepository;
 import com.sq.protocol.ws.component.WsProtocalParser;

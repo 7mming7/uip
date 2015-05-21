@@ -21,7 +21,11 @@ public class TestJeval {
         Evaluator eva = ComputHelper.getEvaluatorInstance();
 
         try {
-            System.out.println(eva.evaluate("sum(10.0)"));
+            System.out.println(eva.evaluate("sum(10.0,sum(1,2,sum(2,3)))"));
+
+            eva.putVariable("a","23");
+            eva.putVariable("b","5");
+            System.out.println(eva.evaluate("sum(10.0,sum(#{a},2,sum(#{b},3)))"));
         } catch (EvaluationException e) {
             e.printStackTrace();
         }
