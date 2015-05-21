@@ -1,10 +1,7 @@
 package com.sq.comput.component;
 
 import com.sq.comput.domain.IndicatorInstance;
-import com.sq.comput.function.AvgFunction;
-import com.sq.comput.function.MaxAllFunction;
-import com.sq.comput.function.SubFunction;
-import com.sq.comput.function.SumFunction;
+import com.sq.comput.function.*;
 import net.sourceforge.jeval.EvaluationConstants;
 import net.sourceforge.jeval.EvaluationHelper;
 import net.sourceforge.jeval.Evaluator;
@@ -98,6 +95,8 @@ public class ComputHelper {
         evaluator.putFunction(new MaxAllFunction());
         evaluator.putFunction(new SubFunction());
         evaluator.putFunction(new SumFunction());
+        evaluator.putFunction(new MultiplyFunction());
+        evaluator.putFunction(new DivideFunction());
     }
 
     /**
