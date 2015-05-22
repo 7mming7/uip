@@ -57,10 +57,9 @@ public class IndicatorTemp extends IndicatorBase {
     @NotFound(action= NotFoundAction.IGNORE)
     private IndicatorCategory indicatorCategory;
 
-    @OneToOne
-    @JoinColumn(name="parentIndiTempId")
-    @ForeignKey(name="fk_it_parentIndiTempId")
-    private IndicatorTemp parentIndiTemp;
+    private Long enterpriseId;
+
+    private Long equipmentId;
 
     public Long getId() {
         return id;
@@ -108,5 +107,21 @@ public class IndicatorTemp extends IndicatorBase {
 
     public void setCreateTime(Calendar createTime) {
         this.createTime = createTime;
+    }
+
+    public Long getEnterpriseId() {
+        return enterpriseId;
+    }
+
+    public void setEnterpriseId(Long enterpriseId) {
+        this.enterpriseId = enterpriseId;
+    }
+
+    public Long getEquipmentId() {
+        return equipmentId;
+    }
+
+    public void setEquipmentId(Long equipmentId) {
+        this.equipmentId = equipmentId;
     }
 }
