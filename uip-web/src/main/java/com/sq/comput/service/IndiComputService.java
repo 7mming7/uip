@@ -227,7 +227,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
             Map.Entry ent = (Map.Entry )iterator.next();
             List<IndicatorTemp> indicatorTemps = (List<IndicatorTemp>)ent.getValue();
             for (IndicatorTemp indicatorTemp:indicatorTemps){
-                    for (Calendar reComputCal:calendarList){
+                for (Calendar reComputCal:calendarList){
                     switch (indicatorTemp.getCalType()) {
                         case IndicatorConsts.CALTYPE_INVENTORY:
                             sendCalculateComm(indicatorTemp, reComputCal, new InventoryStrategy());
@@ -236,7 +236,8 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
                             sendCalculateComm(indicatorTemp, reComputCal, new PrimaryStrategy());
                             break;
                     }
-
+                    log.error("**indicatorCode->" + indicatorTemp.getIndicatorCode() + ",reComputCal-》"
+                            + DateUtil.formatCalendar(reComputCal,DateUtil.DATE_FORMAT_DAFAULT));
                     LimitComputTask limitComputTask = new LimitComputTask(indicatorTemp,reComputCal);
                     try {
                         limitComputTask.call();
@@ -277,20 +278,22 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
      * @return
      */
     public TreeMap<Integer,List<IndicatorTemp>> buildIndiSortTreeMap (TreeMap<Integer,List<IndicatorTemp>> integerListTreeMap, List<IndicatorTemp> indicatorTempList, Integer level) {
-        if (indicatorTempList.isEmpty())
-            return integerListTreeMap;
-
         Searchable searchable = Searchable.newSearchable()
                 .addSearchFilter("dataSource", MatchType.NE, IndicatorConsts.DATASOURCE_INTERFACE);
-        level = level + 1;
+
         OrCondition orCondition = new OrCondition();
         for (IndicatorTemp indicatorTemp : indicatorTempList) {
             orCondition.add(Condition.newCondition("calculateExpression", MatchType.LIKE, "%" + indicatorTemp.getIndicatorCode() + "%"));
         }
         searchable.or(orCondition);
         List<IndicatorTemp> indicatorTemps = indicatorTempRepository.findAll(searchable).getContent();
-        integerListTreeMap.put(level, indicatorTemps);
 
+        if (indicatorTemps.isEmpty()) {
+            return integerListTreeMap;
+        }
+
+        integerListTreeMap.put(level, indicatorTemps);
+        level = level + 1;
         return buildIndiSortTreeMap(integerListTreeMap, indicatorTemps, level);
     }
 

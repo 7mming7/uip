@@ -41,7 +41,7 @@ public class MultiplyFunction implements Function {
             double argumentOne = ((Double) numbers.get(0)).doubleValue();
             double argumentTwo = ((Double) numbers.get(numbers.size()-1)).doubleValue();
             BigDecimal bigDecimal = new BigDecimal(argumentTwo*argumentOne);
-            result = bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+            result = bigDecimal.setScale(10, BigDecimal.ROUND_HALF_UP).doubleValue();
         } catch (Exception e) {
             throw new FunctionException("参数列表格式或数量出错!", e);
         }

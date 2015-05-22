@@ -1,5 +1,6 @@
 package junit.comput;
 
+import com.sq.comput.domain.IndicatorTemp;
 import com.sq.comput.service.IndiComputService;
 import com.sq.comput.service.IndicatorTempService;
 import com.sq.protocol.socket.SocketServer;
@@ -8,7 +9,10 @@ import junit.base.TestCase;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.TreeMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -90,5 +94,14 @@ public class IndiComputTest extends TestCase {
         SocketServer socketServerComp1 = new SocketServer();
         socketServerComp1.start();
         System.out.println(System.currentTimeMillis());
+    }
+
+    @Test
+    public void buildMap(){
+        TreeMap<Integer,List<IndicatorTemp>> integerListTreeMap = new TreeMap<>();
+        List<IndicatorTemp> indicatorTempList = new ArrayList<IndicatorTemp>();
+        indicatorTempList.add(indicatorTempService.findOne(526l));
+        integerListTreeMap = indiComputService.buildIndiSortTreeMap(integerListTreeMap,indicatorTempList,1);
+        int i = 1;
     }
 }

@@ -44,7 +44,7 @@ public class DivideFunction implements Function {
                 result = Double.valueOf(0);
             } else {
                 BigDecimal bigDecimal = new BigDecimal(argumentTwo/argumentOne);
-                result = bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                result = bigDecimal.setScale(10, BigDecimal.ROUND_HALF_UP).doubleValue();
             }
         } catch (Exception e) {
             throw new FunctionException("参数列表格式或数量出错!", e);

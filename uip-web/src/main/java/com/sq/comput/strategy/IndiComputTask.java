@@ -118,7 +118,9 @@ public class IndiComputTask implements Callable<IndicatorInstance> {
         if (null == computResult) {
             return null;
         }
-        log.error(indicatorTemp.getIndicatorCode() + "计算结果为：--" + (null != computResult ? computResult.toString() : "null"));
+        log.error(indicatorTemp.getIndicatorCode() + "，"
+                + DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULT)
+                + "计算结果为：--" + (null != computResult ? computResult.toString() : "null"));
         if (computResult instanceof String) {
             indicatorInstance.setValueType(IndicatorConsts.VALUE_TYPE_STRING);
             indicatorInstance.setStringValue(computResult.toString());
