@@ -62,6 +62,11 @@ public abstract class IndicatorBase extends AbstractEntity<Long> implements Clon
      */
     private Integer operCalType;
 
+    /**
+     * 指标维度,字典；tablename=QUOTA ;attribute=DIMENSION
+     */
+    private int dimension;
+
     public String getIndicatorCode() {
         return indicatorCode;
     }
@@ -132,5 +137,13 @@ public abstract class IndicatorBase extends AbstractEntity<Long> implements Clon
 
     public void setCalType(Integer calType) {
         this.calType = calType;
+    }
+
+    public int getDimension() {
+        return dimension;
+    }
+
+    public void setDimension(int dimension) {
+        this.dimension = dimension;
     }
 }

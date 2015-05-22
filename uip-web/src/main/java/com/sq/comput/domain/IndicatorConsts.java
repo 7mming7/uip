@@ -34,9 +34,7 @@ public interface IndicatorConsts {
      */
     public static final int CALTYPE_ORIGINAL = 1;
 
-    public static final int CALTYPE_CUMULATIVE = 2;
-
-    public static final int CALTYPE_INVENTORY = 3;
+    public static final int CALTYPE_INVENTORY = 2;
 
     /** ======================
      *    数据获取频率
@@ -81,9 +79,9 @@ public interface IndicatorConsts {
     public static final int EXPRESSION_DYNAMIC = 2;
 
     /** ======================
-     *     表达式类型
-     *        1、原生不带参数
-     *        2、动态参数计算
+     *     限值类型
+     *        1、上限
+     *        2、下限
      *
      */
     public static final int LIMIT_TYPE_UPPER = 1;
