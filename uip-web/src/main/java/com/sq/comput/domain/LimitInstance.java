@@ -35,6 +35,12 @@ public class LimitInstance extends LimitBase{
     @NotFound(action= NotFoundAction.IGNORE)
     private IndicatorInstance indicatorInstance;
 
+    @ManyToOne(cascade= CascadeType.REFRESH, fetch= FetchType.LAZY)
+    @JoinColumn(name="limitTemplateId")
+    @org.hibernate.annotations.ForeignKey(name="fk_lt_limitTemplateId")
+    @NotFound(action= NotFoundAction.IGNORE)
+    private LimitTemplate limitTemplate;
+
     /** 是否超限 */
     private boolean isTransfinite;
 
@@ -54,6 +60,7 @@ public class LimitInstance extends LimitBase{
         this.setLimitType(limitTemplate.getLimitType());
         this.setExpType(limitTemplate.getExpType());
         this.setExpression(limitTemplate.getExpression());
+        this.setLimitTemplate(limitTemplate);
     }
 
     public Double getLimitValue() {
@@ -78,5 +85,13 @@ public class LimitInstance extends LimitBase{
 
     public void setTransfinite(boolean isTransfinite) {
         this.isTransfinite = isTransfinite;
+    }
+
+    public LimitTemplate getLimitTemplate() {
+        return limitTemplate;
+    }
+
+    public void setLimitTemplate(LimitTemplate limitTemplate) {
+        this.limitTemplate = limitTemplate;
     }
 }
