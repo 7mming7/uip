@@ -82,12 +82,13 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
      * 计算指标数据计算
      * @param computCal 计算时间
      */
-    public void calculateDataGater (Calendar computCal) {
+    public void calculateDataGater (Calendar computCal, Long enterpriseId) {
         ComputHelper.threadCalculateMap = new ConcurrentHashMap<String, Integer>();
         ConcurrentHashMap<String, Integer> threadCalculateMap = ComputHelper.threadCalculateMap;
 
         Searchable searchable = Searchable.newSearchable()
-                .addSearchFilter("dataSource", MatchType.EQ, IndicatorConsts.DATASOURCE_CALCULATE);
+                .addSearchFilter("dataSource", MatchType.EQ, IndicatorConsts.DATASOURCE_CALCULATE)
+                .addSearchFilter("enterpriseId", MatchType.EQ, enterpriseId);
         Page<IndicatorTemp> indicatorTempPage = this.indicatorTempRepository.findAll(searchable);
         List<IndicatorTemp> indicatorTempList = indicatorTempPage.getContent();
         searchable.removeSearchFilter("dataSource", MatchType.EQ);

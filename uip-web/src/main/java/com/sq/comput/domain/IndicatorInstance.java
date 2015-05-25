@@ -1,5 +1,8 @@
 package com.sq.comput.domain;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 import javax.persistence.*;
 import java.util.Calendar;
 
@@ -28,7 +31,11 @@ public class IndicatorInstance extends IndicatorBase {
     /**
      * 关联的指标项
      */
-    private Long indicatorTempId;
+    @ManyToOne(cascade=CascadeType.REFRESH, fetch=FetchType.LAZY)
+    @JoinColumn(name="indicatorTempId")
+    @org.hibernate.annotations.ForeignKey(name="fk_ii_indicatorTempId")
+    @NotFound(action= NotFoundAction.IGNORE)
+    private IndicatorTemp indicatorTemp;
 
     /**
      * 指标值类型
@@ -68,7 +75,7 @@ public class IndicatorInstance extends IndicatorBase {
         this.setFetchCycle(indicatorTemplate.getFetchCycle());
         this.setIndicatorCode(indicatorTemplate.getIndicatorCode());
         this.setIndicatorName(indicatorTemplate.getIndicatorName());
-        this.indicatorTempId = indicatorTemplate.getId();
+        this.indicatorTemp = indicatorTemplate;
         this.setUnit(indicatorTemplate.getUnit());
         this.setCalType(indicatorTemplate.getCalType());
         this.setOperCalType(indicatorTemplate.getOperCalType());
@@ -82,12 +89,12 @@ public class IndicatorInstance extends IndicatorBase {
         this.id = id;
     }
 
-    public Long getIndicatorTempId() {
-        return indicatorTempId;
+    public IndicatorTemp getIndicatorTemp() {
+        return indicatorTemp;
     }
 
-    public void setIndicatorTempId(Long indicatorTempId) {
-        this.indicatorTempId = indicatorTempId;
+    public void setIndicatorTemp(IndicatorTemp indicatorTemp) {
+        this.indicatorTemp = indicatorTemp;
     }
 
     public int getValueType() {

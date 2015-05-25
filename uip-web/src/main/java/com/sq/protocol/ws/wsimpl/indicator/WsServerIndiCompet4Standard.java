@@ -66,7 +66,7 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 			String[] paramsArray = xmlStr.split(xmlStr);
             Calendar cal = DateUtil.stringToCalendar(paramsArray[0], DateUtil.DATE_FORMAT_DAFAULT);
 			Long enterpriseId = Long.parseLong(paramsArray[1]);
-            this.indicatorComputService.calculateDataGater(cal);
+            this.indicatorComputService.calculateDataGater(cal,enterpriseId);
             
             sw = wsProtocalParser.beanToXml(mrpElementResponse, StandardResponse.class);
             responseXml = sw.toString();
