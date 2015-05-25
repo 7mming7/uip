@@ -227,6 +227,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
             Map.Entry ent = (Map.Entry )iterator.next();
             List<IndicatorTemp> indicatorTemps = (List<IndicatorTemp>)ent.getValue();
             for (IndicatorTemp indicatorTemp:indicatorTemps){
+                log.error(indicatorTemp.getId() + "->" + indicatorTemp.getIndicatorCode());
                 for (Calendar reComputCal:calendarList){
                     switch (indicatorTemp.getCalType()) {
                         case IndicatorConsts.CALTYPE_INVENTORY:
@@ -283,7 +284,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
 
         OrCondition orCondition = new OrCondition();
         for (IndicatorTemp indicatorTemp : indicatorTempList) {
-            orCondition.add(Condition.newCondition("calculateExpression", MatchType.LIKE, "%" + indicatorTemp.getIndicatorCode() + "%"));
+            orCondition.add(Condition.newCondition("calculateExpression", MatchType.LIKE, "%#{" + indicatorTemp.getIndicatorCode() + "}%"));
         }
         searchable.or(orCondition);
         List<IndicatorTemp> indicatorTemps = indicatorTempRepository.findAll(searchable).getContent();

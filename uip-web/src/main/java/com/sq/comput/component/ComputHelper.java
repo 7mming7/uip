@@ -97,6 +97,7 @@ public class ComputHelper {
         evaluator.putFunction(new SumFunction());
         evaluator.putFunction(new MultiplyFunction());
         evaluator.putFunction(new DivideFunction());
+        evaluator.putFunction(new PstFunction());
     }
 
     /**
