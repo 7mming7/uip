@@ -280,7 +280,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
      */
     public TreeMap<Integer,List<IndicatorTemp>> buildIndiSortTreeMap (TreeMap<Integer,List<IndicatorTemp>> integerListTreeMap, List<IndicatorTemp> indicatorTempList, Integer level) {
         Searchable searchable = Searchable.newSearchable()
-                .addSearchFilter("dataSource", MatchType.NE, IndicatorConsts.DATASOURCE_INTERFACE);
+                .addSearchFilter("dataSource", MatchType.EQ, IndicatorConsts.DATASOURCE_CALCULATE);
 
         OrCondition orCondition = new OrCondition();
         for (IndicatorTemp indicatorTemp : indicatorTempList) {
