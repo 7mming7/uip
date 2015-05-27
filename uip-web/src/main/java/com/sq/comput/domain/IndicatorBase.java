@@ -50,9 +50,6 @@ public abstract class IndicatorBase extends AbstractEntity<Long> implements Clon
      */
     private int unit;
 
-    /** 小数点位数 */
-    private int decimalNum;
-
     /** 获取频率    */
     private int fetchCycle;
 
@@ -105,14 +102,6 @@ public abstract class IndicatorBase extends AbstractEntity<Long> implements Clon
 
     public void setUnit(int unit) {
         this.unit = unit;
-    }
-
-    public int getDecimalNum() {
-        return decimalNum;
-    }
-
-    public void setDecimalNum(int decimalNum) {
-        this.decimalNum = decimalNum;
     }
 
     public int getFetchCycle() {

@@ -19,7 +19,7 @@ import java.util.Calendar;
  * | o| (_
  */
 @Entity
-@Table(name="t_IndicatorInstanceCurrent")
+@Table(name="t_IndicatorInstance")
 public class IndicatorInstance extends IndicatorBase {
 
     private static final long serialVersionUID = -6188768929459925207L;
@@ -70,7 +70,6 @@ public class IndicatorInstance extends IndicatorBase {
         this.categoryId = indicatorTemplate.getIndicatorCategory() != null ? indicatorTemplate
                 .getIndicatorCategory().getId() : null;
         this.setDataSource(indicatorTemplate.getDataSource());
-        this.setDecimalNum(indicatorTemplate.getDecimalNum());
         this.setDescription(indicatorTemplate.getDescription());
         this.setFetchCycle(indicatorTemplate.getFetchCycle());
         this.setIndicatorCode(indicatorTemplate.getIndicatorCode());

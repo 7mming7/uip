@@ -92,6 +92,9 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
         Page<IndicatorTemp> indicatorTempPage = this.indicatorTempRepository.findAll(searchable);
         List<IndicatorTemp> indicatorTempList = indicatorTempPage.getContent();
         searchable.removeSearchFilter("dataSource", MatchType.EQ);
+        searchable.removeSearchFilter("enterpriseId", MatchType.EQ);
+
+        searchable.addSearchFilter("indicatorTemp.enterpriseId",MatchType.EQ,enterpriseId);
 
         int computInt = Integer.parseInt(DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_DAFAULT));
         searchable.addSearchFilter("statDateNum", MatchType.EQ, computInt);
