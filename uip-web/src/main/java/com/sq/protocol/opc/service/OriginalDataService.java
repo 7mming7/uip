@@ -42,4 +42,12 @@ public class OriginalDataService extends BaseService<OriginalData, Long> {
     public void opcDataMigration(String calculateDay) {
         originalDataRepository.dcsDataMigration(calculateDay);
     }
+
+    /**
+     * 大屏数据更新
+     */
+    @Transactional(propagation= Propagation.REQUIRED)
+    public void njmbDataSync() {
+        originalDataRepository.njmbDataSync();
+    }
 }

@@ -32,11 +32,6 @@ public class TaskTest extends TestCase{
     }
 
     @Test
-    public void testProcedure () {
-        originalDataRepository.dcsDataMigration("20150410");
-    }
-
-    @Test
     public void testDataMigration () {
         schedulerExecuteService.execDcsDataMigration();
     }*/
@@ -45,4 +40,9 @@ public class TaskTest extends TestCase{
     public void testExecLoadometerData(){
         schedulerExecuteService.execDcsDataMigration();
     }*/
+
+    @Test
+    public void testProcedure () {
+        originalDataRepository.njmbDataSync();
+    }
 }

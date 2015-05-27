@@ -1,18 +1,13 @@
 package com.sq.protocol.opc.repository;
 
 import com.sq.protocol.opc.domain.OriginalData;
-import com.sq.repository.support.SimpleBaseRepository;
-import org.hibernate.Session;
-import org.hibernate.jdbc.Work;
-import org.springframework.context.annotation.Scope;
-import org.springframework.data.jpa.repository.support.JpaEntityInformation;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.*;
-import java.sql.Connection;
-import java.sql.SQLException;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
+import javax.persistence.Query;
 import java.util.List;
 
 /**
@@ -38,7 +33,19 @@ public class OriginalDataRepositoryImpl{
     @Transactional(propagation = Propagation.REQUIRED)
     public void dcsDataMigration(final String calculateDay) {
         EntityManager em = this.emf.createEntityManager();
+        em.getTransaction().begin();
         em.createNativeQuery("call data_migration_indicator(" + calculateDay + ") ").executeUpdate();
+        em.getTransaction().commit();
+        em.close();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void njmbDataSync() {
+        EntityManager em = this.emf.createEntityManager();
+        em.getTransaction().begin();
+        em.createNativeQuery("call njmb_every5min_flush() ").executeUpdate();
+        em.getTransaction().commit();
+        em.close();
     }
 
     @Transactional(propagation = Propagation.REQUIRED)

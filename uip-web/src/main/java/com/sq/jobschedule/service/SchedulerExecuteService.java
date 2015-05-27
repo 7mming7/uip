@@ -1,5 +1,6 @@
 package com.sq.jobschedule.service;
 
+import com.sq.comput.service.IndiComputService;
 import com.sq.inject.annotation.BaseComponent;
 import com.sq.protocol.jodbc.service.TradeService;
 import com.sq.protocol.opc.component.BaseConfiguration;
@@ -39,6 +40,9 @@ public class SchedulerExecuteService {
     @Autowired
     private TradeService tradeService;
 
+    @Autowired
+    private IndiComputService indiComputService;
+
     /**
      * opc实时数据同步任务
      */
@@ -59,6 +63,25 @@ public class SchedulerExecuteService {
         curr.add(Calendar.DAY_OF_MONTH, -1);
         originalDataService.opcDataMigration(DateUtil.formatCalendar(curr));
         log.error("----------- Opc原始数据迁移任务结束 -----------");
+    }
+
+    /**
+     * 接口数据汇集任务
+     */
+    public void execInterfaceDataGather () {
+        log.error("----------- 接口数据汇集任务开始 -----------");
+        Calendar curr = Calendar.getInstance();
+        indiComputService.interfaceDataGather(curr);
+        log.error("----------- 接口数据汇集任务结束 -----------");
+    }
+
+    /**
+     * 调用存储过程执行大屏数据更新
+     */
+    public void executeNjmbDataSync(){
+        log.error("----------- 大屏数据同步计算任务开始 -----------");
+        originalDataService.njmbDataSync();
+        log.error("----------- 大屏数据同步计算任务结束 -----------");
     }
 
     /**

@@ -22,6 +22,9 @@ public interface OriginalDataRepository extends BaseRepository<OriginalData, Lon
     /** DCS原始测点实时数据迁移 */
     void dcsDataMigration(String calculateDay);
 
+    /** 大屏数据更新同步 */
+    void njmbDataSync();
+
     /** 获取下一数据获取DCS批次 */
     @Query("select 1 + IFNULL(max(batchNum),0) from OriginalData")
     Long gernateNextBatchNumber();

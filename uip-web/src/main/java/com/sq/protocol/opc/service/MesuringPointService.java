@@ -1,7 +1,10 @@
 package com.sq.protocol.opc.service;
 
+import com.sq.comput.domain.IndicatorConsts;
+import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
 import com.sq.inject.annotation.BaseComponent;
+import com.sq.protocol.jodbc.domain.JodbcConsts;
 import com.sq.protocol.opc.component.BaseConfiguration;
 import com.sq.protocol.opc.component.OpcRegisterFactory;
 import com.sq.protocol.opc.domain.MeaType;
@@ -108,11 +111,16 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
         Long batchNum = originalDataRepository.gernateNextBatchNumber();
         List<OriginalData> originalDataList = new LinkedList<OriginalData>();
         for (Map.Entry<Item, ItemState> entry : syncItems.entrySet()) {
-            log.error("key= " + entry.getKey().getId() + " and value= " + entry.getValue().getValue().toString());
+            log.error("key= " + entry.getKey().getId()
+                    + " and value= " + entry.getValue().getValue().toString());
+            String itemValue = entry.getValue().getValue().toString();
+            if (itemValue.contains("org.jinterop.dcom.core.VariantBody$EMPTY")) {
+                continue;
+            }
             OriginalData originalData = new OriginalData();
             originalData.setItemCode(entry.getKey().getId());
             originalData.setInstanceTime(entry.getValue().getTimestamp());
-            originalData.setItemValue(entry.getValue().getValue().toString());
+            originalData.setItemValue(itemValue.substring(2, itemValue.length() - 2));
             originalData.setSysId(cid);
             originalData.setBatchNum(batchNum);
             originalDataList.add(originalData);
@@ -124,9 +132,8 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
      * 注册测点到指定的opc server group.
      */
     private List<MesuringPoint> registerMesuringPoint(int cid) {
-        Map<String, Object> searchParams = new HashMap<String, Object>();
-        searchParams.put("mesuringPoint.meaType", MeaType.OriginalMea.index());
-        Searchable searchable = Searchable.newSearchable(searchParams);
+        Searchable searchable = Searchable.newSearchable()
+                .addSearchFilter("sysId", MatchType.EQ, JodbcConsts.SYS_OPC);
         return this.findAllWithNoPageNoSort(searchable);
     }
 }
