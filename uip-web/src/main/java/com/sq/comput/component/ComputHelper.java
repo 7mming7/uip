@@ -40,7 +40,7 @@ public class ComputHelper {
     public static int indicatorThreadPoolSize = 50;
 
     /** 线程超时时长 */
-    public static Long requestWaitTimeOutValue = 50l;
+    public static Long requestWaitTimeOutValue = 30l;
 
     /** 请求线程池 */
     private static ThreadPoolExecutor _instance;

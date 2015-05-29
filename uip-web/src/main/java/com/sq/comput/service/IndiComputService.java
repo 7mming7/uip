@@ -215,6 +215,9 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
      */
     public void reComputIndicator (Calendar computCal, List<IndicatorTemp> indicatorTempList) {
         TreeMap<Integer,List<IndicatorTemp>> integerListTreeMap = new TreeMap<>();
+        if (indicatorTempList.isEmpty()) {
+            return;
+        }
         integerListTreeMap = buildIndiSortTreeMap(integerListTreeMap,indicatorTempList,0);
         Calendar tempCal = (Calendar) computCal.clone();
         List<Calendar> calendarList = DateUtil.dayListSinceCal(tempCal);

@@ -154,15 +154,18 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 			 */
 			List<IndicatorReqElement> indicatorEleList = requestBean.getAny();
 
-			Searchable searchable = Searchable.newSearchable();
-			Calendar cal = DateUtil.stringToCalendar(reqHeader.getActionTime(), DateUtil.DATE_FORMAT_DAFAULT);
-			List<IndicatorTemp> itemCodeList = new ArrayList<IndicatorTemp>();
-			for (IndicatorReqElement ir : indicatorEleList) {
-				Condition condition = (Condition) SearchFilterHelper.newCondition("indicatorCode", MatchType.EQ, ir.getItemCode());
-				searchable.or(condition);
+			if (!indicatorEleList.isEmpty()) {
+				Searchable searchable = Searchable.newSearchable();
+				Calendar cal = DateUtil.stringToCalendar(reqHeader.getActionTime(), DateUtil.DATE_FORMAT_DAFAULT);
+				List<IndicatorTemp> itemCodeList = new ArrayList<IndicatorTemp>();
+				OrCondition orCondition = new OrCondition();
+				for (IndicatorReqElement ir : indicatorEleList) {
+					orCondition.add(SearchFilterHelper.newCondition("indicatorCode", MatchType.EQ, ir.getItemCode()));
+				}
+				searchable.or(orCondition);
+				itemCodeList = indicatorTempService.findAll(searchable).getContent();
+				indicatorComputService.reComputIndicator(cal,itemCodeList);
 			}
-			itemCodeList = indicatorTempService.findAll(searchable).getContent();
-			indicatorComputService.reComputIndicator(cal,itemCodeList);
 
 			sw = wsProtocalParser.beanToXml(mrpElementResponse, StandardResponse.class);
 			responseXml = sw.toString();
