@@ -20,7 +20,7 @@ public class AndCondition implements SearchFilter {
 
     private List<SearchFilter> andFilters = Lists.newArrayList();
 
-    AndCondition() {
+    public AndCondition() {
     }
 
     public AndCondition add(SearchFilter filter) {

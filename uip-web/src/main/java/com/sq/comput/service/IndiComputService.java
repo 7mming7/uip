@@ -229,6 +229,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
             for (IndicatorTemp indicatorTemp:indicatorTemps){
                 log.error(indicatorTemp.getId() + "->" + indicatorTemp.getIndicatorCode());
                 for (Calendar reComputCal:calendarList){
+                    deleteIndicatorTemp(reComputCal,indicatorTemp);
                     switch (indicatorTemp.getCalType()) {
                         case IndicatorConsts.CALTYPE_INVENTORY:
                             sendCalculateComm(indicatorTemp, reComputCal, new InventoryStrategy());
@@ -248,6 +249,19 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
                 }
             }
         }
+    }
+
+    /**
+     * 删除指标在一段时间的数据
+     * @param computCal
+     * @param indicatorTemp
+     */
+    public void deleteIndicatorTemp (Calendar computCal, IndicatorTemp indicatorTemp) {
+        Searchable searchable = Searchable.newSearchable();
+        int startComputDateNum = Integer.parseInt(DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_DAFAULT));
+        searchable.addSearchFilter("statDateNum",MatchType.GTE,startComputDateNum)
+                .addSearchFilter("indicatorCode", MatchType.EQ, indicatorTemp.getIndicatorCode());
+        indicatorInstanceRepository.delete(indicatorInstanceRepository.findAll(searchable).getContent());
     }
 
     /**
@@ -285,6 +299,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
         OrCondition orCondition = new OrCondition();
         for (IndicatorTemp indicatorTemp : indicatorTempList) {
             orCondition.add(Condition.newCondition("calculateExpression", MatchType.LIKE, "%#{" + indicatorTemp.getIndicatorCode() + "}%"));
+            /*orCondition.add(Condition.newCondition("indicatorCode", MatchType.NE, indicatorTemp.getIndicatorCode()));*/
         }
         searchable.or(orCondition);
         List<IndicatorTemp> indicatorTemps = indicatorTempRepository.findAll(searchable).getContent();

@@ -7,7 +7,9 @@ import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
 import com.sq.entity.search.condition.SearchFilter;
 import com.sq.inject.annotation.BaseComponent;
+import com.sq.protocol.opc.domain.MesuringPoint;
 import com.sq.protocol.opc.domain.OriginalData;
+import com.sq.protocol.opc.repository.MesuringPointRepository;
 import com.sq.protocol.opc.repository.OriginalDataRepository;
 import com.sq.util.DateUtil;
 import com.sq.util.SpringUtils;
@@ -46,6 +48,9 @@ public class InterfaceStrategy extends IComputStrategy {
 
     private static OriginalDataRepository originalDataRepository = SpringUtils.getBean(OriginalDataRepository.class);
 
+    private static MesuringPointRepository mesuringPointRepository = SpringUtils.getBean(MesuringPointRepository.class);
+
+
     @Override
     public Object execIndiComput(IndicatorTemp indicatorTemp, Calendar computCal) {
         Evaluator evaluator = ComputHelper.getEvaluatorInstance();
@@ -59,8 +64,16 @@ public class InterfaceStrategy extends IComputStrategy {
 
         Calendar[] computDate = DateUtil.getDayFirstAndLastCal(computCal);
 
+        MesuringPoint mesuringPoint = null;
+        List<MesuringPoint> mesuringPointList = mesuringPointRepository.findAll(
+                Searchable.newSearchable().addSearchFilter("targetCode",MatchType.EQ,checkPoint)).getContent();
+        if (mesuringPointList.isEmpty()) {
+            log.error("mesuringPoint中不存在" + checkPoint + "相关的编码!");
+            return null;
+        }
+        mesuringPoint = mesuringPointList.get(0);
         Searchable searchable = Searchable.newSearchable()
-                .addSearchFilter("itemCode", MatchType.LIKE, "%" + checkPoint)
+                .addSearchFilter("itemCode", MatchType.EQ, mesuringPoint.getSourceCode())
                 .addSearchFilter("instanceTime", MatchType.LTE, computDate[1])
                 .addSearchFilter("instanceTime", MatchType.GTE, computDate[0]);
         List<OriginalData> originalDataList = originalDataRepository.findAll(searchable).getContent();

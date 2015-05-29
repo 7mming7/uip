@@ -40,8 +40,8 @@ public class IndiComputTest extends TestCase {
     @Test
     public void testInterfaceDataGather () {
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.DATE, 06);
-        cal.set(Calendar.HOUR, 00);
+        cal.set(Calendar.DATE, 26);
+        cal.set(Calendar.HOUR, 02);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
         System.out.println("uuuuuuuuuuuuu" + DateUtil.formatCalendar(cal, DateUtil.DATE_FORMAT_Y_M_D));
@@ -89,7 +89,7 @@ public class IndiComputTest extends TestCase {
         }
     }*/
 
-    @Test
+    /*@Test
     public void testSocketService() {
         SocketServer socketServerComp1 = new SocketServer();
         socketServerComp1.start();
@@ -103,5 +103,5 @@ public class IndiComputTest extends TestCase {
         indicatorTempList.add(indicatorTempService.findOne(526l));
         integerListTreeMap = indiComputService.buildIndiSortTreeMap(integerListTreeMap,indicatorTempList,1);
         int i = 1;
-    }
+    }*/
 }
