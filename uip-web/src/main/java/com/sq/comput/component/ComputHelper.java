@@ -8,6 +8,7 @@ import net.sourceforge.jeval.Evaluator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,7 @@ public class ComputHelper {
     public static int indicatorThreadPoolSize = 50;
 
     /** 线程超时时长 */
-    public static Long requestWaitTimeOutValue = 15l;
+    public static Long requestWaitTimeOutValue = 50l;
 
     /** 请求线程池 */
     private static ThreadPoolExecutor _instance;
@@ -108,6 +109,8 @@ public class ComputHelper {
      * @return 动态参数列表
      */
     public static List<String> getVariableList (String expression,Evaluator evaluator) {
+        Assert.notNull(expression);
+
         List<String> variableList = new ArrayList<String>();
         int openIndex = expression.indexOf(EvaluationConstants.OPEN_VARIABLE);
 
