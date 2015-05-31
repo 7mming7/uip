@@ -169,7 +169,6 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 
 			sw = wsProtocalParser.beanToXml(mrpElementResponse, StandardResponse.class);
 			responseXml = sw.toString();
-
 			return responseXml;
 		} catch (BaseException e) {
 			String msg = "解析报文失败: " + e.getMessage();
