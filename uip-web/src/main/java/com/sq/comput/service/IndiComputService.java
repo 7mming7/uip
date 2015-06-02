@@ -217,7 +217,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
      * @return 重新计算是否成功
      */
     public void reComputIndicator (Calendar computCal, List<IndicatorTemp> indicatorTempList) {
-        TreeMap<Integer,List<IndicatorTemp>> integerListTreeMap = new TreeMap<>();
+        TreeMap<Integer,Set<IndicatorTemp>> integerListTreeMap = new TreeMap<>();
         if (indicatorTempList.isEmpty()) {
             return;
         }
@@ -232,7 +232,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
         Iterator iterator = integerListTreeMap.entrySet().iterator();
         while(iterator.hasNext()){
             Map.Entry ent = (Map.Entry )iterator.next();
-            List<IndicatorTemp> indicatorTemps = (List<IndicatorTemp>)ent.getValue();
+            Set<IndicatorTemp> indicatorTemps = (Set<IndicatorTemp>)ent.getValue();
             for (IndicatorTemp indicatorTemp:indicatorTemps){
                 log.error(indicatorTemp.getId() + "->" + indicatorTemp.getIndicatorCode());
                 for (Calendar reComputCal:calendarList){
@@ -278,14 +278,14 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
      * @param computCal          指定时间
      * @param integerListTreeMap  关联指标对象
      */
-    public void deleteNeedReComputIndicator (Calendar computCal, TreeMap<Integer,List<IndicatorTemp>> integerListTreeMap) {
+    public void deleteNeedReComputIndicator (Calendar computCal, TreeMap<Integer,Set<IndicatorTemp>> integerListTreeMap) {
         Searchable searchable = Searchable.newSearchable();
         int startComputDateNum = Integer.parseInt(DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_DAFAULT));
         searchable.addSearchFilter("statDateNum",MatchType.GTE,startComputDateNum);
         List<String> indicatorCodeList = new ArrayList<String>();
         List<IndicatorTemp> indicatorTempList = new ArrayList<IndicatorTemp>();
-        for (Map.Entry<Integer, List<IndicatorTemp>> entry : integerListTreeMap.entrySet()) {
-            indicatorTempList.addAll((List<IndicatorTemp>)entry.getValue());
+        for (Map.Entry<Integer, Set<IndicatorTemp>> entry : integerListTreeMap.entrySet()) {
+            indicatorTempList.addAll((Set<IndicatorTemp>)entry.getValue());
         }
         for (IndicatorTemp indicatorTemp:indicatorTempList){
             indicatorCodeList.add(indicatorTemp.getIndicatorCode());
@@ -301,8 +301,8 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
      * @param level  层级
      * @return
      */
-    public TreeMap<Integer,List<IndicatorTemp>> buildIndiSortTreeMap (
-            TreeMap<Integer,List<IndicatorTemp>> integerListTreeMap,
+    public TreeMap<Integer, Set<IndicatorTemp>> buildIndiSortTreeMap(
+            TreeMap<Integer, Set<IndicatorTemp>> integerListTreeMap,
             List<IndicatorTemp> indicatorTempList,
             Integer level) {
         Searchable searchable = Searchable.newSearchable()
@@ -320,7 +320,9 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
             return integerListTreeMap;
         }
 
-        integerListTreeMap.put(level, indicatorTemps);
+        Set<IndicatorTemp> indicatorTempSet = new HashSet<>(indicatorTemps);
+
+        integerListTreeMap.put(level, indicatorTempSet);
         level = level + 1;
         return buildIndiSortTreeMap(integerListTreeMap, indicatorTemps, level);
     }
