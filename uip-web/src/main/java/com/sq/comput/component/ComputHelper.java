@@ -42,9 +42,6 @@ public class ComputHelper {
     /** 线程超时时长 */
     public static Long requestWaitTimeOutValue = 30l;
 
-    /** 请求线程池 */
-    private static ThreadPoolExecutor _instance;
-
     /**
      * 同步Map对象记录了指标计算的进度
      */
@@ -54,11 +51,7 @@ public class ComputHelper {
      * 初始化指标计算线程池
      * 2014年10月23日 下午4:05:22 ShuiQing PM 添加此方法
      */
-    public static ThreadPoolExecutor initThreadPooSingleInstance() {
-
-        if (null != _instance) {
-            return _instance;
-        }
+    public static synchronized ThreadPoolExecutor initThreadPooSingleInstance() {
         /**
          * 初始化请求线程池
          * @param indicatorThreadPoolSize coreThreadSize
@@ -69,7 +62,7 @@ public class ComputHelper {
          *         直接提交给线程池，新建一个idle的线程，等待coreThread中执行玩。
          * @param DiscardOldestPolicy 线程池的拒绝策略，当等待提交到线程池的线程对象超过缓冲队列的时候，将丢弃缓冲队列列头的对象。
          */
-        _instance = new ThreadPoolExecutor(indicatorThreadPoolSize, Integer.MAX_VALUE, requestWaitTimeOutValue,
+        ThreadPoolExecutor _instance = new ThreadPoolExecutor(indicatorThreadPoolSize, Integer.MAX_VALUE, requestWaitTimeOutValue,
                 TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new ThreadPoolExecutor.DiscardOldestPolicy());
         return _instance;
     }

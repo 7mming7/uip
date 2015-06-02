@@ -61,6 +61,8 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
      * @param computCal 计算时间
      */
     public void interfaceDataGather (Calendar computCal) {
+        ThreadPoolExecutor _instance = ComputHelper.initThreadPooSingleInstance();
+
         Searchable searchable = Searchable.newSearchable()
                 .addSearchFilter("dataSource", MatchType.EQ, IndicatorConsts.DATASOURCE_INTERFACE);
         Page<IndicatorTemp> indicatorTempPage = this.indicatorTempRepository.findAll(searchable);
@@ -69,7 +71,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
         List<IndicatorInstance> indicatorInstanceList = new LinkedList<IndicatorInstance>();
         for (IndicatorTemp indicatorTemp:indicatorTempList) {
             log.info("indicatorTemp:->" + indicatorTemp.getIndicatorName());
-            IndicatorInstance indicatorInstance = sendCalculateComm(indicatorTemp, computCal, new InterfaceStrategy());
+            IndicatorInstance indicatorInstance = sendCalculateComm(_instance, indicatorTemp, computCal, new InterfaceStrategy());
             if (null != indicatorInstance) {
                 indicatorInstanceList.add(indicatorInstance);
             }
@@ -86,6 +88,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
         ComputHelper.threadCalculateMap = new ConcurrentHashMap<String, Integer>();
         ConcurrentHashMap<String, Integer> threadCalculateMap = ComputHelper.threadCalculateMap;
 
+        ThreadPoolExecutor _instance = ComputHelper.initThreadPooSingleInstance();
         Searchable searchable = Searchable.newSearchable()
                 .addSearchFilter("dataSource", MatchType.EQ, IndicatorConsts.DATASOURCE_CALCULATE);
         Page<IndicatorTemp> indicatorTempPage = this.indicatorTempRepository.findAll(searchable);
@@ -103,7 +106,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
             log.info("indicatorTemp:->" + indicatorTemp.getIndicatorName());
             indicatorSyncQueue.add(indicatorTemp);
         }
-        stepCalculateIndicator(indicatorSyncQueue, computCal);
+        stepCalculateIndicator(_instance, indicatorSyncQueue, computCal);
         limitAllDayComput(computCal);
     }
 
@@ -112,7 +115,9 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
      * @param indicatorSyncQueue
      * @param computCal
      */
-    public synchronized void stepCalculateIndicator (LinkedBlockingQueue<IndicatorTemp> indicatorSyncQueue, Calendar computCal) {
+    public synchronized void stepCalculateIndicator (ThreadPoolExecutor _instance,
+                                                     LinkedBlockingQueue<IndicatorTemp> indicatorSyncQueue,
+                                                     Calendar computCal) {
         Long costTime = 0L;
         Long now = System.currentTimeMillis();
         while(!indicatorSyncQueue.isEmpty() && costTime <= ComputHelper.requestWaitTimeOutValue*1000L){
@@ -126,10 +131,10 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
             if (checkCalculateCondition(head)) {
                 switch (head.getCalType()) {
                     case IndicatorConsts.CALTYPE_INVENTORY:
-                        sendCalculateComm(head, computCal, new InventoryStrategy());
+                        sendCalculateComm(_instance, head, computCal, new InventoryStrategy());
                         break;
                     case IndicatorConsts.CALTYPE_ORIGINAL:
-                        sendCalculateComm(head, computCal, new PrimaryStrategy());
+                        sendCalculateComm(_instance, head, computCal, new PrimaryStrategy());
                         break;
                 }
             } else {
@@ -143,7 +148,6 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
             log.error("costTime-------" + costTime);
         }
 
-        ThreadPoolExecutor _instance = ComputHelper.initThreadPooSingleInstance();
         while(!indicatorSyncQueue.isEmpty()) {
             IndicatorTemp indicatorTemp = (IndicatorTemp) indicatorSyncQueue.poll();
             log.error("indicatorName->" + indicatorTemp.getIndicatorName());
@@ -186,7 +190,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
      * @param indicatorTemplate  指标模板
      * @param computCal          计算时间
      */
-    public synchronized IndicatorInstance sendCalculateComm (IndicatorTemp indicatorTemplate,
+    public synchronized IndicatorInstance sendCalculateComm (ThreadPoolExecutor _instance, IndicatorTemp indicatorTemplate,
                                                 Calendar computCal, IComputStrategy iComputStrategy) {
         IndiComputTask indiComputThread = new IndiComputTask();
         indiComputThread.setComputCal(computCal);
@@ -194,7 +198,6 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
         indiComputThread.setiComputStrategy(iComputStrategy);
         indiComputThread.setIndicatorTemp(indicatorTemplate);
         /*indiComputThread.start();*/
-        ThreadPoolExecutor _instance = ComputHelper.initThreadPooSingleInstance();
         Future<IndicatorInstance> future = _instance.submit(indiComputThread);
         IndicatorInstance indicatorInstance = null;
         try {
@@ -225,6 +228,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
         /** 删除需要重新计算的指标实例的数据 */
         deleteNeedReComputIndicator(computCal, integerListTreeMap);
 
+        ThreadPoolExecutor _instance = ComputHelper.initThreadPooSingleInstance();
         Iterator iterator = integerListTreeMap.entrySet().iterator();
         while(iterator.hasNext()){
             Map.Entry ent = (Map.Entry )iterator.next();
@@ -235,10 +239,10 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
                     deleteIndicatorTemp(reComputCal,indicatorTemp);
                     switch (indicatorTemp.getCalType()) {
                         case IndicatorConsts.CALTYPE_INVENTORY:
-                            sendCalculateComm(indicatorTemp, reComputCal, new InventoryStrategy());
+                            sendCalculateComm(_instance, indicatorTemp, reComputCal, new InventoryStrategy());
                             break;
                         case IndicatorConsts.CALTYPE_ORIGINAL:
-                            sendCalculateComm(indicatorTemp, reComputCal, new PrimaryStrategy());
+                            sendCalculateComm(_instance, indicatorTemp, reComputCal, new PrimaryStrategy());
                             break;
                     }
                     log.error("**indicatorCode->" + indicatorTemp.getIndicatorCode() + ",reComputCal-》"
@@ -252,6 +256,8 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
                 }
             }
         }
+
+        _instance.shutdown();
     }
 
     /**
@@ -295,7 +301,10 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
      * @param level  层级
      * @return
      */
-    public TreeMap<Integer,List<IndicatorTemp>> buildIndiSortTreeMap (TreeMap<Integer,List<IndicatorTemp>> integerListTreeMap, List<IndicatorTemp> indicatorTempList, Integer level) {
+    public TreeMap<Integer,List<IndicatorTemp>> buildIndiSortTreeMap (
+            TreeMap<Integer,List<IndicatorTemp>> integerListTreeMap,
+            List<IndicatorTemp> indicatorTempList,
+            Integer level) {
         Searchable searchable = Searchable.newSearchable()
                 .addSearchFilter("dataSource", MatchType.EQ, IndicatorConsts.DATASOURCE_CALCULATE);
 
