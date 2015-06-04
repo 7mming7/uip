@@ -1,6 +1,11 @@
 package com.sq.protocol.socket;
 
+import com.sq.comput.domain.IndicatorConsts;
 import com.sq.comput.domain.IndicatorInstance;
+import com.sq.comput.domain.IndicatorTemp;
+import com.sq.comput.repository.IndicatorInstanceRepository;
+import com.sq.comput.repository.IndicatorTempRepository;
+import com.sq.comput.service.LimitInstanceService;
 import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
 import com.sq.protocol.opc.domain.MesuringPoint;
@@ -22,10 +27,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Socket方式下接收client数据并做处理.
@@ -49,6 +51,12 @@ public class SocketDataDealTask extends Thread {
     private OriginalDataRepository originalDataRepository = SpringUtils.getBean(OriginalDataRepository.class);
 
     private static MesuringPointRepository mesuringPointRepository = SpringUtils.getBean(MesuringPointRepository.class);
+
+    private static IndicatorTempRepository indicatorTempRepository = SpringUtils.getBean(IndicatorTempRepository.class);
+
+    private static IndicatorInstanceRepository indicatorInstanceRepository = SpringUtils.getBean(IndicatorInstanceRepository.class);
+
+    private static LimitInstanceService limitInstanceService = SpringUtils.getBean(LimitInstanceService.class);
 
     public Socket sk = null;
 
@@ -104,6 +112,8 @@ public class SocketDataDealTask extends Thread {
                 originalDataList.add(originalData);
             }
             originalDataRepository.save(originalDataList);
+            List<IndicatorInstance> indicatorInstanceList = interfaceIndicatorDataGather(originalDataList);
+            limitInstanceService.limitRealTimeCalculate(indicatorInstanceList);
         } catch (JAXBException e) {
             String msg = "解析报文失败: " + e.getMessage();
             log.error(msg, e);
@@ -113,11 +123,39 @@ public class SocketDataDealTask extends Thread {
         }
     }
 
-    public void interfaceIndicatorDataGather(List<OriginalData> originalDataList) {/
+    /**
+     * 接口指标数据汇集
+     * @param originalDataList
+     */
+    public List<IndicatorInstance> interfaceIndicatorDataGather(List<OriginalData> originalDataList) {
         List<IndicatorInstance> indicatorInstanceList = new ArrayList<IndicatorInstance>();
         Map<String,OriginalData> originalDataMap = new HashMap<String,OriginalData>();
+        List<String> codeList = new ArrayList<String>();
         for (OriginalData originalData:originalDataList) {
-            originalDataMap.put(originalData.getItemCode(),originalData);
+            MesuringPoint mesuringPoint = null;
+            List<MesuringPoint> mesuringPointList = mesuringPointRepository.findAll(
+                    Searchable.newSearchable()
+                            .addSearchFilter("sourceCode", MatchType.EQ, originalData.getItemCode())).getContent();
+            if (!mesuringPointList.isEmpty()) {
+                codeList.add(mesuringPoint.getTargetCode());
+                originalDataMap.put(mesuringPoint.getTargetCode(),originalData);
+            }
         }
+
+        List<IndicatorTemp> indicatorTempList = indicatorTempRepository.findAll(
+                Searchable.newSearchable()
+                    .addSearchFilter("itemCode", MatchType.IN, codeList)).getContent();
+        for (IndicatorTemp indicatorTemp:indicatorTempList) {
+            IndicatorInstance indicatorInstance = new IndicatorInstance(indicatorTemp);
+            OriginalData originalData = originalDataMap.get(indicatorInstance.getIndicatorCode());
+            indicatorInstance.setFloatValue(Double.parseDouble(originalData.getItemValue()));
+            indicatorInstance.setValueType(IndicatorConsts.VALUE_TYPE_DOUBLE);
+            Calendar cal = Calendar.getInstance();
+            indicatorInstance.setInstanceTime(cal);
+            indicatorInstance.setStatDateNum(Integer.parseInt(DateUtil.formatCalendar(cal,DateUtil.DATE_FORMAT_DAFAULT)));
+            indicatorInstanceList.add(indicatorInstance);
+        }
+        indicatorInstanceRepository.save(indicatorInstanceList);
+        return indicatorInstanceList;
     }
 }
