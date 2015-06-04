@@ -289,7 +289,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
                             + DateUtil.formatCalendar(reComputCal,DateUtil.DATE_FORMAT_DAFAULT));
                     LimitComputTask limitComputTask = new LimitComputTask(indicatorTemp,reComputCal);
                     try {
-                        limitComputTask.call();
+                        limitAllDayComput(reComputCal);
                     } catch (Exception e) {
                         log.error("limitComputTask call()执行出现异常->" + indicatorTemp.getIndicatorCode(),e);
                     }
@@ -377,7 +377,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
         Searchable searchable = Searchable.newSearchable()
                 .addSearchFilter("statDateNum", MatchType.EQ,
                         DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_DAFAULT))
-                .addSearchFilter("fetchCycle", MatchType.NE, IndicatorConsts.FETCH_CYCLE_HOUR);
+                .addSearchFilter("dataSource", MatchType.NE, IndicatorConsts.DATASOURCE_INTERFACE);
         List<IndicatorInstance> indicatorInstanceList = indicatorInstanceRepository.findAll(searchable).getContent();
         limitInstanceService.limitRealTimeCalculate(indicatorInstanceList);
     }
