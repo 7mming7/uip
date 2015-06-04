@@ -1,6 +1,11 @@
 package com.sq.protocol.socket;
 
+import com.sq.comput.domain.IndicatorInstance;
+import com.sq.entity.search.MatchType;
+import com.sq.entity.search.Searchable;
+import com.sq.protocol.opc.domain.MesuringPoint;
 import com.sq.protocol.opc.domain.OriginalData;
+import com.sq.protocol.opc.repository.MesuringPointRepository;
 import com.sq.protocol.opc.repository.OriginalDataRepository;
 import com.sq.protocol.ws.component.WsProtocalParser;
 import com.sq.protocol.ws.domain.IndicatorRpsElement;
@@ -18,7 +23,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Socket方式下接收client数据并做处理.
@@ -40,6 +47,8 @@ public class SocketDataDealTask extends Thread {
      * 由于Thread非spring启动时实例化，而是根据具体的逻辑动态实例化，所以需要通过此方式从spring的context中获取相应的bean.
      */
     private OriginalDataRepository originalDataRepository = SpringUtils.getBean(OriginalDataRepository.class);
+
+    private static MesuringPointRepository mesuringPointRepository = SpringUtils.getBean(MesuringPointRepository.class);
 
     public Socket sk = null;
 
@@ -101,6 +110,14 @@ public class SocketDataDealTask extends Thread {
         } catch (ParseException e) {
             String msg = "解析报文日期转换出错: " + e.getMessage();
             log.error(msg, e);
+        }
+    }
+
+    public void interfaceIndicatorDataGather(List<OriginalData> originalDataList) {/
+        List<IndicatorInstance> indicatorInstanceList = new ArrayList<IndicatorInstance>();
+        Map<String,OriginalData> originalDataMap = new HashMap<String,OriginalData>();
+        for (OriginalData originalData:originalDataList) {
+            originalDataMap.put(originalData.getItemCode(),originalData);
         }
     }
 }

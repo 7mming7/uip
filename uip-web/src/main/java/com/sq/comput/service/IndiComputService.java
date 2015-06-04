@@ -331,7 +331,9 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
             indicatorCodeList.add(indicatorTemp.getIndicatorCode());
         }
         searchable.addSearchFilter("indicatorCode",MatchType.IN, indicatorCodeList);
-        indicatorInstanceRepository.delete(indicatorInstanceRepository.findAll(searchable).getContent());
+        if (!indicatorCodeList.isEmpty()) {
+            indicatorInstanceRepository.delete(indicatorInstanceRepository.findAll(searchable).getContent());
+        }
     }
 
     /**
