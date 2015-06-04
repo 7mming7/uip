@@ -152,7 +152,7 @@ public class OpcRegisterFactory {
      * @param leaf
      */
     private static void dumpLeaf(final Leaf leaf, final int level) {
-        System.out.println(printTab(level) + "Leaf: " + leaf.getName() + ":"
+        log.error(printTab(level) + "Leaf: " + leaf.getName() + ":"
                 + leaf.getItemId());
     }
 
@@ -162,7 +162,7 @@ public class OpcRegisterFactory {
      * @param branch
      */
     private static void dumpBranch(final Branch branch, final int level) {
-        System.out.println(printTab(level) + "Branch: " + branch.getName());
+        log.error(printTab(level) + "Branch: " + branch.getName());
     }
 }
 
