@@ -37,6 +37,7 @@ public class BaseConfiguration {
     public static String CONFIG_DOMAIN = "domain";
     public static String CONFIG_CLSID = "clsid";
     public static String CONFIG_PROGID = "progid";
+    public static String CONFIG_SYSID = "sysid";
 
     /** 客户端配置的初始序列 */
     public static int CONFIG_CLIENT_ID = 1;
@@ -48,7 +49,7 @@ public class BaseConfiguration {
     public static String CONFIG_MAX_CLIENT = "max_client";
 
     /** 需要同步读取的ITEM的初始化方式 默认为1 */
-    public static int CONFIG_INIT_ITEM = ItemFillType.AutoGenerate;
+    public static int CONFIG_INIT_ITEM = ItemFillType.DbRecord;
 
     /** 需要同步读取的ITEM的初始化方式 */
     public static String CONFIG_INIT_ITEM_TYPE = "init_item_type";
@@ -102,19 +103,14 @@ public class BaseConfiguration {
         OpcServerInfomation opcServerInfomation = new OpcServerInfomation();
         ConnectionInformation connectionInformation = new ConnectionInformation();
         String slink = connOper + client_id.toString();
-        CONFIG_USERNAME = CONFIG_USERNAME + slink;
-        CONFIG_PASSWORD = CONFIG_PASSWORD + slink;
-        CONFIG_HOST = CONFIG_HOST + slink;
-        CONFIG_DOMAIN = CONFIG_DOMAIN + slink;
-        CONFIG_CLSID = CONFIG_CLSID + slink;
-        CONFIG_PROGID = CONFIG_PROGID + slink;
-        connectionInformation.setUser(getEntryValue(CONFIG_USERNAME));
-        connectionInformation.setClsid(getEntryValue(CONFIG_CLSID));
-        connectionInformation.setPassword(getEntryValue(CONFIG_PASSWORD));
-        connectionInformation.setDomain(getEntryValue(CONFIG_DOMAIN));
-        connectionInformation.setHost(getEntryValue(CONFIG_HOST));
-        connectionInformation.setProgId(getEntryValue(CONFIG_PROGID));
+        connectionInformation.setUser(getEntryValue(CONFIG_USERNAME + slink));
+        connectionInformation.setClsid(getEntryValue(CONFIG_CLSID + slink));
+        connectionInformation.setPassword(getEntryValue(CONFIG_PASSWORD + slink));
+        connectionInformation.setDomain(getEntryValue(CONFIG_DOMAIN + slink));
+        connectionInformation.setHost(getEntryValue(CONFIG_HOST + slink));
+        connectionInformation.setProgId(getEntryValue(CONFIG_PROGID + slink));
         opcServerInfomation.setC_id(client_id);
+        opcServerInfomation.setSysId(getEntryValue(CONFIG_SYSID + slink));
         opcServerInfomation.setConnectionInformation(connectionInformation);
         OpcRegisterFactory.registerServerInfo(client_id, opcServerInfomation);
     }

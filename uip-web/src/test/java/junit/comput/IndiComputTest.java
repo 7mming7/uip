@@ -68,6 +68,14 @@ public class IndiComputTest extends TestCase {
         this.indiComputService.calculateDataGater(cal);
     }
 
+    @Test
+    public void testInterfaceIndicatorDataGater(){
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DATE, 3);
+        cal.set(Calendar.MONTH, 5);
+        this.indiComputService.interfaceIndicatorDataGater(cal);
+    }
+
     /*@Test
     public void batchSave(){
         for (int i=1;i<100;i++) {

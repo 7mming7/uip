@@ -26,7 +26,9 @@ public interface JodbcConsts {
      *      1、opc
      *      2、odbc 地磅
      */
-    public static final int SYS_OPC = 1;
+    public static final int SYS_OPC_DCS = 1;
 
     public static final int SYS_ODBC_LOADOMETER = 2;
+
+    public static final int SYS_OPC_ECS = 3;
 }

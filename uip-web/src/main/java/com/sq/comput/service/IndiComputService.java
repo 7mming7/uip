@@ -81,6 +81,46 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
     }
 
     /**
+     * 接口指标日数据汇集
+     * @param computCal
+     */
+    public void interfaceIndicatorDataGater (Calendar computCal) {
+        ThreadPoolExecutor _instance = ComputHelper.initThreadPooSingleInstance();
+
+        Searchable searchable = Searchable.newSearchable()
+                .addSearchFilter("dataSource", MatchType.EQ, IndicatorConsts.DATASOURCE_INTERFACE);
+        List<IndicatorTemp> indicatorTempList = indicatorTempRepository.findAll(searchable).getContent();
+
+        Searchable computSearchable = Searchable.newSearchable()
+                .addSearchFilter("dataSource", MatchType.EQ, IndicatorConsts.DATASOURCE_CALCULATE);
+        OrCondition orCondition = new OrCondition();
+        for (IndicatorTemp indicatorTemp : indicatorTempList) {
+            orCondition.add(Condition.newCondition("calculateExpression", MatchType.LIKE, "%(#{" + indicatorTemp.getIndicatorCode() + "})%"));
+            /*orCondition.add(Condition.newCondition("indicatorCode", MatchType.NE, indicatorTemp.getIndicatorCode()));*/
+        }
+        computSearchable.or(orCondition);
+        List<IndicatorTemp> indicatorTemps = indicatorTempRepository.findAll(computSearchable).getContent();
+        for (IndicatorTemp indicatorTemp:indicatorTemps) {
+            switch (indicatorTemp.getCalType()) {
+                case IndicatorConsts.CALTYPE_INVENTORY:
+                    sendCalculateComm(_instance, indicatorTemp, computCal, new InventoryStrategy());
+                    break;
+                case IndicatorConsts.CALTYPE_ORIGINAL:
+                    sendCalculateComm(_instance, indicatorTemp, computCal, new PrimaryStrategy());
+                    break;
+            }
+            log.error("**indicatorCode->" + indicatorTemp.getIndicatorCode() + ",Interface ComputCal-》"
+                    + DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULT));
+            LimitComputTask limitComputTask = new LimitComputTask(indicatorTemp,computCal);
+            try {
+                limitComputTask.call();
+            } catch (Exception e) {
+                log.error("limitComputTask call()执行出现异常->" + indicatorTemp.getIndicatorCode(),e);
+            }
+        }
+    }
+
+    /**
      * 计算指标数据计算
      * @param computCal 计算时间
      */

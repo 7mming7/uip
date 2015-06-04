@@ -22,6 +22,8 @@ public class OpcServerInfomation {
 
     private int c_id;
 
+    private String sysId;
+
     private Server server;
 
     /** 连接信息 */
@@ -60,5 +62,13 @@ public class OpcServerInfomation {
 
     public void setServer(Server server) {
         this.server = server;
+    }
+
+    public String getSysId() {
+        return sysId;
+    }
+
+    public void setSysId(String sysId) {
+        this.sysId = sysId;
     }
 }

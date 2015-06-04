@@ -13,7 +13,8 @@
                 <ref bean="execLoadometerOrignalDataGatheringTrigger" />
                 <ref bean="execLoadometerIndicatorDataTrigger" />
                 <ref bean="indicatorReallTimeComputJobTrigger" />
-                <ref bean="njmbDataJobTrigger" />-->
+                <ref bean="njmbDataJobTrigger" />
+                <ref bean="execInterfaceIndicatorDataGaterTrigger" />-->
             </list>
         </property>
     </bean>
@@ -131,6 +132,25 @@
         </property>
         <property name="cronExpression">
             <value>0 10 0 * * ?</value>
+        </property>
+    </bean>
+
+    <!-- 接口日数据数据计算 -->
+    <bean id="execInterfaceIndicatorDataGaterJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <!-- 调用的类 -->
+        <property name="targetObject" ref="schedulerExecuteService"/>
+        <!-- 调用类中的方法 -->
+        <property name="targetMethod" value="execInterfaceIndicatorDataGater" />
+        <!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <bean id="execInterfaceIndicatorDataGaterTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="execInterfaceIndicatorDataGaterJob"/>
+        </property>
+        <property name="cronExpression">
+            <value>0 15 0 * * ?</value>
         </property>
     </bean>
 </beans>

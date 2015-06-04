@@ -102,6 +102,7 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
      * @param itemArr item数组
      */
     public void readItemState (int cid, Group group, Item[] itemArr) {
+        OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
         Map<Item, ItemState> syncItems = null;
         try {
             syncItems = group.read(false, itemArr);
@@ -121,7 +122,7 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
             originalData.setItemCode(entry.getKey().getId());
             originalData.setInstanceTime(entry.getValue().getTimestamp());
             originalData.setItemValue(itemValue.substring(2, itemValue.length() - 2));
-            originalData.setSysId(cid);
+            originalData.setSysId(Integer.parseInt(opcServerInfomation.getSysId()));
             originalData.setBatchNum(batchNum);
             originalDataList.add(originalData);
         }
@@ -132,8 +133,9 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
      * 注册测点到指定的opc server group.
      */
     private List<MesuringPoint> registerMesuringPoint(int cid) {
+        OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
         Searchable searchable = Searchable.newSearchable()
-                .addSearchFilter("sysId", MatchType.EQ, JodbcConsts.SYS_OPC);
+                .addSearchFilter("sysId", MatchType.EQ, opcServerInfomation.getSysId());
         return this.findAllWithNoPageNoSort(searchable);
     }
 }

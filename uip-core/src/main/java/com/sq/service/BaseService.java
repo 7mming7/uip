@@ -190,5 +190,6 @@ public abstract class BaseService<M extends AbstractEntity, ID extends Serializa
     public Long count(Searchable searchable) {
         return baseRepository.count(searchable);
     }
+
 }
 

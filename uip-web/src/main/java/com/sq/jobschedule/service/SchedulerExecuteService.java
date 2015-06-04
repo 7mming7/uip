@@ -69,10 +69,21 @@ public class SchedulerExecuteService {
      * 接口数据汇集任务
      */
     public void execInterfaceDataGather () {
-        log.error("----------- 接口数据汇集任务开始 -----------");
+        log.error("----------- 接口小时数据汇集任务开始 -----------");
         Calendar curr = Calendar.getInstance();
         indiComputService.interfaceDataGather(curr);
-        log.error("----------- 接口数据汇集任务结束 -----------");
+        log.error("----------- 接口小时数据汇集任务结束 -----------");
+    }
+
+    /**
+     * 接口日数据汇集任务
+     */
+    public void execInterfaceIndicatorDataGater () {
+        log.error("----------- 接口日指标数据汇集任务开始 -----------");
+        Calendar curr = Calendar.getInstance();
+        curr.add(Calendar.DAY_OF_MONTH, -1);
+        indiComputService.interfaceIndicatorDataGater(curr);
+        log.error("----------- 接口日指标数据汇集任务结束 -----------");
     }
 
     /**

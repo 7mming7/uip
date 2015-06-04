@@ -114,7 +114,7 @@ public class IndiComputTask implements Callable<IndicatorInstance> {
         indicatorInstance.setInstanceTime(computCal);
         indicatorInstance.setStatDateNum(Integer.parseInt(DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULT)));
         Calendar tempCal = (Calendar) computCal.clone();
-            Object computResult = iComputStrategy.execIndiComput(indicatorTemp, tempCal);
+        Object computResult = iComputStrategy.execIndiComput(indicatorTemp, tempCal);
         if (null == computResult) {
             return null;
         }
