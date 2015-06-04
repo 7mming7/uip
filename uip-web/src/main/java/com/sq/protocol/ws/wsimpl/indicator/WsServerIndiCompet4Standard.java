@@ -162,9 +162,9 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 				for (IndicatorReqElement ir : indicatorEleList) {
 					orCondition.add(SearchFilterHelper.newCondition("indicatorCode", MatchType.EQ, ir.getItemCode()));
 				}
-				searchable.or(orCondition);
+				searchable.or(orCondition).addSearchFilter("enterpriseId", MatchType.EQ, reqHeader.getAuthenCode());
 				itemCodeList = indicatorTempService.findAll(searchable).getContent();
-				indicatorComputService.reComputIndicator(cal,itemCodeList, reqHeader.getAuthenCode());
+				indicatorComputService.reComputIndicator(cal,itemCodeList);
 			}
 
 			sw = wsProtocalParser.beanToXml(mrpElementResponse, StandardResponse.class);

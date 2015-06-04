@@ -256,7 +256,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
      * @param indicatorTempList 需要重新计算的指标基
      * @return 重新计算是否成功
      */
-    public void reComputIndicator (Calendar computCal, List<IndicatorTemp> indicatorTempList, String authenCode) {
+    public void reComputIndicator (Calendar computCal, List<IndicatorTemp> indicatorTempList) {
         TreeMap<Integer,Set<IndicatorTemp>> integerListTreeMap = new TreeMap<>();
         if (indicatorTempList.isEmpty()) {
             return;

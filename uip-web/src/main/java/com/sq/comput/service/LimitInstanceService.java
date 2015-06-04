@@ -61,7 +61,7 @@ public class LimitInstanceService extends BaseService<LimitInstance,Integer> {
         List<Long> indicatorTempIdList = new LinkedList<Long>();
         for (IndicatorInstance indicatorInstance:indicatorInstanceList) {
             indicatorInstanceMap.put(indicatorInstance.getIndicatorCode(),indicatorInstance);
-            indicatorTempIdList.add(indicatorInstance.getIndicatorTempId());
+            indicatorTempIdList.add(indicatorInstance.getIndicatorTemp().getId());
         }
         if (indicatorTempIdList.isEmpty()) {
             return;
