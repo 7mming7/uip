@@ -290,15 +290,15 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
                             }
                             log.error("**indicatorCode->" + indicatorTemp.getIndicatorCode() + ",reComputCal-》"
                                     + DateUtil.formatCalendar(reComputCal,DateUtil.DATE_FORMAT_DAFAULT));
-                            LimitComputTask limitComputTask = new LimitComputTask(indicatorTemp,reComputCal);
-                            try {
-                                limitComputTask.call();
-                                Thread.sleep(50l);
-                            } catch (Exception e) {
-                                log.error("limitComputTask call()执行出现异常->" + indicatorTemp.getIndicatorCode(),e);
-                            }
                         }
                     }.start();
+                    LimitComputTask limitComputTask = new LimitComputTask(indicatorTemp,reComputCal);
+                    try {
+                        limitComputTask.call();
+                        Thread.sleep(50l);
+                    } catch (Exception e) {
+                        log.error("limitComputTask call()执行出现异常->" + indicatorTemp.getIndicatorCode(),e);
+                    }
                 }
             }
         }
