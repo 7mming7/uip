@@ -268,31 +268,37 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
         /** 删除需要重新计算的指标实例的数据 */
         deleteNeedReComputIndicator(computCal, integerListTreeMap);
 
-        ThreadPoolExecutor _instance = ComputHelper.initThreadPooSingleInstance();
+        final ThreadPoolExecutor _instance = ComputHelper.initThreadPooSingleInstance();
         Iterator iterator = integerListTreeMap.entrySet().iterator();
         while(iterator.hasNext()){
             Map.Entry ent = (Map.Entry )iterator.next();
             Set<IndicatorTemp> indicatorTemps = (Set<IndicatorTemp>)ent.getValue();
-            for (IndicatorTemp indicatorTemp:indicatorTemps){
+            for (final IndicatorTemp indicatorTemp:indicatorTemps){
                 log.error(indicatorTemp.getId() + "->" + indicatorTemp.getIndicatorCode());
-                for (Calendar reComputCal:calendarList){
-                    deleteIndicatorTemp(reComputCal,indicatorTemp);
-                    switch (indicatorTemp.getCalType()) {
-                        case IndicatorConsts.CALTYPE_INVENTORY:
-                            sendCalculateComm(_instance, indicatorTemp, reComputCal, new InventoryStrategy());
-                            break;
-                        case IndicatorConsts.CALTYPE_ORIGINAL:
-                            sendCalculateComm(_instance, indicatorTemp, reComputCal, new PrimaryStrategy());
-                            break;
-                    }
-                    log.error("**indicatorCode->" + indicatorTemp.getIndicatorCode() + ",reComputCal-》"
-                            + DateUtil.formatCalendar(reComputCal,DateUtil.DATE_FORMAT_DAFAULT));
-                    LimitComputTask limitComputTask = new LimitComputTask(indicatorTemp,reComputCal);
-                    try {
-                        limitComputTask.call();
-                    } catch (Exception e) {
-                        log.error("limitComputTask call()执行出现异常->" + indicatorTemp.getIndicatorCode(),e);
-                    }
+                for (final Calendar reComputCal:calendarList){
+                    new Thread(){
+                        @Override
+                        public void run() {
+                            deleteIndicatorTemp(reComputCal, indicatorTemp);
+                            switch (indicatorTemp.getCalType()) {
+                                case IndicatorConsts.CALTYPE_INVENTORY:
+                                    sendCalculateComm(_instance, indicatorTemp, reComputCal, new InventoryStrategy());
+                                    break;
+                                case IndicatorConsts.CALTYPE_ORIGINAL:
+                                    sendCalculateComm(_instance, indicatorTemp, reComputCal, new PrimaryStrategy());
+                                    break;
+                            }
+                            log.error("**indicatorCode->" + indicatorTemp.getIndicatorCode() + ",reComputCal-》"
+                                    + DateUtil.formatCalendar(reComputCal,DateUtil.DATE_FORMAT_DAFAULT));
+                            LimitComputTask limitComputTask = new LimitComputTask(indicatorTemp,reComputCal);
+                            try {
+                                limitComputTask.call();
+                                Thread.sleep(50l);
+                            } catch (Exception e) {
+                                log.error("limitComputTask call()执行出现异常->" + indicatorTemp.getIndicatorCode(),e);
+                            }
+                        }
+                    }.start();
                 }
             }
         }
