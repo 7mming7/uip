@@ -257,11 +257,14 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
      * @return 重新计算是否成功
      */
     public void reComputIndicator (Calendar computCal, List<IndicatorTemp> indicatorTempList) {
-        TreeMap<Integer,Set<IndicatorTemp>> integerListTreeMap = new TreeMap<>();
         if (indicatorTempList.isEmpty()) {
             return;
         }
-        integerListTreeMap = buildIndiSortTreeMap(integerListTreeMap,indicatorTempList,0);
+
+        TreeMap<Integer,Set<IndicatorTemp>> integerListTreeMap = new TreeMap<>();
+        Set<IndicatorTemp> indicatorTempSet = new HashSet<IndicatorTemp>(indicatorTempList);
+        integerListTreeMap.put(1,indicatorTempSet);
+        integerListTreeMap = buildIndiSortTreeMap(integerListTreeMap,indicatorTempList,1);
         Calendar tempCal = (Calendar) computCal.clone();
         List<Calendar> calendarList = DateUtil.dayListSinceCal(tempCal);
 
@@ -352,7 +355,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
             List<IndicatorTemp> indicatorTempList,
             Integer level) {
         Searchable searchable = Searchable.newSearchable()
-                .addSearchFilter("dataSource", MatchType.EQ, IndicatorConsts.DATASOURCE_CALCULATE);
+                .addSearchFilter("dataSource", MatchType.NE, IndicatorConsts.DATASOURCE_INTERFACE);
 
         OrCondition orCondition = new OrCondition();
         for (IndicatorTemp indicatorTemp : indicatorTempList) {
@@ -368,8 +371,9 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
 
         Set<IndicatorTemp> indicatorTempSet = new HashSet<>(indicatorTemps);
 
-        integerListTreeMap.put(level, indicatorTempSet);
         level = level + 1;
+        integerListTreeMap.put(level, indicatorTempSet);
+
         return buildIndiSortTreeMap(integerListTreeMap, indicatorTemps, level);
     }
 
