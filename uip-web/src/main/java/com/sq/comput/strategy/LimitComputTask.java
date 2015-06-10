@@ -72,6 +72,7 @@ public class LimitComputTask implements Callable<List<LimitInstance>> {
         List<LimitTemplate> limitTemplateList = limitTempRepository.findAll(searchable).getContent();
         for (LimitTemplate limitTemplate:limitTemplateList) {
             limitInstanceList.add(limitInstanceService.execLimitComput(limitTemplate,computCal));
+            this.limitInstanceService.save(limitInstanceService.execLimitComput(limitTemplate,computCal));
         }
         return limitInstanceList;
     }

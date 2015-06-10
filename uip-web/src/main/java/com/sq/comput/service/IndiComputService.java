@@ -4,6 +4,7 @@ import com.sq.comput.component.ComputHelper;
 import com.sq.comput.domain.IndicatorConsts;
 import com.sq.comput.domain.IndicatorInstance;
 import com.sq.comput.domain.IndicatorTemp;
+import com.sq.comput.domain.LimitInstance;
 import com.sq.comput.repository.IndicatorInstanceRepository;
 import com.sq.comput.repository.IndicatorTempRepository;
 import com.sq.comput.strategy.*;
@@ -289,7 +290,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
                             + DateUtil.formatCalendar(reComputCal,DateUtil.DATE_FORMAT_DAFAULT));
                     LimitComputTask limitComputTask = new LimitComputTask(indicatorTemp,reComputCal);
                     try {
-                        limitAllDayComput(reComputCal);
+                        limitComputTask.call();
                     } catch (Exception e) {
                         log.error("limitComputTask call()执行出现异常->" + indicatorTemp.getIndicatorCode(),e);
                     }
