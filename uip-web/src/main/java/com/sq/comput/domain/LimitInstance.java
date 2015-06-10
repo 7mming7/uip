@@ -31,7 +31,7 @@ public class LimitInstance extends LimitBase{
 
     @ManyToOne(cascade= CascadeType.REFRESH, fetch= FetchType.LAZY)
     @JoinColumn(name="indicatorInstanceId")
-    @org.hibernate.annotations.ForeignKey(name="fk_lt_indiInstanceId")
+    @org.hibernate.annotations.ForeignKey(name="fk_li_indiInstanceId")
     @NotFound(action= NotFoundAction.IGNORE)
     private IndicatorInstance indicatorInstance;
 
@@ -52,6 +52,10 @@ public class LimitInstance extends LimitBase{
     @Override
     public void setId(Long id) {
         this.id = id;
+    }
+
+
+    public LimitInstance() {
     }
 
     public LimitInstance(LimitTemplate limitTemplate){

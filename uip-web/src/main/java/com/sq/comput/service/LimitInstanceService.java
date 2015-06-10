@@ -103,7 +103,9 @@ public class LimitInstanceService extends BaseService<LimitInstance,Integer> {
         limitInstance.setCreateTime(Calendar.getInstance());
 
         IndicatorInstance indicatorInstance = indicatorInstanceMap.get(limitTemplate.getIndicatorTemp().getIndicatorCode());
-        if (null == indicatorInstance) return null;
+        if (null == indicatorInstance) {
+            return null;
+        }
 
         limitInstance.setIndicatorInstance(indicatorInstance);
         if (limitTemplate.getLimitType() == IndicatorConsts.LIMIT_TYPE_UPPER) {
@@ -152,21 +154,15 @@ public class LimitInstanceService extends BaseService<LimitInstance,Integer> {
      */
     public LimitInstance execLimitComput(LimitTemplate limitTemplate, Calendar computCal) {
         LimitInstance limitInstance = new LimitInstance(limitTemplate);
-        String dynamicExpression = limitInstance.getExpression();
-        Evaluator evaluator = ComputHelper.getEvaluatorInstance();
-        List<String> variableList = ComputHelper.getVariableList(dynamicExpression,evaluator);
-        for (String variable:variableList) {
-            Searchable searchable = Searchable.newSearchable()
-                    .addSearchFilter("indicatorCode", MatchType.EQ, variable)
-                    .addSearchFilter("instanceTime", MatchType.EQ, computCal);
-            List<IndicatorInstance> indicatorInstanceList = indicatorInstanceRepository.findAll(searchable).getContent();
+        Searchable searchable = Searchable.newSearchable()
+                .addSearchFilter("statDateNum", MatchType.EQ, DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULT));
+        List<IndicatorInstance> indicatorInstanceList = indicatorInstanceRepository.findAll(searchable).getContent();
 
-            Map<String,IndicatorInstance> indicatorInstanceMap = new HashMap<String,IndicatorInstance>();
-            for (IndicatorInstance indicatorInstance:indicatorInstanceList) {
-                indicatorInstanceMap.put(indicatorInstance.getIndicatorCode(),indicatorInstance);
-                limitInstance = generateCalculateSingleLimitRecord(limitTemplate, indicatorInstanceMap);
-            }
+        Map<String,IndicatorInstance> indicatorInstanceMap = new HashMap<String,IndicatorInstance>();
+        for (IndicatorInstance indicatorInstance:indicatorInstanceList) {
+            indicatorInstanceMap.put(indicatorInstance.getIndicatorCode(),indicatorInstance);
         }
+        limitInstance = generateCalculateSingleLimitRecord(limitTemplate, indicatorInstanceMap);
         limitInstanceRepository.saveAndFlush(limitInstance);
         return limitInstance;
     }
