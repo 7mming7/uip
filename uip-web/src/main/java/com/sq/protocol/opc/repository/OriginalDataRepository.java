@@ -5,6 +5,7 @@ import com.sq.repository.BaseRepository;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -30,5 +31,5 @@ public interface OriginalDataRepository extends BaseRepository<OriginalData, Lon
     Long gernateNextBatchNumber();
 
     /** 查询指标测点一小时内的数据 */
-    List<OriginalData> listAnHourPreOriginalData(String indiCode);
+    List<OriginalData> listAnHourPreOriginalData(String tableName, String indiCode, Calendar computCal);
 }

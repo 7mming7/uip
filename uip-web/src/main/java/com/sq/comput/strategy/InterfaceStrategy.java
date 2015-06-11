@@ -50,7 +50,6 @@ public class InterfaceStrategy extends IComputStrategy {
 
     private static MesuringPointRepository mesuringPointRepository = SpringUtils.getBean(MesuringPointRepository.class);
 
-
     @Override
     public Object execIndiComput(IndicatorTemp indicatorTemp, Calendar computCal) {
         Evaluator evaluator = ComputHelper.getEvaluatorInstance();
@@ -72,11 +71,15 @@ public class InterfaceStrategy extends IComputStrategy {
             return null;
         }
         mesuringPoint = mesuringPointList.get(0);
-        Searchable searchable = Searchable.newSearchable()
-                .addSearchFilter("itemCode", MatchType.EQ, mesuringPoint.getSourceCode())
-                .addSearchFilter("instanceTime", MatchType.LTE, computDate[1])
-                .addSearchFilter("instanceTime", MatchType.GTE, computDate[0]);
-        List<OriginalData> originalDataList = originalDataRepository.findAll(searchable).getContent();
+
+        String sourceYMDate = DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_YYMM);
+        String sourceYMDDate = DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_DAFAULT);
+        String currentDate = DateUtil.formatCalendar(Calendar.getInstance(), DateUtil.DATE_FORMAT_DAFAULT);
+        String tableName = "t_originaldata";
+        if (!sourceYMDDate.equals(currentDate)) {
+            tableName = tableName + "_migration" + sourceYMDate;
+        }
+        List<OriginalData> originalDataList = originalDataRepository.listAnHourPreOriginalData(tableName, mesuringPoint.getSourceCode(), computCal);
 
         StringBuilder variableBuilder = new StringBuilder();
         if (originalDataList.isEmpty()) {

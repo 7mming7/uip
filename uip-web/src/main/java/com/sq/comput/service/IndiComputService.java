@@ -263,7 +263,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
 
         TreeMap<Integer,Set<IndicatorTemp>> integerListTreeMap = new TreeMap<>();
         Set<IndicatorTemp> indicatorTempSet = new HashSet<IndicatorTemp>(indicatorTempList);
-        integerListTreeMap.put(1,indicatorTempSet);
+        integerListTreeMap.put(1, indicatorTempSet);
         integerListTreeMap = buildIndiSortTreeMap(integerListTreeMap,indicatorTempList,1);
         Calendar tempCal = (Calendar) computCal.clone();
         List<Calendar> calendarList = DateUtil.dayListSinceCal(tempCal);
@@ -278,35 +278,86 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
             Set<IndicatorTemp> indicatorTemps = (Set<IndicatorTemp>)ent.getValue();
             for (final IndicatorTemp indicatorTemp:indicatorTemps){
                 log.error(indicatorTemp.getId() + "->" + indicatorTemp.getIndicatorCode());
-                for (final Calendar reComputCal:calendarList){
-                    new Thread(){
-                        @Override
-                        public void run() {
-                            deleteIndicatorTemp(reComputCal, indicatorTemp);
-                            switch (indicatorTemp.getCalType()) {
-                                case IndicatorConsts.CALTYPE_INVENTORY:
-                                    sendCalculateComm(_instance, indicatorTemp, reComputCal, new InventoryStrategy());
-                                    break;
-                                case IndicatorConsts.CALTYPE_ORIGINAL:
-                                    sendCalculateComm(_instance, indicatorTemp, reComputCal, new PrimaryStrategy());
-                                    break;
-                            }
-                            log.error("**indicatorCode->" + indicatorTemp.getIndicatorCode() + ",reComputCal-》"
-                                    + DateUtil.formatCalendar(reComputCal,DateUtil.DATE_FORMAT_DAFAULT));
-                        }
-                    }.start();
-                    LimitComputTask limitComputTask = new LimitComputTask(indicatorTemp,reComputCal);
-                    try {
-                        limitComputTask.call();
-                        Thread.sleep(50l);
-                    } catch (Exception e) {
-                        log.error("limitComputTask call()执行出现异常->" + indicatorTemp.getIndicatorCode(),e);
-                    }
+
+                switch (indicatorTemp.getDataSource()) {
+                    case IndicatorConsts.DATASOURCE_ENTRY:
+                        break;
+                    case IndicatorConsts.DATASOURCE_CALCULATE:
+                        reCalculateIndi(_instance, indicatorTemp, calendarList);
+                        break;
+                    case IndicatorConsts.DATASOURCE_INTERFACE:
+                        break;
                 }
             }
         }
 
         _instance.shutdown();
+    }
+
+    /**
+     * 计算指标的重计算
+     * @param _instance      计算线程池
+     * @param indicatorTemp  待计算指标模板
+     * @param calendarList   待重计算日期区间
+     */
+    public void reCalculateIndi (final ThreadPoolExecutor _instance, final IndicatorTemp indicatorTemp, List<Calendar> calendarList) {
+        for (final Calendar reComputCal:calendarList){
+            new Thread(){
+                @Override
+                public void run() {
+                    deleteIndicatorTemp(reComputCal, indicatorTemp);
+                    switch (indicatorTemp.getCalType()) {
+                        case IndicatorConsts.CALTYPE_INVENTORY:
+                            sendCalculateComm(_instance, indicatorTemp, reComputCal, new InventoryStrategy());
+                            break;
+                        case IndicatorConsts.CALTYPE_ORIGINAL:
+                            sendCalculateComm(_instance, indicatorTemp, reComputCal, new PrimaryStrategy());
+                            break;
+                    }
+                    log.error("**indicatorCode->" + indicatorTemp.getIndicatorCode() + ",reComputCal-》"
+                            + DateUtil.formatCalendar(reComputCal,DateUtil.DATE_FORMAT_DAFAULT));
+                }
+            }.start();
+            LimitComputTask limitComputTask = new LimitComputTask(indicatorTemp,reComputCal);
+            try {
+                limitComputTask.call();
+                Thread.sleep(50l);
+            } catch (Exception e) {
+                log.error("limitComputTask call()执行出现异常->" + indicatorTemp.getIndicatorCode(),e);
+            }
+        }
+    }
+
+    /**
+     * 接口指标的批量计算
+     * @param startComputCal       开始计算时间
+     * @param startComputCal       结束计算时间
+     * @param indicatorTempList    指标模板列表
+     */
+    public void reComputInterface (Calendar startComputCal,Calendar endComputCal, List<IndicatorTemp> indicatorTempList ) {
+        final ThreadPoolExecutor _instance = ComputHelper.initThreadPooSingleInstance();
+        List<Calendar> calendarList = DateUtil.dayListSinceCal(startComputCal, endComputCal);
+        for (IndicatorTemp indicatorTemp:indicatorTempList) {
+            reInterfaceIndi(_instance, indicatorTemp, calendarList);
+        }
+    }
+
+    /**
+     * 接口指标的重计算
+     * @param _instance      计算线程池
+     * @param indicatorTemp  待计算指标模板
+     * @param calendarList   待重计算日期区间
+     */
+    public void reInterfaceIndi (final ThreadPoolExecutor _instance, final IndicatorTemp indicatorTemp, List<Calendar> calendarList) {
+        List<IndicatorInstance> indicatorInstanceList = new ArrayList<IndicatorInstance>();
+        for (Calendar computCal:calendarList) {
+            List<Calendar> dayCalendarList = DateUtil.get24Hours(computCal);
+            for (Calendar calendar:dayCalendarList) {
+                IndicatorInstance indicatorInstance = sendCalculateComm(_instance, indicatorTemp, calendar, new InterfaceStrategy());
+                indicatorInstanceList.add(indicatorInstance);
+            }
+        }
+        this.indicatorInstanceRepository.save(indicatorInstanceList);
     }
 
     /**

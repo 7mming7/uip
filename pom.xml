@@ -14,7 +14,6 @@
   <!--项目中包含的模块 -->
   <modules>
     <module>uip-parent</module>
-    <module>uip-videomonitor</module>
   </modules>
 
   <build>

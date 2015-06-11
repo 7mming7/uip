@@ -2,10 +2,7 @@ package com.sq.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 时间相关util.
@@ -703,6 +700,22 @@ public class DateUtil {
     }
 
     /**
+     * 获取一天24个时间点
+     * @param calendar
+     * @return
+     */
+    public static List<Calendar> get24Hours (Calendar calendar) {
+        List<Calendar> calendarList = new ArrayList<Calendar>();
+        for (int i=1;i<=24;i++) {
+            Calendar clone = (Calendar) calendar.clone();
+            clone.add(Calendar.HOUR_OF_DAY, i);
+            calendarList.add(clone);
+            System.out.println(formatCalendar(clone,DATE_FORMAT_YMDHMS));
+        }
+        return calendarList;
+    }
+
+    /**
      * 获取前一天的日期
      * @param calendar
      * @return
@@ -726,10 +739,8 @@ public class DateUtil {
     public static void main(String[] args) {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DAY_OF_MONTH, 1);
-        cal.add(Calendar.MONTH, -4);
-        int[] calendarList = DateUtil.getMonthFirstAndInputInt(cal);
-        for (Integer it : calendarList) {
-            System.out.println(it);
-        }
+        cal.set(Calendar.HOUR_OF_DAY,0);
+        cal.set(Calendar.MINUTE, 0);
+        List<Calendar> calendarList = DateUtil.get24Hours(cal);
     }
 }

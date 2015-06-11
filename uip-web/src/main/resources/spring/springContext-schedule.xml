@@ -121,7 +121,7 @@
         <!-- 调用的类 -->
         <property name="targetObject" ref="schedulerExecuteService"/>
         <!-- 调用类中的方法 -->
-        <property name="targetMethod" value="execLoadometerOrignalDataGathering" />
+        <property name="targetMethod" value="execLoadometerIndicatorData" />
         <!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
         <property name="concurrent" value="false"/>
     </bean>
