@@ -285,8 +285,6 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
                     case IndicatorConsts.DATASOURCE_CALCULATE:
                         reCalculateIndi(_instance, indicatorTemp, calendarList);
                         break;
-                    case IndicatorConsts.DATASOURCE_INTERFACE:
-                        break;
                 }
             }
         }
