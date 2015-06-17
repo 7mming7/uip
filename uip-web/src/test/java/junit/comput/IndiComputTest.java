@@ -37,7 +37,7 @@ public class IndiComputTest extends TestCase {
     @Autowired
     private SocketServer socketServerComp;
 
-    @Test
+    /*@Test
     public void testInterfaceDataGather () {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DATE, 26);
@@ -47,6 +47,17 @@ public class IndiComputTest extends TestCase {
         System.out.println("uuuuuuuuuuuuu" + DateUtil.formatCalendar(cal, DateUtil.DATE_FORMAT_Y_M_D));
         this.indiComputService.interfaceDataGather(cal);
     }
+
+    @Test
+    public void testInterfaceReComput () {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DAY_OF_MONTH, 2);
+        cal.set(Calendar.HOUR_OF_DAY,0);
+        cal.set(Calendar.MINUTE, 0);
+        List<IndicatorTemp> indicatorTempList = new ArrayList<IndicatorTemp>();
+        indicatorTempList.add(indicatorTempService.findOne(1l));
+        this.indiComputService.reComputInterface(cal,cal,indicatorTempList);
+    }*/
 
     /*@Test
 
@@ -59,7 +70,7 @@ public class IndiComputTest extends TestCase {
         this.indiComputService.reComputIndicator(cal,indicatorTempList);
     }*/
 
-    @Test
+    /*@Test
     public void testCalculateDataGather () {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DATE, 1);
@@ -74,7 +85,7 @@ public class IndiComputTest extends TestCase {
         cal.set(Calendar.DATE, 3);
         cal.set(Calendar.MONTH, 5);
         this.indiComputService.interfaceIndicatorDataGater(cal);
-    }
+    }*/
 
     /*@Test
     public void batchSave(){

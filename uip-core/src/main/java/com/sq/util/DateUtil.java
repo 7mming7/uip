@@ -207,7 +207,7 @@ public class DateUtil {
                 startCal.add(Calendar.DATE, 1);
                 calendarList.add(DateUtil.stringToCalendar(formatDate(startCal.getTime(), DATE_FORMAT_DAFAULT),DateUtil.DATE_FORMAT_DAFAULT));
             }
-            calendarList.remove(calendarList.size() - 1);
+            /*calendarList.remove(calendarList.size() - 1);*/
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -710,7 +710,7 @@ public class DateUtil {
             Calendar clone = (Calendar) calendar.clone();
             clone.add(Calendar.HOUR_OF_DAY, i);
             calendarList.add(clone);
-            System.out.println(formatCalendar(clone,DATE_FORMAT_YMDHMS));
+
         }
         return calendarList;
     }
@@ -741,6 +741,13 @@ public class DateUtil {
         cal.set(Calendar.DAY_OF_MONTH, 1);
         cal.set(Calendar.HOUR_OF_DAY,0);
         cal.set(Calendar.MINUTE, 0);
-        List<Calendar> calendarList = DateUtil.get24Hours(cal);
+        Calendar cal1 = Calendar.getInstance();
+        cal1.set(Calendar.DAY_OF_MONTH, 3);
+        cal1.set(Calendar.HOUR_OF_DAY,0);
+        cal1.set(Calendar.MINUTE, 0);
+        List<Calendar> calendarList = DateUtil.dayListSinceCal(cal, cal1);
+        for (Calendar calendar:calendarList) {
+            System.out.println(formatCalendar(calendar));
+        }
     }
 }

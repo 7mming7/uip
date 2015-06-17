@@ -349,13 +349,16 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
     public void reInterfaceIndi (final ThreadPoolExecutor _instance, final IndicatorTemp indicatorTemp, List<Calendar> calendarList) {
         List<IndicatorInstance> indicatorInstanceList = new ArrayList<IndicatorInstance>();
         for (Calendar computCal:calendarList) {
+            Searchable searchable = Searchable.newSearchable()
+                    .addSearchFilter("statDateNum", MatchType.EQ, DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULT));
+            indicatorInstanceRepository.delete(indicatorInstanceRepository.findAll(searchable).getContent());
             List<Calendar> dayCalendarList = DateUtil.get24Hours(computCal);
             for (Calendar calendar:dayCalendarList) {
+                System.out.println(DateUtil.formatCalendar(calendar, DateUtil.DATE_FORMAT_YMDHMS));
                 IndicatorInstance indicatorInstance = sendCalculateComm(_instance, indicatorTemp, calendar, new InterfaceStrategy());
                 indicatorInstanceList.add(indicatorInstance);
             }
         }
-        this.indicatorInstanceRepository.save(indicatorInstanceList);
     }
 
     /**

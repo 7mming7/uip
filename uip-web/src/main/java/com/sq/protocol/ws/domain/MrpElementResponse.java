@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * web service基础响应抽象模型
+ * controller service基础响应抽象模型
  * @author ShuiQing PM	
  * 2014年11月19日 下午4:31:50
  */

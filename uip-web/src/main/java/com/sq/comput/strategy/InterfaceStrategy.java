@@ -72,14 +72,15 @@ public class InterfaceStrategy extends IComputStrategy {
         }
         mesuringPoint = mesuringPointList.get(0);
 
-        String sourceYMDate = DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_YYMM);
+        String sourceYMDate = DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_MONTH);
         String sourceYMDDate = DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_DAFAULT);
         String currentDate = DateUtil.formatCalendar(Calendar.getInstance(), DateUtil.DATE_FORMAT_DAFAULT);
         String tableName = "t_originaldata";
         if (!sourceYMDDate.equals(currentDate)) {
             tableName = tableName + "_migration" + sourceYMDate;
         }
-        List<OriginalData> originalDataList = originalDataRepository.listAnHourPreOriginalData(tableName, mesuringPoint.getSourceCode(), computCal);
+        System.out.println("-----------" + DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_YMDHMS));
+        List<OriginalData> originalDataList = originalDataRepository.listAnHourPreOriginalData(tableName, mesuringPoint.getTargetCode(), computCal);
 
         StringBuilder variableBuilder = new StringBuilder();
         if (originalDataList.isEmpty()) {
