@@ -63,7 +63,15 @@
           <a href="../account/tables.html"><i class="fa fa-bar-chart-o fa-fw"></i> 接口配置<span class="fa arrow"></span></a>
           <ul class="nav nav-second-level">
             <li>
-              <a class="${currentHeader == 'interface-config' ? 'active' : ''}" href="${ctx}/mepoint/mepoint-list.do">测点管理</a>
+              <a class="${currentHeader == 'interface-config' ? 'active' : ''}" href="${ctx}/content/mepoint/mepoint-list.do">测点管理</a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="../account/tables.html"><i class="fa fa-bar-chart-o fa-fw"></i>  数据汇集<span class="fa arrow"></span></a>
+          <ul class="nav nav-second-level">
+            <li>
+              <a class="${currentHeader == 'interface-config' ? 'active' : ''}" href="${ctx}/content/comput/reInterfaceComput.jsp">接口重计算</a>
             </li>
           </ul>
         </li>
