@@ -23,12 +23,16 @@ public interface JodbcConsts {
 
     /** ======================
      *   接口系统编号
-     *      1、opc
+     *      1、opc dcs
      *      2、odbc 地磅
+     *      3、opc ecs
+     *      4、opc
      */
     public static final int SYS_OPC_DCS = 1;
 
     public static final int SYS_ODBC_LOADOMETER = 2;
 
     public static final int SYS_OPC_ECS = 3;
+
+    public static final int SYS_OPC_SLY = 4;
 }

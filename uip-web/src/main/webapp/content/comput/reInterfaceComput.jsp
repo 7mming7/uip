@@ -48,15 +48,15 @@
               <div class="col-lg-6">
                 <form action="" class="form-inhine" role="form">
                   <div class="form-group">
-                    <label for="dtp_input1" class="col-md-2 control-label">开始时间</label>
+                    <label for="dtp_input1" class="col-md-3 control-label">开始时间</label>
                     <div class="input-group date form_date col-md-5" data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input1" data-link-format="yyyy-mm-dd">
-                      <input class="form-control" size="16" type="text" value="" readonly>
+                      <input class="form-control col-md-5" size="16" type="text" value="" readonly>
                       <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
                     </div>
                     <input type="hidden" id="dtp_input1" value="" /><br/>
                   </div>
                   <div class="form-group">
-                    <label for="dtp_input3" class="col-md-2 control-label">指标编码</label>
+                    <label for="dtp_input3" class="col-md-3 control-label">指标编码</label>
                     <div class="input-group text col-md-5">
                       <input class="form-control" type="text">
                     </div>
@@ -67,7 +67,7 @@
               <!-- /.col-lg-6 (nested) -->
               <div class="col-lg-6">
                 <div class="form-group">
-                  <label for="dtp_input2" class="col-md-2 control-label">结束时间</label>
+                  <label for="dtp_input2" class="col-md-3 control-label">结束时间</label>
                   <div class="input-group date form_date col-md-5" data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input1" data-link-format="yyyy-mm-dd">
                     <input class="form-control" size="16" type="text" value="" readonly>
                     <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>

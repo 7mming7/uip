@@ -7,6 +7,7 @@ import com.sq.protocol.jodbc.domain.JodbcConsts;
 import com.sq.protocol.jodbc.domain.Threshold;
 import com.sq.protocol.jodbc.domain.Trade;
 import com.sq.protocol.jodbc.repository.TradeDataRepository;
+import com.sq.protocol.opc.repository.OriginalDataRepository;
 import com.sq.service.BaseService;
 import com.sq.util.DateUtil;
 import org.slf4j.LoggerFactory;
@@ -39,21 +40,28 @@ public class TradeService extends BaseService<Trade, Long> {
     @BaseComponent
     private TradeDataRepository tradeDataRepository;
 
+    @Autowired
+    private OriginalDataRepository originalDataRepository;
+
     /**
      * 查询指标的增量数据
      */
     public void listTradesBySearchable(){
         Threshold threshold = tradeDataRepository.maxThreshold();
         ResultSet rs = null;
-        Statement statement = JodbcConnectHelper.connect(JodbcConsts.DB_SQLSERVER);
+        Connection conn = JodbcConnectHelper.connect(JodbcConsts.DB_SQLSERVER);
 
         String sql = "select obj.* from Trade obj where obj.id > " + threshold.getId();
         try {
+            Statement statement = conn.createStatement();
             rs = statement.executeQuery(sql);
+            statement.close();
         } catch (SQLException e) {
             log.error("listTradesBySearchable Sql执行出错.",e);
         }
-        tradeDataPush(rs);
+        tradeDataSync(rs);
+        pushTradeOrignalData(rs);
+        JodbcConnectHelper.releaseConn(conn);
     }
 
 
@@ -62,38 +70,27 @@ public class TradeService extends BaseService<Trade, Long> {
      */
     public void initializationTrades(){
         ResultSet rs = null;
-        Statement statement = JodbcConnectHelper.connect(JodbcConsts.DB_SQLSERVER);
+        Connection conn = JodbcConnectHelper.connect(JodbcConsts.DB_SQLSERVER);
         String sql = "select obj.* from Trade obj ";
         try {
+            Statement statement = conn.createStatement();
             rs = statement.executeQuery(sql);
+            statement.close();
         } catch (SQLException e) {
             log.error("initializationTrades Sql执行出错.",e);
         }
-        tradeDataPush(rs);
-    }
-
-    /**
-     * 统计计算指标数据
-     */
-    public List<IndicatorInstance> genTradeIndicators(Calendar calendar){
-        List<IndicatorInstance> indicatorInstances = new ArrayList<IndicatorInstance>();
-        try {
-
-            Calendar[] calArray = DateUtil.getDayFirstAndLastCal(calendar);
-            indicatorInstances = this.tradeDataRepository.genTradeIndicators(calArray);
-        } catch (Exception e) {
-            log.error("查询地磅数据出现错误.", e);
-        }
-        return indicatorInstances;
+        tradeDataSync(rs);
+        pushTradeOrignalData(rs);
+        JodbcConnectHelper.releaseConn(conn);
     }
 
     /**
      * 地磅数据同步
      * @param rs
      */
-    private void tradeDataPush(ResultSet rs){
+    private void tradeDataSync(ResultSet rs){
         PreparedStatement preparedStatement = null;
-        Connection connection =  JodbcConnectHelper.connectForPst(JodbcConsts.DB_MYSQL);
+        Connection connection =  JodbcConnectHelper.connect(JodbcConsts.DB_MYSQL);
 
         Long lastMaxValue = null;
         StringBuilder sb = new StringBuilder();
@@ -173,6 +170,39 @@ public class TradeService extends BaseService<Trade, Long> {
             preparedStatement.clearBatch();
             sql = "INSERT INTO T_Threshold (lastUpdateTime ,lastMaxValue ) VALUES (now()," + lastMaxValue + ")";
             preparedStatement.execute(sql);
+            preparedStatement.close();
+        } catch (SQLException e) {
+            log.error("JDBC SQL执行出错.",e);
+        }
+    }
+
+    /**
+     * 推送地磅数据到数据原始表中
+     * @param rs
+     */
+    private void pushTradeOrignalData(ResultSet rs){
+        PreparedStatement preparedStatement = null;
+        Connection connection =  JodbcConnectHelper.connect(JodbcConsts.DB_MYSQL);
+
+        Long nextBatchNum = originalDataRepository.gernateNextBatchNumber(JodbcConsts.SYS_ODBC_LOADOMETER);
+        StringBuilder sb = new StringBuilder();
+        sb.append(" INSERT INTO t_originaldata ( ")
+                .append("    batchNum,instanceTime,itemCode,")
+                .append("    itemValue,sysId )")
+                .append("  VALUES(?,?,?,?,?)");
+        String sql = sb.toString();
+        try {
+            preparedStatement = connection.prepareStatement(sql);
+            while(rs.next()){
+                preparedStatement.setLong(1, nextBatchNum);
+                preparedStatement.setString(2, rs.getString("seconddatetime"));
+                preparedStatement.setString(3, rs.getString("productcode"));
+                preparedStatement.setString(4, rs.getString("productnet"));
+                preparedStatement.setInt(5, JodbcConsts.SYS_ODBC_LOADOMETER);
+                preparedStatement.addBatch();
+            }
+            preparedStatement.executeBatch();
+            preparedStatement.clearBatch();
             preparedStatement.close();
         } catch (SQLException e) {
             log.error("JDBC SQL执行出错.",e);

@@ -29,29 +29,23 @@ public class JodbcConnectHelper {
 
     private static Properties prop;
 
-    private static Connection connection;
-
-    public static Statement connect(int dbType) {
-        Statement statement = null;
-        try {
-            DblinkConfig configuration = new DblinkConfig();
-            configuration.loadConfigProperties(CONFIG_FILE_NAME);
-            connection = configuration.openCon(dbType);
-            statement = connection.createStatement();
-        } catch (SQLException e) {
-            log.error("ODBC.OdbcConnectHelper connect出现异常.", e);
-        }
-        return statement;
-    }
-
-    public static Connection connectForPst(int dbType) {
+    /**
+     * create a connection.
+     * @param dbType 数据库类型
+     * @return 连接实例
+     */
+    public static Connection connect(int dbType) {
         DblinkConfig configuration = new DblinkConfig();
         configuration.loadConfigProperties(CONFIG_FILE_NAME);
-        connection = configuration.openCon(dbType);
+        Connection connection = configuration.openCon(dbType);
         return connection;
     }
 
-    public static void releaseConn() {
+    /**
+     * release a connection.
+     * @param connection  已经创建的实例
+     */
+    public static void releaseConn(Connection connection) {
         try {
             connection.close();
         } catch (SQLException e) {

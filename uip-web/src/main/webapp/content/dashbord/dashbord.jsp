@@ -26,11 +26,6 @@
 
     <%@include file="/content/include/jslib.jsp" %>
     <%@include file="/content/include/csslib.jsp" %>
-    <link rel="stylesheet" type="text/css" href="<c:url value="/static/framework/font-awesome-4.1.0/css/font-awesome.min.css"/>" >
-    <link rel="stylesheet" type="text/css" href="<c:url value="/static/framework/css/plugins/metisMenu/metisMenu.min.css"/>" >
-    <link rel="stylesheet" type="text/css" href="<c:url value="/static/framework/css/plugins/timeline.css"/>" >
-    <link rel="stylesheet" type="text/css" href="<c:url value="/static/framework/css/sb-admin-2.css"/>" >
-    <link rel="stylesheet" type="text/css" href="<c:url value="/static/framework/css/plugins/morris.css"/>" >
 
 </head>
 

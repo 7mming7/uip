@@ -272,34 +272,39 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
         deleteNeedReComputIndicator(computCal, integerListTreeMap);
 
         final ThreadPoolExecutor _instance = ComputHelper.initThreadPooSingleInstance();
-        Iterator iterator = integerListTreeMap.entrySet().iterator();
-        while(iterator.hasNext()){
-            Map.Entry ent = (Map.Entry )iterator.next();
-            Set<IndicatorTemp> indicatorTemps = (Set<IndicatorTemp>)ent.getValue();
-            for (final IndicatorTemp indicatorTemp:indicatorTemps){
-                log.error(indicatorTemp.getId() + "->" + indicatorTemp.getIndicatorCode());
-
-                switch (indicatorTemp.getDataSource()) {
-                    case IndicatorConsts.DATASOURCE_ENTRY:
-                        break;
-                    case IndicatorConsts.DATASOURCE_CALCULATE:
-                        reCalculateIndi(_instance, indicatorTemp, calendarList);
-                        break;
+        for (final Calendar reComputCal:calendarList) {
+            Iterator iterator = integerListTreeMap.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry ent = (Map.Entry) iterator.next();
+                Set<IndicatorTemp> indicatorTemps = (Set<IndicatorTemp>) ent.getValue();
+                for (final IndicatorTemp indicatorTemp : indicatorTemps) {
+                    log.error(indicatorTemp.getId() + "->" + indicatorTemp.getIndicatorCode());
+                    try {
+                        Thread.sleep(50l);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    switch (indicatorTemp.getDataSource()) {
+                        case IndicatorConsts.DATASOURCE_ENTRY:
+                            break;
+                        case IndicatorConsts.DATASOURCE_CALCULATE:
+                            reCalculateIndi(_instance, indicatorTemp, reComputCal);
+                            break;
+                    }
                 }
             }
         }
 
-        _instance.shutdown();
+        /*_instance.shutdown();*/
     }
 
     /**
      * 计算指标的重计算
      * @param _instance      计算线程池
      * @param indicatorTemp  待计算指标模板
-     * @param calendarList   待重计算日期区间
+     * @param reComputCal   待重计算日期
      */
-    public void reCalculateIndi (final ThreadPoolExecutor _instance, final IndicatorTemp indicatorTemp, List<Calendar> calendarList) {
-        for (final Calendar reComputCal:calendarList){
+    public void reCalculateIndi (final ThreadPoolExecutor _instance, final IndicatorTemp indicatorTemp, final Calendar reComputCal) {
             new Thread(){
                 @Override
                 public void run() {
@@ -316,14 +321,13 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
                             + DateUtil.formatCalendar(reComputCal,DateUtil.DATE_FORMAT_DAFAULT));
                 }
             }.start();
-            LimitComputTask limitComputTask = new LimitComputTask(indicatorTemp,reComputCal);
+           /* LimitComputTask limitComputTask = new LimitComputTask(indicatorTemp,reComputCal);
             try {
                 limitComputTask.call();
                 Thread.sleep(50l);
             } catch (Exception e) {
                 log.error("limitComputTask call()执行出现异常->" + indicatorTemp.getIndicatorCode(),e);
-            }
-        }
+            }*/
     }
 
     /**

@@ -103,15 +103,4 @@ public class SchedulerExecuteService {
         tradeService.listTradesBySearchable();
         log.error("----------- 地磅原始数据汇集任务结束 -----------");
     }
-
-    /**
-     * 地磅数据汇集
-     */
-    public void execLoadometerIndicatorData () {
-        log.error("----------- 地磅指标数据汇集任务开始 -----------");
-        Calendar curr = Calendar.getInstance();
-        curr.add(Calendar.DAY_OF_MONTH, -1);
-        tradeService.genTradeIndicators(curr);
-        log.error("----------- 地磅指标数据汇集任务结束 -----------");
-    }
 }

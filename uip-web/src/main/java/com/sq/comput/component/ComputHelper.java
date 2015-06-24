@@ -37,10 +37,10 @@ public class ComputHelper {
     private static Evaluator evaluator = null;
 
     /** 指标请求计算线程池的初始size */
-    public static int indicatorThreadPoolSize = 50;
+    public static int indicatorThreadPoolSize = 100;
 
     /** 线程超时时长 */
-    public static Long requestWaitTimeOutValue = 30l;
+    public static Long requestWaitTimeOutValue = 60l;
 
     /**
      * 同步Map对象记录了指标计算的进度

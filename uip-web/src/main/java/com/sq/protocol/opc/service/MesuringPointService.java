@@ -109,7 +109,7 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
         } catch (JIException e) {
             log.error("Read item error.",e);
         }
-        Long batchNum = originalDataRepository.gernateNextBatchNumber();
+        Long batchNum = originalDataRepository.gernateNextBatchNumber(Integer.parseInt(opcServerInfomation.getSysId()));
         List<OriginalData> originalDataList = new LinkedList<OriginalData>();
         for (Map.Entry<Item, ItemState> entry : syncItems.entrySet()) {
             log.error("key= " + entry.getKey().getId()

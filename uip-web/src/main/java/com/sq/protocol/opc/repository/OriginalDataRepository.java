@@ -27,8 +27,8 @@ public interface OriginalDataRepository extends BaseRepository<OriginalData, Lon
     void njmbDataSync();
 
     /** 获取下一数据获取DCS批次 */
-    @Query("select 1 + IFNULL(max(batchNum),0) from OriginalData")
-    Long gernateNextBatchNumber();
+    @Query("select 1 + IFNULL(max(batchNum),0) from OriginalData where sysId = ?1")
+    Long gernateNextBatchNumber(int sysId);
 
     /** 查询指标测点一小时内的数据 */
     List<OriginalData> listAnHourPreOriginalData(String tableName, String indiCode, Calendar computCal);
