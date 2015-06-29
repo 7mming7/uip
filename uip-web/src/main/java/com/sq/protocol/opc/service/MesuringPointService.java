@@ -59,7 +59,8 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
      */
     public void fetchReadSyncItems (int cid) {
         OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
-        if (opcServerInfomation.getLeafs() == null) {
+        if (opcServerInfomation.getLeafs() == null || opcServerInfomation.isConn_status()) {
+            opcServerInfomation.setLeafs(null);
             switch (BaseConfiguration.CONFIG_INIT_ITEM) {
                 case AutoGenerate:
                     OpcRegisterFactory.registerConfigItems(cid);

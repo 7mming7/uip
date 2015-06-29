@@ -22,6 +22,8 @@ public class OpcServerInfomation {
 
     private int c_id;
 
+    private boolean conn_status;
+
     private String sysId;
 
     private Server server;
@@ -70,5 +72,13 @@ public class OpcServerInfomation {
 
     public void setSysId(String sysId) {
         this.sysId = sysId;
+    }
+
+    public boolean isConn_status() {
+        return conn_status;
+    }
+
+    public void setConn_status(boolean conn_status) {
+        this.conn_status = conn_status;
     }
 }

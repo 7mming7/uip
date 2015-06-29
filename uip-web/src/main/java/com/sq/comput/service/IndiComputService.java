@@ -320,7 +320,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
                     log.error("**indicatorCode->" + indicatorTemp.getIndicatorCode() + ",reComputCal-》"
                             + DateUtil.formatCalendar(reComputCal,DateUtil.DATE_FORMAT_DAFAULT));
                 }
-            }.start();
+            }.run();
            /* LimitComputTask limitComputTask = new LimitComputTask(indicatorTemp,reComputCal);
             try {
                 limitComputTask.call();
@@ -358,7 +358,6 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
             indicatorInstanceRepository.delete(indicatorInstanceRepository.findAll(searchable).getContent());
             List<Calendar> dayCalendarList = DateUtil.get24Hours(computCal);
             for (Calendar calendar:dayCalendarList) {
-                System.out.println(DateUtil.formatCalendar(calendar, DateUtil.DATE_FORMAT_YMDHMS));
                 IndicatorInstance indicatorInstance = sendCalculateComm(_instance, indicatorTemp, calendar, new InterfaceStrategy());
                 indicatorInstanceList.add(indicatorInstance);
             }

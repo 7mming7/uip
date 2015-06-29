@@ -51,6 +51,7 @@
         <aspectj.version>1.7.4</aspectj.version>
         <spring.version>4.0.0.RELEASE</spring.version>
         <spring.data.jpa.version>1.4.1.RELEASE</spring.data.jpa.version>
+        <spring.data.mongodb.version>1.5.5.RELEASE</spring.data.mongodb.version>
 
         <hibernate.core.version>4.3.0.Final</hibernate.core.version>
         <hibernate.ehcache.version>4.3.0.Final</hibernate.ehcache.version>
@@ -80,6 +81,8 @@
         <prettytime.version>3.2.3.Final</prettytime.version>
 
         <jeval.version>0.9.4</jeval.version>
+
+        <mongodb.version>2.12.4</mongodb.version>
 
         <jsoup.version>1.7.3</jsoup.version>
         <jinterop.version>2.0.5</jinterop.version>
@@ -347,6 +350,12 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-mongodb</artifactId>
+            <version>${spring.data.mongodb.version}</version>
+        </dependency>
+
         <!-- hibernate相关jar包 -->
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -463,7 +472,6 @@
         </dependency>
 
         <!-- json 相关jar包 -->
-
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
@@ -556,6 +564,14 @@
             <artifactId>sqljdbc</artifactId>
             <version>${ojdbc.version}</version>
         </dependency>
+
+        <!-- mongodb-java-driver -->
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongo-java-driver</artifactId>
+            <version>${mongodb.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

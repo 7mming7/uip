@@ -202,12 +202,10 @@ public class DateUtil {
         }
         List<Calendar> calendarList = new LinkedList<Calendar>();
         try {
-            calendarList.add(DateUtil.stringToCalendar(formatDate(startCal.getTime(), DATE_FORMAT_DAFAULT),DateUtil.DATE_FORMAT_DAFAULT));
-            while (startCal.getTime().before(endCal.getTime())) {
-                startCal.add(Calendar.DATE, 1);
+            while (startCal.getTime().before(endCal.getTime()) || startCal.getTime().equals(endCal.getTime())) {
                 calendarList.add(DateUtil.stringToCalendar(formatDate(startCal.getTime(), DATE_FORMAT_DAFAULT),DateUtil.DATE_FORMAT_DAFAULT));
+                startCal.add(Calendar.DATE, 1);
             }
-            /*calendarList.remove(calendarList.size() - 1);*/
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -738,14 +736,14 @@ public class DateUtil {
 
     public static void main(String[] args) {
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.DAY_OF_MONTH, 1);
+        cal.set(Calendar.DAY_OF_MONTH, 18);
         cal.set(Calendar.HOUR_OF_DAY,0);
         cal.set(Calendar.MINUTE, 0);
         Calendar cal1 = Calendar.getInstance();
         cal1.set(Calendar.DAY_OF_MONTH, 3);
         cal1.set(Calendar.HOUR_OF_DAY,0);
         cal1.set(Calendar.MINUTE, 0);
-        List<Calendar> calendarList = DateUtil.dayListSinceCal(cal, cal1);
+        List<Calendar> calendarList = DateUtil.dayListSinceCal(Calendar.getInstance());
         for (Calendar calendar:calendarList) {
             System.out.println(formatCalendar(calendar));
         }

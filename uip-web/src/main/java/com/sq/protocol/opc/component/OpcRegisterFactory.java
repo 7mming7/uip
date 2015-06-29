@@ -1,14 +1,9 @@
 package com.sq.protocol.opc.component;
 
-import com.sq.protocol.opc.domain.ItemFillType;
 import com.sq.protocol.opc.domain.MesuringPoint;
 import com.sq.protocol.opc.domain.OpcServerInfomation;
 import org.jinterop.dcom.common.JIException;
 import org.openscada.opc.lib.common.ConnectionInformation;
-import org.openscada.opc.lib.common.NotConnectedException;
-import org.openscada.opc.lib.da.AddFailedException;
-import org.openscada.opc.lib.da.DuplicateGroupException;
-import org.openscada.opc.lib.da.Group;
 import org.openscada.opc.lib.da.Server;
 import org.openscada.opc.lib.da.browser.Branch;
 import org.openscada.opc.lib.da.browser.Leaf;
@@ -71,6 +66,7 @@ public class OpcRegisterFactory {
         Server server = UtgardOpcHelper.connect(cid);
         OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
         opcServerInfomation.setServer(server);
+        opcServerInfomation.setConn_status(true);
         fillItemDbRecord(opcServerInfomation, mesuringPointList);
     }
 
@@ -111,6 +107,16 @@ public class OpcRegisterFactory {
 
     public static ConnectionInformation fetchConnInfo (int c_id) {
         return conInfoMap.get(c_id).getConnectionInformation();
+    }
+
+    /**
+     * 更改opc连接的状态
+     * 自定义标示，标示当前连接是否需要重连
+     * @param cid
+     */
+    public static void changeConnStatus (int cid) {
+        OpcServerInfomation opcServerInfomation = conInfoMap.get(cid);
+        opcServerInfomation.setConn_status(false);
     }
 
     /**
