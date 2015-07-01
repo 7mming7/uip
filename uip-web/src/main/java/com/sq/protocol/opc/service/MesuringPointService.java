@@ -1,17 +1,18 @@
 package com.sq.protocol.opc.service;
 
-import com.sq.comput.domain.IndicatorConsts;
+import com.mongo.domain.MongoOrignalDataRealTime;
+import com.mongo.repository.MongoOrignalDataRealTimeRespository;
 import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
 import com.sq.inject.annotation.BaseComponent;
-import com.sq.protocol.jodbc.domain.JodbcConsts;
 import com.sq.protocol.opc.component.BaseConfiguration;
 import com.sq.protocol.opc.component.OpcRegisterFactory;
-import com.sq.protocol.opc.domain.MeaType;
 import com.sq.protocol.opc.domain.MesuringPoint;
+import com.mongo.domain.MongoOriginalDataHistory;
 import com.sq.protocol.opc.domain.OpcServerInfomation;
 import com.sq.protocol.opc.domain.OriginalData;
 import com.sq.protocol.opc.repository.MesuringPointRepository;
+import com.mongo.repository.MongoOrignalDataHistoryRespository;
 import com.sq.protocol.opc.repository.OriginalDataRepository;
 import com.sq.service.BaseService;
 import org.jinterop.dcom.common.JIException;
@@ -53,13 +54,24 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
     @Autowired
     private OriginalDataRepository originalDataRepository;
 
+    @Autowired
+    private MongoOrignalDataHistoryRespository mongoOrignalDataHistoryRespository;
+
+    @Autowired
+    private MongoOrignalDataRealTimeRespository mongoOrignalDataRealTimeRespository;
+
+    /**
+     * 实时数据缓存
+     */
+    private static Map<String,MongoOrignalDataRealTime> mongoOrignalCacheMap = new HashMap<String,MongoOrignalDataRealTime>();
+
     /**
      * 读取server下所有的ITEM
      * @param cid
      */
-    public void fetchReadSyncItems (int cid) {
+    public void fetchReadSyncItems (final int cid) {
         OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
-        if (opcServerInfomation.getLeafs() == null || opcServerInfomation.isConn_status()) {
+        if (opcServerInfomation.getLeafs() == null || !opcServerInfomation.isConn_status()) {
             opcServerInfomation.setLeafs(null);
             switch (BaseConfiguration.CONFIG_INIT_ITEM) {
                 case AutoGenerate:
@@ -74,7 +86,7 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
         Collection<Leaf> leafs = opcServerInfomation.getLeafs();
         Server server = opcServerInfomation.getServer();
         Group group = null;
-        Item[] itemArr = new Item[leafs.size()];
+        final Item[] itemArr = new Item[leafs.size()];
         try {
             int item_flag = 0;
             group = server.addGroup();
@@ -83,10 +95,24 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
                 itemArr[item_flag] = item;
                 item_flag++;
             }
-            readItemState(cid, group, itemArr);
+            final Group finalGroup = group;
+            new Thread("mysql_opc_sync_thread"){
+                @Override
+                public void run() {
+                    readItemStateMysql(cid, finalGroup, itemArr);
+                }
+            }.start();
+            new Thread("mongo_opc_sync_thread"){
+                @Override
+                public void run() {
+                    readItemStateMongo(cid, finalGroup, itemArr);
+                }
+            }.start();
+
         } catch (UnknownHostException e) {
             log.error("Host unknow error.",e);
         } catch (NotConnectedException e) {
+            OpcRegisterFactory.fetchOpcInfo(cid).setConn_status(false);
             log.error("Connnect to opc error.",e);
         } catch (JIException e) {
             log.error("Opc server connect error.",e);
@@ -98,14 +124,15 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
     }
 
     /**
-     * group读取item的同步值
+     * group读取item的同步值 mysql
      * @param group   opc group
      * @param itemArr item数组
      */
-    public void readItemState (int cid, Group group, Item[] itemArr) {
+    public void readItemStateMysql (int cid, Group group, Item[] itemArr) {
         OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
         Map<Item, ItemState> syncItems = null;
         try {
+            /** arg1 false 读取缓存数据 OPCDATASOURCE.OPC_DS_CACHE  */
             syncItems = group.read(false, itemArr);
         } catch (JIException e) {
             log.error("Read item error.",e);
@@ -128,6 +155,49 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
             originalDataList.add(originalData);
         }
         originalDataRepository.save(originalDataList);
+    }
+
+    /**
+     * group读取item的同步值 mongo
+     * @param group   opc group
+     * @param itemArr item数组
+     */
+    public void readItemStateMongo (int cid, Group group, Item[] itemArr) {
+        OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
+        Map<Item, ItemState> syncItems = null;
+        try {
+            syncItems = group.read(false, itemArr);
+        } catch (JIException e) {
+            log.error("Read item error.",e);
+        }
+        Long batchNum = originalDataRepository.gernateNextBatchNumber(Integer.parseInt(opcServerInfomation.getSysId()));
+        List<MongoOriginalDataHistory> originalDataHistoryList = new LinkedList<MongoOriginalDataHistory>();
+        List<MongoOrignalDataRealTime> originalDataRealTimeList = new LinkedList<MongoOrignalDataRealTime>();
+        for (Map.Entry<Item, ItemState> entry : syncItems.entrySet()) {
+            log.error("key= " + entry.getKey().getId()
+                    + " and value= " + entry.getValue().getValue().toString());
+            String itemValue = entry.getValue().getValue().toString();
+            if (itemValue.contains("org.jinterop.dcom.core.VariantBody$EMPTY")) {
+                continue;
+            }
+            MongoOriginalDataHistory originalData = new MongoOriginalDataHistory();
+            originalData.setItemCode(entry.getKey().getId());
+            originalData.setInstanceTime(entry.getValue().toString());
+            originalData.setItemValue(itemValue.substring(2, itemValue.length() - 2));
+            originalData.setSysId(Integer.parseInt(opcServerInfomation.getSysId()));
+            originalData.setBatchNum(batchNum);
+            originalDataHistoryList.add(originalData);
+
+            MongoOrignalDataRealTime originalDataRealTime = mongoOrignalCacheMap.get(entry.getKey().getId());
+            originalDataRealTime.setItemCode(entry.getKey().getId());
+            originalDataRealTime.setInstanceTime(entry.getValue().toString());
+            originalDataRealTime.setItemValue(itemValue.substring(2, itemValue.length() - 2));
+            originalDataRealTime.setSysId(Integer.parseInt(opcServerInfomation.getSysId()));
+            originalDataRealTime.setBatchNum(batchNum);
+            originalDataRealTimeList.add(originalDataRealTime);
+        }
+        mongoOrignalDataHistoryRespository.save(originalDataHistoryList);
+        mongoOrignalDataRealTimeRespository.save(mongoOrignalCacheMap.values());
     }
 
     /**

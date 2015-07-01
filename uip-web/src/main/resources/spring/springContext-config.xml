@@ -173,4 +173,5 @@
     <import resource="springContext-config-monitor.xml"/>
     <import resource="springContext-schedule.xml"/>
     <import resource="springContext-cxf.xml"/>
+    <import resource="springContext-mongodb.xml"/>
 </beans>

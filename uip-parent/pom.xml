@@ -51,7 +51,7 @@
         <aspectj.version>1.7.4</aspectj.version>
         <spring.version>4.0.0.RELEASE</spring.version>
         <spring.data.jpa.version>1.4.1.RELEASE</spring.data.jpa.version>
-        <spring.data.mongodb.version>1.5.5.RELEASE</spring.data.mongodb.version>
+        <spring.data.mongodb.version>1.4.1.RELEASE</spring.data.mongodb.version>
 
         <hibernate.core.version>4.3.0.Final</hibernate.core.version>
         <hibernate.ehcache.version>4.3.0.Final</hibernate.ehcache.version>
