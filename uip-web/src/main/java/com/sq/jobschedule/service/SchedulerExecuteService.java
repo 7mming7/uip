@@ -6,6 +6,7 @@ import com.sq.protocol.jodbc.service.TradeService;
 import com.sq.protocol.opc.component.BaseConfiguration;
 import com.sq.protocol.opc.service.MesuringPointService;
 import com.sq.protocol.opc.service.OriginalDataService;
+import com.sq.protocol.opc.service.PushDataThirdService;
 import com.sq.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +43,9 @@ public class SchedulerExecuteService {
 
     @Autowired
     private IndiComputService indiComputService;
+
+    @Autowired
+    private PushDataThirdService pushDataThirdService;
 
     /**
      * opc实时数据同步任务
@@ -91,7 +95,7 @@ public class SchedulerExecuteService {
      */
     public void executeNjmbDataSync(){
         log.error("----------- 大屏数据同步计算任务开始 -----------");
-        originalDataService.njmbDataSync();
+        pushDataThirdService.screenDataPush();
         log.error("----------- 大屏数据同步计算任务结束 -----------");
     }
 

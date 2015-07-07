@@ -93,16 +93,19 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
             group = server.addGroup();
             for(Leaf leaf:leafs){
                 Item item = group.addItem(leaf.getItemId());
+                System.out.println("ItemName:[" + item.getId()
+                        + "],value:" + item.read(true).getValue());
                 itemArr[item_flag] = item;
                 item_flag++;
             }
-            final Group finalGroup = group;
+            readItemStateMongo(cid, group, itemArr);
+            /*final Group finalGroup = group;
             new Thread("mysql_opc_sync_thread"){
                 @Override
                 public void run() {
                     readItemStateMysql(cid, finalGroup, itemArr);
                 }
-            }.start();
+            }.start();*/
             /*new Thread("mongo_opc_sync_thread"){
                 @Override
                 public void run() {
@@ -134,7 +137,7 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
         Map<Item, ItemState> syncItems = null;
         try {
             /** arg1 false 读取缓存数据 OPCDATASOURCE.OPC_DS_CACHE  */
-            syncItems = group.read(false, itemArr);
+            syncItems = group.read(true, itemArr);
         } catch (JIException e) {
             log.error("Read item error.",e);
         }
@@ -167,7 +170,7 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
         OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
         Map<Item, ItemState> syncItems = null;
         try {
-            syncItems = group.read(false, itemArr);
+            syncItems = group.read(true, itemArr);
         } catch (JIException e) {
             log.error("Read item error.",e);
         }
@@ -189,7 +192,7 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
             originalData.setBatchNum(batchNum);
             originalDataHistoryList.add(originalData);
 
-            MongoOrignalDataRealTime originalDataRealTime =
+            /*MongoOrignalDataRealTime originalDataRealTime =
                     mongoOrignalCacheMap.get(
                             Integer.parseInt(
                                     OpcRegisterFactory.fetchOpcInfo(cid).getSysId())).get(entry.getKey().getId());
@@ -198,11 +201,11 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
             originalDataRealTime.setItemValue(itemValue.substring(2, itemValue.length() - 2));
             originalDataRealTime.setSysId(Integer.parseInt(opcServerInfomation.getSysId()));
             originalDataRealTime.setBatchNum(batchNum);
-            originalDataRealTimeList.add(originalDataRealTime);
+            originalDataRealTimeList.add(originalDataRealTime);*/
         }
         mongoOrignalDataHistoryRespository.save(originalDataHistoryList);
-        mongoOrignalDataRealTimeRespository.save(
-                mongoOrignalCacheMap.get(Integer.parseInt(OpcRegisterFactory.fetchOpcInfo(cid).getSysId())).values());
+        /*mongoOrignalDataRealTimeRespository.save(
+                mongoOrignalCacheMap.get(Integer.parseInt(OpcRegisterFactory.fetchOpcInfo(cid).getSysId())).values());*/
     }
 
     /**

@@ -35,7 +35,7 @@
             <ref bean="opcSyncDataDetailJob"/>
         </property>
         <property name="cronExpression">
-            <value>0 */1 * * * ?</value>
+            <value>*/5 * * * * ?</value>
         </property>
     </bean>
 
