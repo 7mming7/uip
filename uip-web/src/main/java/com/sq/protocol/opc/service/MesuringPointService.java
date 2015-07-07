@@ -63,7 +63,7 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
     /**
      * 实时数据缓存
      */
-    private static Map<String,MongoOrignalDataRealTime> mongoOrignalCacheMap = new HashMap<String,MongoOrignalDataRealTime>();
+    private static Map<Integer,Map<String,MongoOrignalDataRealTime>> mongoOrignalCacheMap = new HashMap<Integer,Map<String,MongoOrignalDataRealTime>>();
 
     /**
      * 读取server下所有的ITEM
@@ -79,6 +79,7 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
                     break;
                 case DbRecord:
                     List<MesuringPoint> mesuringPointList = this.registerMesuringPoint(cid);
+                    mongoOrignalRealTimeDataCache(cid,mesuringPointList);
                     OpcRegisterFactory.registerConfigItems(cid, mesuringPointList);
                     break;
             }
@@ -102,12 +103,12 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
                     readItemStateMysql(cid, finalGroup, itemArr);
                 }
             }.start();
-            new Thread("mongo_opc_sync_thread"){
+            /*new Thread("mongo_opc_sync_thread"){
                 @Override
                 public void run() {
                     readItemStateMongo(cid, finalGroup, itemArr);
                 }
-            }.start();
+            }.start();*/
 
         } catch (UnknownHostException e) {
             log.error("Host unknow error.",e);
@@ -188,7 +189,10 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
             originalData.setBatchNum(batchNum);
             originalDataHistoryList.add(originalData);
 
-            MongoOrignalDataRealTime originalDataRealTime = mongoOrignalCacheMap.get(entry.getKey().getId());
+            MongoOrignalDataRealTime originalDataRealTime =
+                    mongoOrignalCacheMap.get(
+                            Integer.parseInt(
+                                    OpcRegisterFactory.fetchOpcInfo(cid).getSysId())).get(entry.getKey().getId());
             originalDataRealTime.setItemCode(entry.getKey().getId());
             originalDataRealTime.setInstanceTime(entry.getValue().toString());
             originalDataRealTime.setItemValue(itemValue.substring(2, itemValue.length() - 2));
@@ -197,7 +201,58 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
             originalDataRealTimeList.add(originalDataRealTime);
         }
         mongoOrignalDataHistoryRespository.save(originalDataHistoryList);
-        mongoOrignalDataRealTimeRespository.save(mongoOrignalCacheMap.values());
+        mongoOrignalDataRealTimeRespository.save(
+                mongoOrignalCacheMap.get(Integer.parseInt(OpcRegisterFactory.fetchOpcInfo(cid).getSysId())).values());
+    }
+
+    /**
+     * 缓存mongo中的实时数据
+     * @param mesuringPointList 系统测点列表
+     */
+    private void mongoOrignalRealTimeDataCache (int cid,List<MesuringPoint> mesuringPointList) {
+        List<MongoOrignalDataRealTime> mongoOrignalDataRealTimeList =
+                mongoOrignalDataRealTimeRespository.findBySysId(Integer.parseInt(OpcRegisterFactory.fetchOpcInfo(cid).getSysId()));
+
+        List<MongoOrignalDataRealTime> needAddRealTimeList = new LinkedList<MongoOrignalDataRealTime>();
+        List<MongoOrignalDataRealTime> needDeleteRealTimeList = new LinkedList<MongoOrignalDataRealTime>();
+        for (MesuringPoint mesuringPoint:mesuringPointList) {
+            for (MongoOrignalDataRealTime mongoOrignalDataRealTime:mongoOrignalDataRealTimeList) {
+                if(mesuringPoint.getSourceCode().equals(mongoOrignalDataRealTime.getItemCode())) {
+                    break;
+                }
+                needAddRealTimeList.add(point2realTimeData(cid,mesuringPoint));
+            }
+        }
+
+        for (MongoOrignalDataRealTime mongoOrignalDataRealTime:mongoOrignalDataRealTimeList) {
+            for (MesuringPoint mesuringPoint:mesuringPointList) {
+                if(mesuringPoint.getSourceCode().equals(mongoOrignalDataRealTime.getItemCode())) {
+                    break;
+                }
+                needDeleteRealTimeList.add(mongoOrignalDataRealTime);
+            }
+        }
+
+        mongoOrignalDataRealTimeList.addAll(needAddRealTimeList);
+        mongoOrignalDataRealTimeList.removeAll(needDeleteRealTimeList);
+        mongoOrignalDataRealTimeRespository.save(mongoOrignalDataRealTimeList);
+
+        Map<String,MongoOrignalDataRealTime> sysRealOrignalDataCacheMap =
+                mongoOrignalCacheMap.get(Integer.parseInt(OpcRegisterFactory.fetchOpcInfo(cid).getSysId()));
+        for (MongoOrignalDataRealTime mongoOrignalDataRealTime:mongoOrignalDataRealTimeList) {
+            sysRealOrignalDataCacheMap.put(mongoOrignalDataRealTime.getItemCode(),mongoOrignalDataRealTime);
+        }
+    }
+
+    /**
+     * 测点转换为实时数据
+     * @return 测点实时数据
+     */
+    public MongoOrignalDataRealTime point2realTimeData (int cid,MesuringPoint mesuringPoint) {
+        MongoOrignalDataRealTime mongoOrignalDataRealTime = new MongoOrignalDataRealTime();
+        mongoOrignalDataRealTime.setItemCode(mesuringPoint.getSourceCode());
+        mongoOrignalDataRealTime.setSysId(Integer.parseInt(OpcRegisterFactory.fetchOpcInfo(cid).getSysId()));
+        return mongoOrignalDataRealTime;
     }
 
     /**

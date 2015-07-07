@@ -20,9 +20,6 @@ import java.util.List;
  */
 public interface TradeDataRepository extends BaseRepository<Trade, Long> {
 
-    /** 增量同步地磅流水数据 */
-    public List<IndicatorInstance> genTradeIndicators(Calendar[] calArray);
-
     /** 查询最后同步记录值 */
     public Threshold maxThreshold();
 }

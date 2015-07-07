@@ -146,9 +146,9 @@ public class UtgardOpcHelper {
 
         try {
             ConnectionInformation connectionInformation = new ConnectionInformation();
-            connectionInformation.setHost("localhost");
+            connectionInformation.setHost("192.168.0.71");
             connectionInformation.setUser("Administrator");
-            connectionInformation.setPassword("123123");
+            connectionInformation.setPassword("123456");
             connectionInformation.setDomain("");
             ServerList serverList = new ServerList(connectionInformation.getHost(),
                     connectionInformation.getUser(), connectionInformation.getPassword(),

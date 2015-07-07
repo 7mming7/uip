@@ -4,6 +4,8 @@ import com.mongo.base.BaseMongoRepository;
 import com.mongo.domain.MongoOriginalDataHistory;
 import com.mongo.domain.MongoOrignalDataRealTime;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: shuiqing
@@ -16,4 +18,6 @@ import com.mongo.domain.MongoOrignalDataRealTime;
  */
 public interface MongoOrignalDataRealTimeRespository extends BaseMongoRepository<MongoOrignalDataRealTime,Long> {
 
+    /** 根据SYSID查询实时数据 */
+    List<MongoOrignalDataRealTime> findBySysId(int sysId);
 }

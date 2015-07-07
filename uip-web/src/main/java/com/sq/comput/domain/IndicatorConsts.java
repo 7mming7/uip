@@ -82,8 +82,8 @@ public interface IndicatorConsts {
 
     /** ======================
      *     表达式类型
-     *        1、原生不带参数
-     *        2、动态参数计算
+     *        1、上限
+     *        2、下限
      *
      */
     public static final int LIMIT_TYPE_UPPER = 1;

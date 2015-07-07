@@ -48,19 +48,18 @@ public class TradeService extends BaseService<Trade, Long> {
      */
     public void listTradesBySearchable(){
         Threshold threshold = tradeDataRepository.maxThreshold();
-        ResultSet rs = null;
+        ResultSet rsSync = null;
         Connection conn = JodbcConnectHelper.connect(JodbcConsts.DB_SQLSERVER);
 
-        String sql = "select obj.* from Trade obj where obj.id > " + threshold.getId();
+        String sql = "select obj.* from Trade obj where obj.id > " + threshold.getLastMaxValue();
         try {
             Statement statement = conn.createStatement();
-            rs = statement.executeQuery(sql);
-            statement.close();
+            rsSync = statement.executeQuery(sql);
+            tradeDataSync(rsSync);
+            pushTradeOrignalData(statement.executeQuery(sql));
         } catch (SQLException e) {
             log.error("listTradesBySearchable Sql执行出错.",e);
         }
-        tradeDataSync(rs);
-        pushTradeOrignalData(rs);
         JodbcConnectHelper.releaseConn(conn);
     }
 
@@ -69,18 +68,19 @@ public class TradeService extends BaseService<Trade, Long> {
      * 初始化地磅历史数据
      */
     public void initializationTrades(){
-        ResultSet rs = null;
+        ResultSet rsSync = null;
+        ResultSet rsPuch = null;
         Connection conn = JodbcConnectHelper.connect(JodbcConsts.DB_SQLSERVER);
         String sql = "select obj.* from Trade obj ";
         try {
             Statement statement = conn.createStatement();
-            rs = statement.executeQuery(sql);
-            statement.close();
+            rsSync = statement.executeQuery(sql);
+            rsPuch = statement.executeQuery(sql);
         } catch (SQLException e) {
             log.error("initializationTrades Sql执行出错.",e);
         }
-        tradeDataSync(rs);
-        pushTradeOrignalData(rs);
+        tradeDataSync(rsSync);
+        pushTradeOrignalData(rsPuch);
         JodbcConnectHelper.releaseConn(conn);
     }
 

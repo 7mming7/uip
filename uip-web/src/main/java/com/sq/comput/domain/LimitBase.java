@@ -20,7 +20,8 @@ import java.util.Calendar;
 @MappedSuperclass
 public abstract class LimitBase extends AbstractEntity<Long> implements Cloneable  {
 
-    private String attribute;
+    /** 类型描述字典值 -> IndicatorConsts Limit attribute */
+    private int attribute;
 
     private String description;
 
@@ -34,11 +35,11 @@ public abstract class LimitBase extends AbstractEntity<Long> implements Cloneabl
 
     private Calendar createTime;
 
-    public String getAttribute() {
+    public int getAttribute() {
         return attribute;
     }
 
-    public void setAttribute(String attribute) {
+    public void setAttribute(int attribute) {
         this.attribute = attribute;
     }
 
