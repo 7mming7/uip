@@ -18,7 +18,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.net.UnknownHostException;
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -44,6 +46,8 @@ public class PushDataThirdService extends BaseService<MesuringPoint, Long> {
     @BaseComponent
     private ScreenInfoRepository screenInfoRepository;
 
+    DecimalFormat format = new DecimalFormat("0.00");
+
     /**
      * 大屏数据推送
      */
@@ -61,6 +65,7 @@ public class PushDataThirdService extends BaseService<MesuringPoint, Long> {
         try {
             group = server.addGroup();
             for(Leaf leaf:leafs){
+                log.error("code->" + leaf.getItemId());
                 Item item = group.addItem(leaf.getItemId());
                 itemArr[item_flag] = item;
                 item_flag++;
@@ -75,7 +80,8 @@ public class PushDataThirdService extends BaseService<MesuringPoint, Long> {
                 String itemValue = entry.getValue().getValue().toString();
                 for (ScreenPushData screenPushData:screenPushDataList) {
                     if (screenPushData.getItemCode().equals(entry.getKey().getId())) {
-                        screenPushData.setItemValue(entry.getValue().getValue().toString());
+                        screenPushData.setItemValue(
+                                format.format(new BigDecimal(itemValue.substring(2, itemValue.length() - 2))));
                     }
                 }
             }
@@ -138,6 +144,12 @@ public class PushDataThirdService extends BaseService<MesuringPoint, Long> {
         screenPushDataList.add(generateScreenPushData("LUWEN->3->Macsv5.Device3.Group3.B3MNAI033"));
         screenPushDataList.add(generateScreenPushData("LUWEN->4->Macsv5.Device3.Group3.B4MNAI033"));
 
+        //炉温
+        screenPushDataList.add(generateScreenPushData("HF->1->Macsv5.Device3.Group3.B1CEMS_HF"));
+        screenPushDataList.add(generateScreenPushData("HF->2->Macsv5.Device3.Group3.B2CEMS_HF"));
+        screenPushDataList.add(generateScreenPushData("HF->3->Macsv5.Device3.Group3.B3CEMS_HF"));
+        screenPushDataList.add(generateScreenPushData("HF->4->Macsv5.Device3.Group3.B4CEMS_HF"));
+
         return screenPushDataList;
     }
 
@@ -151,7 +163,8 @@ public class PushDataThirdService extends BaseService<MesuringPoint, Long> {
         ScreenPushData screenPushData = new ScreenPushData();
         screenPushData.setGroup(strArr[0]);
         screenPushData.setSerialNo(Integer.parseInt(strArr[1]));
-        screenPushData.setItemCode(strArr[1]);
+        screenPushData.setItemCode(strArr[2]);
+        log.error("group->" + strArr[0] + ";serialNo->" + strArr[1] + ";itemCode->" + strArr[2]);
         return screenPushData;
     }
 
