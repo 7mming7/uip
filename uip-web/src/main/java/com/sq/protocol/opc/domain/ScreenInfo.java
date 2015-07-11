@@ -32,6 +32,8 @@ public class ScreenInfo extends AbstractEntity<Long> implements Serializable {
 
     private String guobiao;
 
+    private String guobiao2;
+
     private String oumeng;
 
     private String guolu1;
@@ -124,5 +126,13 @@ public class ScreenInfo extends AbstractEntity<Long> implements Serializable {
 
     public void setSerialno(int serialno) {
         this.serialno = serialno;
+    }
+
+    public String getGuobiao2() {
+        return guobiao2;
+    }
+
+    public void setGuobiao2(String guobiao2) {
+        this.guobiao2 = guobiao2;
     }
 }

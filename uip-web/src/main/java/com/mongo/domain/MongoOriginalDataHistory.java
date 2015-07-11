@@ -30,7 +30,7 @@ public class MongoOriginalDataHistory implements Serializable {
     private String itemCode;
 
     /** 指标的同步值 */
-    private String itemValue;
+    private Double itemValue;
 
     /** 获取指标实例的时间点 */
     private String instanceTime;
@@ -57,11 +57,11 @@ public class MongoOriginalDataHistory implements Serializable {
         this.itemCode = itemCode;
     }
 
-    public String getItemValue() {
+    public Double getItemValue() {
         return itemValue;
     }
 
-    public void setItemValue(String itemValue) {
+    public void setItemValue(Double itemValue) {
         this.itemValue = itemValue;
     }
 

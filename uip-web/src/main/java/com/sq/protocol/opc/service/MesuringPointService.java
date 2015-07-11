@@ -15,6 +15,7 @@ import com.sq.protocol.opc.repository.MesuringPointRepository;
 import com.mongo.repository.MongoOrignalDataHistoryRespository;
 import com.sq.protocol.opc.repository.OriginalDataRepository;
 import com.sq.service.BaseService;
+import com.sq.util.DateUtil;
 import org.jinterop.dcom.common.JIException;
 import org.openscada.opc.lib.common.NotConnectedException;
 import org.openscada.opc.lib.da.*;
@@ -186,8 +187,8 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
             }
             MongoOriginalDataHistory originalData = new MongoOriginalDataHistory();
             originalData.setItemCode(entry.getKey().getId());
-            originalData.setInstanceTime(entry.getValue().toString());
-            originalData.setItemValue(itemValue.substring(2, itemValue.length() - 2));
+            originalData.setInstanceTime(DateUtil.formatCalendar(Calendar.getInstance(), DateUtil.DATE_FORMAT_DAFAULTYMDHMS));
+            originalData.setItemValue(Double.parseDouble(itemValue.substring(2, itemValue.length() - 2)));
             originalData.setSysId(Integer.parseInt(opcServerInfomation.getSysId()));
             originalData.setBatchNum(batchNum);
             originalDataHistoryList.add(originalData);

@@ -35,7 +35,7 @@ public class MongoTest extends TestCase {
         originalData.setBatchNum(1243l);
         originalData.setInstanceTime(DateUtil.formatCalendar(Calendar.getInstance(), DateUtil.DATE_FORMAT_DAFAULTYMDHMS));
         originalData.setItemCode("sdgsg");
-        originalData.setItemValue("32.23");
+        originalData.setItemValue(32.23d);
         mongo.save(originalData);
     }
 }
