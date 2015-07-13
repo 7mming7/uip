@@ -100,6 +100,7 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
                 item_flag++;
             }
             readItemStateMongo(cid, group, itemArr);
+            readItemStateMysql(cid, group, itemArr);
             /*final Group finalGroup = group;
             new Thread("mysql_opc_sync_thread"){
                 @Override
