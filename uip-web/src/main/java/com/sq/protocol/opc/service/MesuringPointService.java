@@ -193,20 +193,20 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
             originalData.setBatchNum(batchNum);
             originalDataHistoryList.add(originalData);
 
-            /*MongoOrignalDataRealTime originalDataRealTime =
+            MongoOrignalDataRealTime originalDataRealTime =
                     mongoOrignalCacheMap.get(
                             Integer.parseInt(
                                     OpcRegisterFactory.fetchOpcInfo(cid).getSysId())).get(entry.getKey().getId());
             originalDataRealTime.setItemCode(entry.getKey().getId());
             originalDataRealTime.setInstanceTime(entry.getValue().toString());
-            originalDataRealTime.setItemValue(itemValue.substring(2, itemValue.length() - 2));
+            originalDataRealTime.setItemValue(Double.parseDouble(itemValue.substring(2, itemValue.length() - 2)));
             originalDataRealTime.setSysId(Integer.parseInt(opcServerInfomation.getSysId()));
             originalDataRealTime.setBatchNum(batchNum);
-            originalDataRealTimeList.add(originalDataRealTime);*/
+            originalDataRealTimeList.add(originalDataRealTime);
         }
         mongoOrignalDataHistoryRespository.save(originalDataHistoryList);
-        /*mongoOrignalDataRealTimeRespository.save(
-                mongoOrignalCacheMap.get(Integer.parseInt(OpcRegisterFactory.fetchOpcInfo(cid).getSysId())).values());*/
+        mongoOrignalDataRealTimeRespository.save(
+                mongoOrignalCacheMap.get(Integer.parseInt(OpcRegisterFactory.fetchOpcInfo(cid).getSysId())).values());
     }
 
     /**
