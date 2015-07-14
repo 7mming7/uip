@@ -8,9 +8,10 @@
     <bean name="startQuertz" lazy-init="false" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
-                <ref bean="opcSyncDataJobTrigger" />
-                <!--<ref bean="dcsDataMigrationJobTrigger" />
                 <ref bean="execLoadometerOrignalDataGatheringTrigger" />
+                <!--<ref bean="opcSyncDataJobTrigger" />
+                <ref bean="dcsDataMigrationJobTrigger" />
+
                 <ref bean="indicatorReallTimeComputJobTrigger" />
                 <ref bean="njmbDataJobTrigger" />
                 <ref bean="execInterfaceIndicatorDataGaterTrigger" />-->
@@ -111,7 +112,7 @@
             <ref bean="execLoadometerOrignalDataGatheringJob"/>
         </property>
         <property name="cronExpression">
-            <value>0 */5 0 * * ?</value>
+            <value>0 */3 * * * ?</value>
         </property>
     </bean>
 

@@ -1,13 +1,9 @@
 package junit.jodbc;
 
-import com.sq.comput.service.IndiComputService;
 import com.sq.protocol.jodbc.service.TradeService;
-import com.sq.util.DateUtil;
 import junit.base.TestCase;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Calendar;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,7 +22,7 @@ public class TestJodbc extends TestCase {
     @Autowired
     private TradeService tradeService;
 
-    /*@Test
+    @Test
     public void testDataMig(){
         try {
             tradeService.listTradesBySearchable();
@@ -35,7 +31,7 @@ public class TestJodbc extends TestCase {
         }
     }
 
-    @Test
+    /*@Test
     public void testGenTradeIndicators(){
         try {
             tradeService.genTradeIndicators(Calendar.getInstance());

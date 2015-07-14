@@ -87,20 +87,23 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
         }
         Collection<Leaf> leafs = opcServerInfomation.getLeafs();
         Server server = opcServerInfomation.getServer();
+        server.setDefaultUpdateRate(6000);
         Group group = null;
         final Item[] itemArr = new Item[leafs.size()];
         try {
             int item_flag = 0;
             group = server.addGroup();
+            group.setActive(true);
             for(Leaf leaf:leafs){
                 Item item = group.addItem(leaf.getItemId());
+                item.setActive(true);
                 System.out.println("ItemName:[" + item.getId()
                         + "],value:" + item.read(true).getValue());
                 itemArr[item_flag] = item;
                 item_flag++;
             }
             readItemStateMongo(cid, group, itemArr);
-            readItemStateMysql(cid, group, itemArr);
+            /*readItemStateMysql(cid, group, itemArr);*/
             /*final Group finalGroup = group;
             new Thread("mysql_opc_sync_thread"){
                 @Override

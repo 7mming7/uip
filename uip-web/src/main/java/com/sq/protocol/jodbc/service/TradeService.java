@@ -166,10 +166,12 @@ public class TradeService extends BaseService<Trade, Long> {
                 lastMaxValue = rs.getLong("id");
                 preparedStatement.addBatch();
             }
-            preparedStatement.executeBatch();
-            preparedStatement.clearBatch();
-            sql = "INSERT INTO T_Threshold (lastUpdateTime ,lastMaxValue ) VALUES (now()," + lastMaxValue + ")";
-            preparedStatement.execute(sql);
+            if (rs.next()) {
+                preparedStatement.executeBatch();
+                preparedStatement.clearBatch();
+                sql = "INSERT INTO T_Threshold (lastUpdateTime ,lastMaxValue ) VALUES (now()," + lastMaxValue + ")";
+                preparedStatement.execute(sql);
+            }
             preparedStatement.close();
         } catch (SQLException e) {
             log.error("JDBC SQL执行出错.",e);

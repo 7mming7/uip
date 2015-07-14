@@ -187,7 +187,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
             costTime = System.currentTimeMillis() - now;
             log.error("costTime-------" + costTime);
         }
-
+        _instance.shutdown();
         while(!indicatorSyncQueue.isEmpty()) {
             IndicatorTemp indicatorTemp = (IndicatorTemp) indicatorSyncQueue.poll();
             log.error("indicatorName->" + indicatorTemp.getIndicatorName());
@@ -386,7 +386,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
         Searchable searchable = Searchable.newSearchable();
         int startComputDateNum = Integer.parseInt(DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_DAFAULT));
         searchable.addSearchFilter("statDateNum",MatchType.GTE,startComputDateNum)
-                .addSearchFilter("dataSource",MatchType.EQ, IndicatorConsts.DATASOURCE_CALCULATE);
+                .addSearchFilter("dataSource", MatchType.EQ, IndicatorConsts.DATASOURCE_CALCULATE);
         List<String> indicatorCodeList = new ArrayList<String>();
         List<IndicatorTemp> indicatorTempList = new ArrayList<IndicatorTemp>();
         for (Map.Entry<Integer, Set<IndicatorTemp>> entry : integerListTreeMap.entrySet()) {
