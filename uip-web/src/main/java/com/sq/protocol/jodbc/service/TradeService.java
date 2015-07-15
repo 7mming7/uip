@@ -1,6 +1,5 @@
 package com.sq.protocol.jodbc.service;
 
-import com.sq.comput.domain.IndicatorInstance;
 import com.sq.inject.annotation.BaseComponent;
 import com.sq.protocol.jodbc.component.JodbcConnectHelper;
 import com.sq.protocol.jodbc.domain.JodbcConsts;
@@ -9,15 +8,11 @@ import com.sq.protocol.jodbc.domain.Trade;
 import com.sq.protocol.jodbc.repository.TradeDataRepository;
 import com.sq.protocol.opc.repository.OriginalDataRepository;
 import com.sq.service.BaseService;
-import com.sq.util.DateUtil;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 
 /**
  * 地磅数据处理业务类.
@@ -51,7 +46,7 @@ public class TradeService extends BaseService<Trade, Long> {
         ResultSet rsSync = null;
         Connection conn = JodbcConnectHelper.connect(JodbcConsts.DB_SQLSERVER);
 
-        String sql = "select obj.* from Trade obj where obj.id > " + threshold.getLastMaxValue();
+        String sql = "select obj.* from Trade obj where productNet is not null and seconddatetime is not null and obj.id > " + threshold.getLastMaxValue();
         try {
             Statement statement = conn.createStatement();
             rsSync = statement.executeQuery(sql);
