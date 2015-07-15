@@ -114,8 +114,10 @@ public class TradeService extends BaseService<Trade, Long> {
                 .append("  VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
         String sql = sb.toString();
         try {
+            boolean flag = false;
             preparedStatement = connection.prepareStatement(sql);
             while(rs.next()){
+                flag = true;
                 preparedStatement.setString(1, rs.getString("ticketno1"));
                 preparedStatement.setString(2, rs.getString("ticketno2"));
                 preparedStatement.setString(3, rs.getString("station1"));
@@ -166,7 +168,7 @@ public class TradeService extends BaseService<Trade, Long> {
                 lastMaxValue = rs.getLong("id");
                 preparedStatement.addBatch();
             }
-            if (rs.next()) {
+            if (flag) {
                 preparedStatement.executeBatch();
                 preparedStatement.clearBatch();
                 sql = "INSERT INTO T_Threshold (lastUpdateTime ,lastMaxValue ) VALUES (now()," + lastMaxValue + ")";
