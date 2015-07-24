@@ -129,7 +129,7 @@ public class LimitInstanceService extends BaseService<LimitInstance,Integer> {
         List<String> variableList = ComputHelper.getVariableList(dynamicExpression,evaluator);
         for (String variable:variableList) {
             IndicatorInstance indicatorInstance = indicatorInstanceMap.get(variable);
-            if (null == indicatorInstance & null == indicatorInstance.getFloatValue()) {
+            if (null == indicatorInstance || null == indicatorInstance.getFloatValue()) {
                 return null;
             }
             String replaceVariable = EvaluationConstants.OPEN_VARIABLE + variable + EvaluationConstants.CLOSED_BRACE;

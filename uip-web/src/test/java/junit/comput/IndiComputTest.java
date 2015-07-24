@@ -1,8 +1,15 @@
 package junit.comput;
 
+import com.sq.comput.domain.IndicatorConsts;
+import com.sq.comput.domain.IndicatorInstance;
 import com.sq.comput.domain.IndicatorTemp;
+import com.sq.comput.repository.IndicatorInstanceRepository;
 import com.sq.comput.service.IndiComputService;
 import com.sq.comput.service.IndicatorTempService;
+import com.sq.comput.service.LimitInstanceService;
+import com.sq.entity.search.MatchType;
+import com.sq.entity.search.Searchable;
+import com.sq.protocol.opc.service.MesuringPointService;
 import com.sq.protocol.socket.SocketServer;
 import com.sq.util.DateUtil;
 import junit.base.TestCase;
@@ -32,12 +39,35 @@ public class IndiComputTest extends TestCase {
     private IndiComputService indiComputService;
 
     @Autowired
+    private MesuringPointService mesuringPointService;
+
+    @Autowired
     private IndicatorTempService indicatorTempService;
+
+    @Autowired
+    private IndicatorInstanceRepository indicatorInstanceRepository;
 
     @Autowired
     private SocketServer socketServerComp;
 
+    @Autowired
+    private LimitInstanceService limitInstanceService;
+
     @Test
+    public void testLimitInterface () {
+
+        Calendar startCal = DateUtil.intDate2Calendar(20150101);
+        Calendar endCal = DateUtil.intDate2Calendar(20150723);
+        while (startCal.before(endCal)) {
+            Searchable searchable = Searchable.newSearchable()
+                    .addSearchFilter("dataSource", MatchType.EQ, IndicatorConsts.DATASOURCE_INTERFACE);
+            List<IndicatorInstance> indicatorInstanceList = indicatorInstanceRepository.findAll(searchable).getContent();
+            limitInstanceService.limitRealTimeCalculate(indicatorInstanceList);
+            startCal.add(Calendar.DAY_OF_YEAR,1);
+        }
+    }
+
+    /*@Test
     public void testInterfaceDataGather () {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DATE, 26);
@@ -46,7 +76,7 @@ public class IndiComputTest extends TestCase {
         cal.set(Calendar.SECOND, 0);
         System.out.println("uuuuuuuuuuuuu" + DateUtil.formatCalendar(cal, DateUtil.DATE_FORMAT_Y_M_D));
         this.indiComputService.interfaceDataGather(cal);
-    }
+    }*/
 
     /*@Test
 
@@ -59,7 +89,7 @@ public class IndiComputTest extends TestCase {
         this.indiComputService.reComputIndicator(cal,indicatorTempList);
     }*/
 
-    @Test
+    /*@Test
     public void testCalculateDataGather () {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DATE, 1);
@@ -74,7 +104,7 @@ public class IndiComputTest extends TestCase {
         cal.set(Calendar.DATE, 3);
         cal.set(Calendar.MONTH, 5);
         this.indiComputService.interfaceIndicatorDataGater(cal);
-    }
+    }*/
 
     /*@Test
     public void batchSave(){

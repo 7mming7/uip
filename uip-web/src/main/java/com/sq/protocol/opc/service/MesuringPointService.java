@@ -1,6 +1,11 @@
 package com.sq.protocol.opc.service;
 
 import com.sq.comput.domain.IndicatorConsts;
+import com.sq.comput.domain.IndicatorInstance;
+import com.sq.comput.domain.IndicatorTemp;
+import com.sq.comput.repository.IndicatorInstanceRepository;
+import com.sq.comput.repository.IndicatorTempRepository;
+import com.sq.comput.service.LimitInstanceService;
 import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
 import com.sq.inject.annotation.BaseComponent;
@@ -14,6 +19,7 @@ import com.sq.protocol.opc.domain.OriginalData;
 import com.sq.protocol.opc.repository.MesuringPointRepository;
 import com.sq.protocol.opc.repository.OriginalDataRepository;
 import com.sq.service.BaseService;
+import com.sq.util.DateUtil;
 import org.jinterop.dcom.common.JIException;
 import org.openscada.opc.lib.common.NotConnectedException;
 import org.openscada.opc.lib.da.*;
@@ -52,6 +58,15 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
 
     @Autowired
     private OriginalDataRepository originalDataRepository;
+
+    @Autowired
+    private IndicatorTempRepository indicatorTempRepository;
+
+    @Autowired
+    private LimitInstanceService limitInstanceService;
+
+    @Autowired
+    private IndicatorInstanceRepository indicatorInstanceRepository;
 
     /**
      * 读取server下所有的ITEM
@@ -127,6 +142,44 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
             originalDataList.add(originalData);
         }
         originalDataRepository.save(originalDataList);
+        List<IndicatorInstance> indicatorInstanceList = interfaceIndicatorDataGather(originalDataList);
+        limitInstanceService.limitRealTimeCalculate(indicatorInstanceList);
+    }
+
+    /**
+     * 接口指标数据汇集
+     * @param originalDataList
+     */
+    public List<IndicatorInstance> interfaceIndicatorDataGather(List<OriginalData> originalDataList) {
+        List<IndicatorInstance> indicatorInstanceList = new ArrayList<IndicatorInstance>();
+        Map<String,OriginalData> originalDataMap = new HashMap<String,OriginalData>();
+        List<String> codeList = new ArrayList<String>();
+        for (OriginalData originalData:originalDataList) {
+            MesuringPoint mesuringPoint = null;
+            List<MesuringPoint> mesuringPointList = mesuringPointRepository.findAll(
+                    Searchable.newSearchable()
+                            .addSearchFilter("sourceCode", MatchType.EQ, originalData.getItemCode())).getContent();
+            if (!mesuringPointList.isEmpty()) {
+                codeList.add(mesuringPoint.getTargetCode());
+                originalDataMap.put(mesuringPoint.getTargetCode(),originalData);
+            }
+        }
+
+        List<IndicatorTemp> indicatorTempList = indicatorTempRepository.findAll(
+                Searchable.newSearchable()
+                        .addSearchFilter("itemCode", MatchType.IN, codeList)).getContent();
+        for (IndicatorTemp indicatorTemp:indicatorTempList) {
+            IndicatorInstance indicatorInstance = new IndicatorInstance(indicatorTemp);
+            OriginalData originalData = originalDataMap.get(indicatorInstance.getIndicatorCode());
+            indicatorInstance.setFloatValue(Double.parseDouble(originalData.getItemValue()));
+            indicatorInstance.setValueType(IndicatorConsts.VALUE_TYPE_DOUBLE);
+            Calendar cal = Calendar.getInstance();
+            indicatorInstance.setInstanceTime(cal);
+            indicatorInstance.setStatDateNum(Integer.parseInt(DateUtil.formatCalendar(cal, DateUtil.DATE_FORMAT_DAFAULT)));
+            indicatorInstanceList.add(indicatorInstance);
+        }
+        indicatorInstanceRepository.save(indicatorInstanceList);
+        return indicatorInstanceList;
     }
 
     /**
