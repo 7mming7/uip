@@ -115,37 +115,37 @@ public class PushDataThirdService extends BaseService<MesuringPoint, Long> {
         screenPushDataList.add(generateScreenPushData("DUTY->3->Macsv5.Device3.Group3.B3_DUTYZSJ"));
         screenPushDataList.add(generateScreenPushData("DUTY->4->Macsv5.Device3.Group3.B4_DUTYZSJ"));
 
-//HCL
+        //HCL
         screenPushDataList.add(generateScreenPushData("HCL->1->Macsv5.Device3.Group3.B1_HCLZSJ"));
         screenPushDataList.add(generateScreenPushData("HCL->2->Macsv5.Device3.Group3.B2_HCLZSJ"));
         screenPushDataList.add(generateScreenPushData("HCL->3->Macsv5.Device3.Group3.B3_HCLZSJ"));
         screenPushDataList.add(generateScreenPushData("HCL->4->Macsv5.Device3.Group3.B4_HCLZSJ"));
 
-//CO
+        //CO
         screenPushDataList.add(generateScreenPushData("CO->1->Macsv5.Device3.Group3.B1_COZSJ"));
         screenPushDataList.add(generateScreenPushData("CO->2->Macsv5.Device3.Group3.B2_COZSJ"));
         screenPushDataList.add(generateScreenPushData("CO->3->Macsv5.Device3.Group3.B3_COZSJ"));
         screenPushDataList.add(generateScreenPushData("CO->4->Macsv5.Device3.Group3.B4_COZSJ"));
 
-//SO2
+        //SO2
         screenPushDataList.add(generateScreenPushData("SO2->1->Macsv5.Device3.Group3.B1_SO2ZSJ"));
         screenPushDataList.add(generateScreenPushData("SO2->2->Macsv5.Device3.Group3.B2_SO2ZSJ"));
         screenPushDataList.add(generateScreenPushData("SO2->3->Macsv5.Device3.Group3.B3_SO2ZSJ"));
         screenPushDataList.add(generateScreenPushData("SO2->4->Macsv5.Device3.Group3.B4_SO2ZSJ"));
 
-//NOX
+        //NOX
         screenPushDataList.add(generateScreenPushData("NOX->1->Macsv5.Device3.Group3.B1_NOxZSJ"));
         screenPushDataList.add(generateScreenPushData("NOX->2->Macsv5.Device3.Group3.B2_NOxZSJ"));
         screenPushDataList.add(generateScreenPushData("NOX->3->Macsv5.Device3.Group3.B3_NOxZSJ"));
         screenPushDataList.add(generateScreenPushData("NOX->4->Macsv5.Device3.Group3.B4_NOxZSJ"));
 
-//炉温
+        //炉温
         screenPushDataList.add(generateScreenPushData("LUWEN->1->Macsv5.Device3.Group3.B1MNAI033"));
         screenPushDataList.add(generateScreenPushData("LUWEN->2->Macsv5.Device3.Group3.B2MNAI033"));
         screenPushDataList.add(generateScreenPushData("LUWEN->3->Macsv5.Device3.Group3.B3MNAI033"));
         screenPushDataList.add(generateScreenPushData("LUWEN->4->Macsv5.Device3.Group3.B4MNAI033"));
 
-//HF
+        //HF
         screenPushDataList.add(generateScreenPushData("HF->1->Macsv5.Device3.Group3.B1_HFZSJ"));
         screenPushDataList.add(generateScreenPushData("HF->2->Macsv5.Device3.Group3.B2_HFZSJ"));
         screenPushDataList.add(generateScreenPushData("HF->3->Macsv5.Device3.Group3.B3_HFZSJ"));
