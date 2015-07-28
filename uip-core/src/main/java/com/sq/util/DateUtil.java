@@ -165,6 +165,17 @@ public class DateUtil {
     }
 
     /**
+     * 日期转换为分钟数
+     * @param calendar
+     * @return
+     */
+    public static long calendarSubMinutes (Calendar calendar, int minutes) {
+        long subLongMinuteMillons = minutes*1000*60;
+        long preLongMillons = calendar.getTimeInMillis() - subLongMinuteMillons;
+        return preLongMillons;
+    }
+
+    /**
      * 计算两个int日期之间所有的日期
      * 2014年1月26日 下午3:02:39 shuiqing添加此方法
      * @param startDate

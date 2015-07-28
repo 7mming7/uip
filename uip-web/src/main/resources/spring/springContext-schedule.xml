@@ -8,6 +8,8 @@
     <bean name="startQuertz" lazy-init="false" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
+                <ref bean="interfaceLimitDataComputJobTrigger" />
+
                 <!--<ref bean="opcSyncDataJobTrigger" />
                 <ref bean="dcsDataMigrationJobTrigger" />
                 <ref bean="execLoadometerOrignalDataGatheringTrigger" />
@@ -40,6 +42,15 @@
         </property>
     </bean>
 
+    <bean id="interfaceLimitDataComputJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="interfaceLimitDataComputDetailJob"/>
+        </property>
+        <property name="cronExpression">
+            <value>0 */1 * * * ?</value>
+        </property>
+    </bean>
+
     <!-- 大屏烟气指标数据定时读取 -->
     <bean id="njmbDataDetailJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <!-- 调用的类 -->
@@ -65,6 +76,15 @@
         <property name="targetObject" ref="schedulerExecuteService"/>
         <!-- 调用类中的方法 -->
         <property name="targetMethod" value="execInterfaceDataGather" />
+        <!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <bean id="interfaceLimitDataComputDetailJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <!-- 调用的类 -->
+        <property name="targetObject" ref="schedulerExecuteService"/>
+        <!-- 调用类中的方法 -->
+        <property name="targetMethod" value="execInterfaceLimitDataComput" />
         <!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
         <property name="concurrent" value="false"/>
     </bean>

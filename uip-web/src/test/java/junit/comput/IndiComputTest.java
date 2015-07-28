@@ -53,7 +53,7 @@ public class IndiComputTest extends TestCase {
     @Autowired
     private LimitInstanceService limitInstanceService;
 
-    @Test
+    /*@Test
     public void testLimitInterface () {
 
         Calendar startCal = DateUtil.intDate2Calendar(20150101);
@@ -65,7 +65,7 @@ public class IndiComputTest extends TestCase {
             limitInstanceService.limitRealTimeCalculate(indicatorInstanceList);
             startCal.add(Calendar.DAY_OF_YEAR,1);
         }
-    }
+    }*/
 
     /*@Test
     public void testInterfaceDataGather () {
@@ -141,5 +141,12 @@ public class IndiComputTest extends TestCase {
         indicatorTempList.add(indicatorTempService.findOne(526l));
         integerListTreeMap = indiComputService.buildIndiSortTreeMap(integerListTreeMap,indicatorTempList,1);
         int i = 1;
+    }*/
+
+    /*@Test
+    public void interfaceIndiComput () {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH,9);
+        mesuringPointService.interfaceLimitDataComput(cal);
     }*/
 }

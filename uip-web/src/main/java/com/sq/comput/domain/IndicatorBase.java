@@ -19,6 +19,9 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class IndicatorBase extends AbstractEntity<Long> implements Cloneable {
 
+    /** 计算范围 */
+    private Integer calculatedRate;
+
     /** 指标编码 */
     private String indicatorCode;
 
@@ -121,5 +124,13 @@ public abstract class IndicatorBase extends AbstractEntity<Long> implements Clon
 
     public void setCalType(Integer calType) {
         this.calType = calType;
+    }
+
+    public Integer getCalculatedRate() {
+        return calculatedRate;
+    }
+
+    public void setCalculatedRate(Integer calculatedRate) {
+        this.calculatedRate = calculatedRate;
     }
 }

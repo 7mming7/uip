@@ -114,4 +114,14 @@ public class SchedulerExecuteService {
         tradeService.genTradeIndicators(curr);
         log.error("----------- 地磅指标数据汇集任务结束 -----------");
     }
+
+    /**
+     * 接口指标数据汇集
+     */
+    public void execInterfaceLimitDataComput () {
+        log.error("----------- 接口指标数据汇集汇集任务开始 -----------");
+        Calendar cal = Calendar.getInstance();
+        mesuringPointService.interfaceLimitDataComput(cal);
+        log.error("----------- 接口指标数据汇集汇集任务结束 -----------");
+    }
 }

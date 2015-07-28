@@ -20,6 +20,7 @@ import com.sq.protocol.opc.repository.MesuringPointRepository;
 import com.sq.protocol.opc.repository.OriginalDataRepository;
 import com.sq.service.BaseService;
 import com.sq.util.DateUtil;
+import org.apache.poi.ss.formula.functions.Match;
 import org.jinterop.dcom.common.JIException;
 import org.openscada.opc.lib.common.NotConnectedException;
 import org.openscada.opc.lib.da.*;
@@ -142,8 +143,72 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
             originalDataList.add(originalData);
         }
         originalDataRepository.save(originalDataList);
-        List<IndicatorInstance> indicatorInstanceList = interfaceIndicatorDataGather(originalDataList);
+    }
+
+    /**
+     * 接口数据按照指标配置进行实例化和限值计算
+     */
+    public void interfaceLimitDataComput (Calendar computCal) {
+        Searchable searchable = Searchable.newSearchable()
+                .addSearchFilter("dataSource", MatchType.EQ, IndicatorConsts.DATASOURCE_INTERFACE)
+                .addSearchParam("calculateExpression", MatchType.isNull);
+        List<IndicatorTemp> indicatorTempList = indicatorTempRepository.findAll(searchable).getContent();
+
+        List<IndicatorInstance> indicatorInstanceList = new LinkedList<IndicatorInstance>();
+        for (IndicatorTemp indicatorTemp:indicatorTempList) {
+            IndicatorInstance indicatorInstance = this.instanceInterfaceIndicator(computCal,indicatorTemp);
+            if (null != indicatorInstance) {
+                indicatorInstanceList.add(indicatorInstance);
+            }
+        }
+
         limitInstanceService.limitRealTimeCalculate(indicatorInstanceList);
+    }
+
+    /**
+     * 实例化接口指标
+     * @param cal             计算的时间节点
+     * @param indicatorTemp   指标模板对象
+     */
+    public IndicatorInstance instanceInterfaceIndicator (Calendar cal, IndicatorTemp indicatorTemp) {
+        Integer calculatedRate = indicatorTemp.getCalculatedRate();
+        if (null == calculatedRate) {
+            return null;
+        }
+        long subLongMinuteMillons = calculatedRate*1000*60;
+        long preTimeMillons = cal.getTimeInMillis() - subLongMinuteMillons;
+        Calendar preCal = Calendar.getInstance();
+        preCal.setTimeInMillis(preTimeMillons);
+        if (null == calculatedRate) return null;
+        Searchable codeSearchable =Searchable.newSearchable()
+                .addSearchFilter("targetCode", MatchType.EQ, indicatorTemp.getIndicatorCode());
+        List<MesuringPoint> mesuringPointList = mesuringPointRepository.findAll(codeSearchable).getContent();
+
+        if (mesuringPointList.isEmpty() || mesuringPointList.size() == 0) return null;
+        MesuringPoint mesuringPoint = mesuringPointList.get(0);
+        if (null == mesuringPoint) return null;
+        Searchable searchable = Searchable.newSearchable()
+                .addSearchFilter("instanceTime",MatchType.LTE,cal)
+                .addSearchFilter("instanceTime",MatchType.GTE,preCal)
+                .addSearchFilter("itemCode",MatchType.EQ,mesuringPoint.getSourceCode());
+        List<OriginalData> originalDataList = originalDataRepository.findAll(searchable).getContent();
+        if (originalDataList.isEmpty() || originalDataList.size() == 0) {
+            return null;
+        }
+        double oriSum = 0d;
+        for (OriginalData originalData:originalDataList) {
+            oriSum = oriSum + Double.parseDouble(originalData.getItemValue());
+        }
+        double avgValue = oriSum/originalDataList.size();
+
+        IndicatorInstance indicatorInstance = new IndicatorInstance(indicatorTemp);
+        indicatorInstance.setFloatValue(avgValue);
+        indicatorInstance.setValueType(IndicatorConsts.VALUE_TYPE_DOUBLE);
+        indicatorInstance.setInstanceTime(cal);
+        indicatorInstance.setStatDateNum(Integer.parseInt(DateUtil.formatCalendar(cal,DateUtil.DATE_FORMAT_DAFAULT)));
+        indicatorInstanceRepository.save(indicatorInstance);
+
+        return indicatorInstance;
     }
 
     /**
@@ -155,11 +220,10 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
         Map<String,OriginalData> originalDataMap = new HashMap<String,OriginalData>();
         List<String> codeList = new ArrayList<String>();
         for (OriginalData originalData:originalDataList) {
-            MesuringPoint mesuringPoint = null;
             List<MesuringPoint> mesuringPointList = mesuringPointRepository.findAll(
                     Searchable.newSearchable()
                             .addSearchFilter("sourceCode", MatchType.EQ, originalData.getItemCode())).getContent();
-            if (!mesuringPointList.isEmpty()) {
+            for (MesuringPoint mesuringPoint:mesuringPointList) {
                 codeList.add(mesuringPoint.getTargetCode());
                 originalDataMap.put(mesuringPoint.getTargetCode(),originalData);
             }
@@ -167,7 +231,7 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
 
         List<IndicatorTemp> indicatorTempList = indicatorTempRepository.findAll(
                 Searchable.newSearchable()
-                        .addSearchFilter("itemCode", MatchType.IN, codeList)).getContent();
+                        .addSearchFilter("indicatorCode", MatchType.IN, codeList)).getContent();
         for (IndicatorTemp indicatorTemp:indicatorTempList) {
             IndicatorInstance indicatorInstance = new IndicatorInstance(indicatorTemp);
             OriginalData originalData = originalDataMap.get(indicatorInstance.getIndicatorCode());
