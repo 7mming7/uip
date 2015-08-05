@@ -61,6 +61,10 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
     @Autowired
     private MongoOrignalDataRealTimeRespository mongoOrignalDataRealTimeRespository;
 
+    public static Group group;
+
+    public static Item[] itemArr = null;
+
     /**
      * 实时数据缓存
      */
@@ -71,8 +75,10 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
      * @param cid
      */
     public void fetchReadSyncItems (final int cid) {
+        boolean flag = true;
         OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
         if (opcServerInfomation.getLeafs() == null || !opcServerInfomation.isConn_status()) {
+            flag = false;
             opcServerInfomation.setLeafs(null);
             switch (BaseConfiguration.CONFIG_INIT_ITEM) {
                 case AutoGenerate:
@@ -88,21 +94,22 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
         Collection<Leaf> leafs = opcServerInfomation.getLeafs();
         Server server = opcServerInfomation.getServer();
         server.setDefaultUpdateRate(6000);
-        Group group = null;
-        final Item[] itemArr = new Item[leafs.size()];
         try {
-            int item_flag = 0;
-            group = server.addGroup();
-            group.setActive(true);
-            for(Leaf leaf:leafs){
-                Item item = group.addItem(leaf.getItemId());
-                item.setActive(true);
-                System.out.println("ItemName:[" + item.getId()
-                        + "],value:" + item.read(true).getValue());
-                itemArr[item_flag] = item;
-                item_flag++;
+            if (!flag) {
+                int item_flag = 0;
+                group = server.addGroup();
+                group.setActive(true);
+                for(Leaf leaf:leafs){
+                    Item item = group.addItem(leaf.getItemId());
+                    item.setActive(true);
+                    System.out.println("ItemName:[" + item.getId()
+                            + "],value:" + item.read(true).getValue());
+                    itemArr[item_flag] = item;
+                    item_flag++;
+                }
+                readItemStateMongo(cid, group, itemArr);
             }
-            readItemStateMongo(cid, group, itemArr);
+
             /*readItemStateMysql(cid, group, itemArr);*/
             /*final Group finalGroup = group;
             new Thread("mysql_opc_sync_thread"){

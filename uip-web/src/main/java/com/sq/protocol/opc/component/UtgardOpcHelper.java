@@ -87,15 +87,15 @@ public class UtgardOpcHelper {
                             Categories.OPCDAServer10, Categories.OPCDAServer20,
                             Categories.OPCDAServer30 }, new Category[] {});
 
-            log.info("-----------------------------------------------------------");
-            log.info("--------开始获取目标Ip：" + connectionInformation.getHost() + "下所有on service的opc服务.-----");
+            log.error("-----------------------------------------------------------");
+            log.error("--------开始获取目标Ip：" + connectionInformation.getHost() + "下所有on service的opc服务.-----");
             for (ClassDetails cds : classDetails) {
-                log.info("ClassDetails  Show.   ");
-                log.info("    ProgId--->>" + cds.getProgId());
-                log.info("    Desp  --->>" + cds.getDescription());
-                log.info("    ClsId --->>" + cds.getClsId());
+                log.error("ClassDetails  Show.   ");
+                log.error("    ProgId--->>" + cds.getProgId());
+                log.error("    Desp  --->>" + cds.getDescription());
+                log.error("    ClsId --->>" + cds.getClsId());
             }
-            log.info("-----------------------------------------------------------");
+            log.error("-----------------------------------------------------------");
         } catch (JIException e) {
             log.error("获取配置文件中内容时出错",e);
         } catch (UnknownHostException e1) {
@@ -146,7 +146,7 @@ public class UtgardOpcHelper {
 
         try {
             ConnectionInformation connectionInformation = new ConnectionInformation();
-            connectionInformation.setHost("192.168.0.71");
+            connectionInformation.setHost("localhost");
             connectionInformation.setUser("Administrator");
             connectionInformation.setPassword("123456");
             connectionInformation.setDomain("");

@@ -8,8 +8,13 @@
     <bean name="startQuertz" lazy-init="false" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
-               <!-- <ref bean="opcSyncDataJobTrigger" />
-                <ref bean="dcsDataMigrationJobTrigger" />-->
+                <ref bean="execLoadometerOrignalDataGatheringTrigger" />
+                <!--<ref bean="opcSyncDataJobTrigger" />
+                <ref bean="dcsDataMigrationJobTrigger" />
+
+                <ref bean="indicatorReallTimeComputJobTrigger" />
+                <ref bean="njmbDataJobTrigger" />
+                <ref bean="execInterfaceIndicatorDataGaterTrigger" />-->
             </list>
         </property>
     </bean>
@@ -31,7 +36,45 @@
             <ref bean="opcSyncDataDetailJob"/>
         </property>
         <property name="cronExpression">
+            <value>*/5 * * * * ?</value>
+        </property>
+    </bean>
+
+    <!-- 大屏烟气指标数据定时读取 -->
+    <bean id="njmbDataDetailJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <!-- 调用的类 -->
+        <property name="targetObject" ref="schedulerExecuteService"/>
+        <!-- 调用类中的方法 -->
+        <property name="targetMethod" value="executeNjmbDataSync" />
+        <!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <bean id="njmbDataJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="njmbDataDetailJob"/>
+        </property>
+        <property name="cronExpression">
             <value>30 */1 * * * ?</value>
+        </property>
+    </bean>
+
+    <!-- DCS指标实时计算 -->
+    <bean id="indicatorReallTimeComputDetailJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <!-- 调用的类 -->
+        <property name="targetObject" ref="schedulerExecuteService"/>
+        <!-- 调用类中的方法 -->
+        <property name="targetMethod" value="execInterfaceDataGather" />
+        <!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <bean id="indicatorReallTimeComputJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="indicatorReallTimeComputDetailJob"/>
+        </property>
+        <property name="cronExpression">
+            <value>0 0 * * * ?</value>
         </property>
     </bean>
 
@@ -51,6 +94,44 @@
         </property>
         <property name="cronExpression">
             <value>0 5 0 * * ?</value>
+        </property>
+    </bean>
+
+    <!-- 地磅数据汇集 -->
+    <bean id="execLoadometerOrignalDataGatheringJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <!-- 调用的类 -->
+        <property name="targetObject" ref="schedulerExecuteService"/>
+        <!-- 调用类中的方法 -->
+        <property name="targetMethod" value="execLoadometerOrignalDataGathering" />
+        <!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <bean id="execLoadometerOrignalDataGatheringTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="execLoadometerOrignalDataGatheringJob"/>
+        </property>
+        <property name="cronExpression">
+            <value>0 */3 * * * ?</value>
+        </property>
+    </bean>
+
+    <!-- 接口日数据数据计算 -->
+    <bean id="execInterfaceIndicatorDataGaterJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <!-- 调用的类 -->
+        <property name="targetObject" ref="schedulerExecuteService"/>
+        <!-- 调用类中的方法 -->
+        <property name="targetMethod" value="execInterfaceIndicatorDataGater" />
+        <!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <bean id="execInterfaceIndicatorDataGaterTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="execInterfaceIndicatorDataGaterJob"/>
+        </property>
+        <property name="cronExpression">
+            <value>0 15 0 * * ?</value>
         </property>
     </bean>
 </beans>

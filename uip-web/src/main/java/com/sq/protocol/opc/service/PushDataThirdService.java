@@ -151,6 +151,12 @@ public class PushDataThirdService extends BaseService<MesuringPoint, Long> {
         screenPushDataList.add(generateScreenPushData("HF->3->Macsv5.Device3.Group3.B3_HFZSJ"));
         screenPushDataList.add(generateScreenPushData("HF->4->Macsv5.Device3.Group3.B4_HFZSJ"));
 
+        //主蒸汽流量
+        screenPushDataList.add(generateScreenPushData("ZQ->1->Macsv5.Device3.Group3.AM10MCS0206"));
+        screenPushDataList.add(generateScreenPushData("ZQ->2->Macsv5.Device3.Group3.AM11MCS0206"));
+        screenPushDataList.add(generateScreenPushData("ZQ->3->Macsv5.Device3.Group3.AM12MCS0206"));
+        screenPushDataList.add(generateScreenPushData("ZQ->4->Macsv5.Device3.Group3.AM13MCS0206"));
+
         return screenPushDataList;
     }
 
@@ -176,17 +182,92 @@ public class PushDataThirdService extends BaseService<MesuringPoint, Long> {
      * @return
      */
     private List<ScreenInfo> pushScreenDataSync(List<ScreenInfo> screenInfoList,List<ScreenPushData> screenPushDataList) {
+        boolean flagGl1 = true;
+        boolean flagGl2 = true;
+        boolean flagGl3 = true;
+        boolean flagGl4 = true;
+
+        for (ScreenPushData screenPushData:screenPushDataList) {
+            if (screenPushData.getGroup().equals("ZQ")) {
+                log.error("#:group:" + screenPushData.getGroup() + ";code:" + screenPushData.getItemCode() + "valie:" + Double.parseDouble(screenPushData.getItemValue()));
+                if (screenPushData.getSerialNo() == 1 &&  Double.parseDouble(screenPushData.getItemValue()) <= 20) {
+                    flagGl1 = false;
+                } else if (screenPushData.getSerialNo() == 2 &&  Double.parseDouble(screenPushData.getItemValue()) <= 20) {
+                    flagGl2 = false;
+                } else if (screenPushData.getSerialNo() == 3 &&  Double.parseDouble(screenPushData.getItemValue()) <= 20) {
+                    flagGl3 = false;
+                } else if (screenPushData.getSerialNo() == 4 &&  Double.parseDouble(screenPushData.getItemValue()) <= 20) {
+                    flagGl4 = false;
+                }
+            }
+        }
+
+        for (ScreenInfo screenInfo:screenInfoList) {
+            if (screenInfo.getBianma().equals("ZHUANGTAI")) {
+                if(!flagGl1) {
+                    screenInfo.setGuolu1("检修");
+                } else {
+                    screenInfo.setGuolu1("运行");
+                }
+                if(!flagGl2) {
+                    screenInfo.setGuolu2("检修");
+                } else {
+                    screenInfo.setGuolu2("运行");
+                }
+                if(!flagGl3) {
+                    screenInfo.setGuolu3("检修");
+                } else {
+                    screenInfo.setGuolu3("运行");
+                }
+                if(!flagGl4) {
+                    screenInfo.setGuolu4("检修");
+                } else {
+                    screenInfo.setGuolu4("运行");
+                }
+            }
+        }
+
+        /*for (ScreenInfo screenInfo:screenInfoList) {
+            if (screenInfo.getBianma().equals("ZHUANGTAI")) {
+                if(screenInfo.getGuolu1().equals("检修")) {
+                    flagGl1 = false;
+                } else if (screenInfo.getGuolu2().equals("检修")){
+                    flagGl2 = false;
+                } else if (screenInfo.getGuolu3().equals("检修")){
+                    flagGl3 = false;
+                } else if (screenInfo.getGuolu4().equals("检修")){
+                    flagGl4 = false;
+                }
+            }
+        }*/
+
         for (ScreenPushData screenPushData:screenPushDataList) {
             for (ScreenInfo screenInfo:screenInfoList) {
                 if (screenInfo.getBianma().equals(screenPushData.getGroup())) {
                     if (screenPushData.getSerialNo() == 1) {
-                        screenInfo.setGuolu1(screenPushData.getItemValue());
+                        if (flagGl1) {
+                            screenInfo.setGuolu1(screenPushData.getItemValue());
+                        } else {
+                            screenInfo.setGuolu1("检修");
+                        }
                     } else if (screenPushData.getSerialNo() == 2) {
-                        screenInfo.setGuolu2(screenPushData.getItemValue());
+                        if (flagGl2) {
+                            screenInfo.setGuolu2(screenPushData.getItemValue());
+                        } else {
+                            screenInfo.setGuolu2("检修");
+                        }
                     } else if (screenPushData.getSerialNo() == 3) {
-                        screenInfo.setGuolu3(screenPushData.getItemValue());
+                        if (flagGl3) {
+                            screenInfo.setGuolu3(screenPushData.getItemValue());
+                        } else {
+                            screenInfo.setGuolu3("检修");
+                        }
                     } else if (screenPushData.getSerialNo() == 4) {
-                        screenInfo.setGuolu4(screenPushData.getItemValue());
+                        if (flagGl4) {
+                            screenInfo.setGuolu4(screenPushData.getItemValue());
+                        } else {
+                            screenInfo.setGuolu4("检修");
+                        }
                     }
                 }
             }

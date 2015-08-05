@@ -9,10 +9,18 @@
   | o| (_
 --%>
 <%@page contentType="text/html;charset=UTF-8" language="java" %>
-<script type="text/javascript" src="${ctx}/static/jquery/jquery-1.11.1.js"></script>
+<!-- jQuery -->
+<script type="text/javascript" src="${ctx}/static/framework/components/jquery/dist/jquery.min.js"></script>
 
-<script type="text/javascript" src="${ctx}/static/bootstrap/js/bootstrap.min.js"></script>
+<!-- Bootstrap Core JavaScript -->
+<script type="text/javascript" src="${ctx}/static/framework/components/bootstrap/dist/js/bootstrap.min.js"></script>
 
-<script type="text/javascript" src="${ctx}/static/framework/js/sb-admin-2.js"></script>
+<!-- Metis Menu Plugin JavaScript -->
+<script type="text/javascript" src="${ctx}/static/framework/components/metisMenu/dist/metisMenu.min.js"></script>
 
-<script type="text/javascript" src="${ctx}/static/framework/js/plugins/metisMenu/metisMenu.min.js"></script>
+<!-- Custom Theme JavaScript -->
+<script type="text/javascript" src="${ctx}/static/framework/dist/js/sb-admin-2.js"></script>
+
+<!-- Datetimepicker JavaScript -->
+<script type="text/javascript" src="${ctx}/static/framework/components/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+<script type="text/javascript" src="${ctx}/static/framework/components/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>

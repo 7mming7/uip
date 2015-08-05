@@ -93,7 +93,7 @@
             <ref bean="dcsDataMigrationDetailJob"/>
         </property>
         <property name="cronExpression">
-            <value>0 5 0 * * ?</value>
+            <value>0 35 0 * * ?</value>
         </property>
     </bean>
 

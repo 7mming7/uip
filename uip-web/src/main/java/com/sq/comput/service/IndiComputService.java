@@ -295,7 +295,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
             }
         }
 
-        /*_instance.shutdown();*/
+        _instance.shutdown();
     }
 
     /**

@@ -22,9 +22,9 @@
     <!-- 数据源 -->
     <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
         <!-- 基本属性 url、user、password -->
-        <property name="url" value="jdbc:mysql://localhost:3306/dev_mis_nj_20150509?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=utf-8"/>
+        <property name="url" value="jdbc:mysql://192.168.1.239:3306/test_mis_nj_20150624?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull"/>
         <property name="username" value="root"/>
-        <property name="password" value="700103"/>
+        <property name="password" value="87783121"/>
 
         <!-- 配置初始化大小、最小、最大 -->
         <property name="initialSize" value="${druid.initialSize}"/>
@@ -101,6 +101,7 @@
                 <entry key="net.sf.ehcache.configurationResourceName" value="${net.sf.ehcache.configurationResourceName}"/>
                 <entry key="hibernate.cache.use_structured_entries" value="${hibernate.cache.use_structured_entries}"/>
                 <entry key="hibernate.connection.autocommit" value="true"/>
+                <entry key="hibernate.current_session_context_class" value="thread"/>
             </map>
         </property>
     </bean>
@@ -172,4 +173,5 @@
     <import resource="springContext-config-monitor.xml"/>
     <import resource="springContext-schedule.xml"/>
     <import resource="springContext-cxf.xml"/>
+    <import resource="springContext-mongodb.xml"/>
 </beans>

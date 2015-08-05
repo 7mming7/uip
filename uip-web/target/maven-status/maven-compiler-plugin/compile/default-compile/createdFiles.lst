@@ -1,4 +1,3 @@
-com\sq\comput\strategy\IndiComputThread.class
 com\sq\comput\repository\IndicatorInstanceRepository.class
 com\sq\protocol\ws\domain\MrpElementResponse.class
 com\sq\protocol\opc\component\OpcRegisterFactory.class
