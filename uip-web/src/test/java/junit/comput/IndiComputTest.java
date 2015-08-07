@@ -1,18 +1,9 @@
 package junit.comput;
 
-import com.sq.comput.domain.IndicatorTemp;
 import com.sq.comput.service.IndiComputService;
 import com.sq.comput.service.IndicatorTempService;
-import com.sq.protocol.socket.SocketServer;
-import com.sq.util.DateUtil;
 import junit.base.TestCase;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.TreeMap;
 
 /**
  * Created with IntelliJ IDEA.

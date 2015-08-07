@@ -1,6 +1,5 @@
 package com.sq.sys.weave;
 
-import com.sq.protocol.socket.SocketServer;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;

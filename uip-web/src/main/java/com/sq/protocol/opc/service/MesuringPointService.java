@@ -174,6 +174,27 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
     }
 
     /**
+     * 接收UDP传入的数据并保存到mysql服务中
+     * @param receiveMsg
+     */
+    public void receiveUdpDataMysql (int sysId, String receiveMsg) {
+        String[] pointEntityArray = receiveMsg.split(";");
+        Long batchNum = originalDataRepository.gernateNextBatchNumber(sysId);
+        List<OriginalData> originalDataList = new LinkedList<OriginalData>();
+        for (String pointStr:pointEntityArray) {
+            String[] paramArray = pointStr.split(",");
+            OriginalData originalData = new OriginalData();
+            originalData.setInstanceTime(Calendar.getInstance());
+            originalData.setBatchNum(batchNum);
+            originalData.setItemCode(paramArray[0]);
+            originalData.setItemValue(paramArray[1]);
+            originalData.setSysId(sysId);
+            originalDataList.add(originalData);
+        }
+        originalDataRepository.save(originalDataList);
+    }
+
+    /**
      * group读取item的同步值 mongo
      * @param group   opc group
      * @param itemArr item数组
@@ -190,8 +211,6 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
         List<MongoOriginalDataHistory> originalDataHistoryList = new LinkedList<MongoOriginalDataHistory>();
         List<MongoOrignalDataRealTime> originalDataRealTimeList = new LinkedList<MongoOrignalDataRealTime>();
         for (Map.Entry<Item, ItemState> entry : syncItems.entrySet()) {
-            log.error("key= " + entry.getKey().getId()
-                    + " and value= " + entry.getValue().getValue().toString());
             String itemValue = entry.getValue().getValue().toString();
             if (itemValue.contains("org.jinterop.dcom.core.VariantBody$EMPTY")) {
                 continue;

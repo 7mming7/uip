@@ -72,6 +72,8 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
         for (IndicatorTemp indicatorTemp:indicatorTempList) {
             log.info("indicatorTemp:->" + indicatorTemp.getIndicatorName());
             IndicatorInstance indicatorInstance = sendCalculateComm(_instance, indicatorTemp, computCal, new InterfaceStrategy());
+            computCal.add(Calendar.HOUR_OF_DAY,-1);
+            indicatorInstance.setInstanceTime(computCal);
             if (null != indicatorInstance) {
                 indicatorInstanceList.add(indicatorInstance);
             }
