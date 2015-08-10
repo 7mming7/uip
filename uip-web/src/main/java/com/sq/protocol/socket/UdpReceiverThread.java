@@ -58,14 +58,14 @@ public class UdpReceiverThread extends Thread {
 
     @Override
     public void run() {
-        byte[] buf = new byte[1024];
+        byte[] buf = new byte[1024*100];
         try {
             //客户端在端口监听接收到的数据
             DatagramSocket ds = new DatagramSocket(listening_port);
             InetAddress loc = InetAddress.getLocalHost();
 
             //定义用来接收数据的DatagramPacket实例
-            DatagramPacket dp_receive = new DatagramPacket(buf, 1024);
+            DatagramPacket dp_receive = new DatagramPacket(buf, 1024*100);
             //数据发向本地端口
             ds.setSoTimeout(TIMEOUT);     //设置接收数据时阻塞的最长时间
 
@@ -74,16 +74,15 @@ public class UdpReceiverThread extends Thread {
             while(connFlag){
                 //接收从服务端发送回来的数据
                 ds.receive(dp_receive);
-
-                mesuringPointService.receiveUdpDataMysql(sysId, dp_receive.getData().toString());
+                System.out.println(new String(dp_receive.getData(),0,dp_receive.getLength()));
+                mesuringPointService.receiveUdpDataMysql(sysId, new String(dp_receive.getData(),0,dp_receive.getLength()));
                 //如果收到数据，则打印出来
-                System.out.println("client received data from server：");
                 String str_receive = new String(dp_receive.getData(),0,dp_receive.getLength()) +
                         " from " + dp_receive.getAddress().getHostAddress() + ":" + dp_receive.getPort();
                 log.error(str_receive);
                 //由于dp_receive在接收了数据之后，其内部消息长度值会变为实际接收的消息的字节数，
                 //所以这里要将dp_receive的内部消息长度重新置为1024
-                dp_receive.setLength(1024);
+                dp_receive.setLength(1024*100);
             }
             ds.close();
         } catch (UnknownHostException e) {
