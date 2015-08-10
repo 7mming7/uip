@@ -29,7 +29,7 @@ public class UdpReceiverThread extends Thread {
 
     private Logger log = LoggerFactory.getLogger(UdpReceiverThread.class);
 
-    private static final int TIMEOUT = 5000;  //设置接收数据的超时时间
+    private static final int TIMEOUT = 0;  //设置接收数据的超时时间
 
     /**
      * 由于Thread非spring启动时实例化，而是根据具体的逻辑动态实例化，所以需要通过此方式从spring的context中获取相应的bean.

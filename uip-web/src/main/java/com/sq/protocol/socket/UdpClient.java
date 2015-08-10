@@ -11,7 +11,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 
 /**
- * Created with IntelliJ IDEA.
+ * UDP客户端，监听指定端口接收数据.
  * User: shuiqing
  * Date: 2015/7/30
  * Time: 10:51
@@ -31,6 +31,7 @@ public class UdpClient {
      * 开启udp数据监听服务
      */
     public static void startLinsteningUdpService () {
+        log.error("开启udp数据监听服务.");
         for (int cid=1;cid<= UdpSocketConfig.CLIENT_MAX;cid++) {
             UdpConnectInfo udpConnectInfo = UdpSocketConfig.udpConnectInfoMap.get(cid);
             UdpReceiverThread udpReceiverThread = new UdpReceiverThread();

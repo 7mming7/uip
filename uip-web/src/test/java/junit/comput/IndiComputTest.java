@@ -2,6 +2,7 @@ package junit.comput;
 
 import com.sq.comput.service.IndiComputService;
 import com.sq.comput.service.IndicatorTempService;
+import com.sq.protocol.socket.UdpSocketConfig;
 import junit.base.TestCase;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,7 +27,7 @@ public class IndiComputTest extends TestCase {
     private IndicatorTempService indicatorTempService;
 
     @Autowired
-    private SocketServer socketServerComp;
+    private UdpSocketConfig udpSocketConfig;
 
     /*@Test
     public void testInterfaceDataGather () {

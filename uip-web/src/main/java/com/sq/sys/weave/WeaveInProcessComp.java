@@ -1,5 +1,6 @@
 package com.sq.sys.weave;
 
+import com.sq.protocol.socket.UdpClient;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
@@ -38,8 +39,8 @@ public class WeaveInProcessComp implements BeanPostProcessor {
     public Object postProcessAfterInitialization(Object bean, String beanName)
             throws BeansException {
         //开启socket服务
-        if (bean instanceof SocketServer) {
-            ((SocketServer) bean).start();
+        if (bean instanceof UdpClient) {
+            ((UdpClient) bean).startLinsteningUdpService();
         }
         return bean;
     }
