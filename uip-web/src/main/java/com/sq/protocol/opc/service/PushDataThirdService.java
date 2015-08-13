@@ -8,6 +8,8 @@ import com.sq.protocol.opc.domain.OpcServerInfomation;
 import com.sq.protocol.opc.domain.OriginalData;
 import com.sq.protocol.opc.domain.ScreenInfo;
 import com.sq.protocol.opc.repository.ScreenInfoRepository;
+import com.sq.protocol.socket.UdpConnectInfo;
+import com.sq.protocol.socket.UdpSocketConfig;
 import com.sq.service.BaseService;
 import org.jinterop.dcom.common.JIException;
 import org.openscada.opc.lib.common.NotConnectedException;
@@ -18,7 +20,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.math.BigDecimal;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -48,10 +55,14 @@ public class PushDataThirdService extends BaseService<MesuringPoint, Long> {
 
     DecimalFormat format = new DecimalFormat("0.00");
 
+    private static final int TIMEOUT = 0;  //设置接收数据的超时时间
+
+    private static final int DATA_LENGTH = 1024*100;
+
     /**
      * 大屏数据推送
      */
-    public void screenDataPush () {
+    /*public void screenDataPush () {
         Server server = UtgardOpcHelper.connect(DCS_CID);
         Collection<Leaf> leafs = new LinkedList<Leaf>();
         List<ScreenPushData> screenPushDataList = fillCodeList();
@@ -71,7 +82,7 @@ public class PushDataThirdService extends BaseService<MesuringPoint, Long> {
                 item_flag++;
             }
             Map<Item, ItemState> syncItems = null;
-            /** arg1 false 读取缓存数据 OPCDATASOURCE.OPC_DS_CACHE  */
+            *//** arg1 false 读取缓存数据 OPCDATASOURCE.OPC_DS_CACHE  *//*
             syncItems = group.read(false, itemArr);
             List<ScreenInfo> screenInfoList = screenInfoRepository.findAll();
             for (Map.Entry<Item, ItemState> entry : syncItems.entrySet()) {
@@ -100,6 +111,76 @@ public class PushDataThirdService extends BaseService<MesuringPoint, Long> {
         } catch (AddFailedException e) {
             log.error("Group add error.", e);
         }
+    }*/
+
+    public void screenDataPush () {
+        UdpConnectInfo udpConnectInfo = UdpSocketConfig.udpConnectInfoMap.get(1);
+        byte[] buf = new byte[DATA_LENGTH];
+        try {
+            //客户端在端口监听接收到的数据
+            DatagramSocket ds = new DatagramSocket(udpConnectInfo.getListening_port());
+            InetAddress loc = InetAddress.getLocalHost();
+
+            //定义用来接收数据的DatagramPacket实例
+            DatagramPacket dp_receive = new DatagramPacket(buf, DATA_LENGTH);
+            //数据发向本地端口
+            ds.setSoTimeout(0);     //设置接收数据时阻塞的最长时间
+
+            boolean connFlag = true;     //是否接收到数据的标志位
+
+            while(connFlag){
+
+                Thread.sleep(1000l);
+
+                //接收从服务端发送回来的数据
+                ds.receive(dp_receive);
+
+                updateScreenDisplay(new String(dp_receive.getData(), 0, dp_receive.getLength()));
+                //如果收到数据，则打印出来
+                String str_receive = new String(dp_receive.getData(),0,dp_receive.getLength()) +
+                        " from " + dp_receive.getAddress().getHostAddress() + ":" + dp_receive.getPort();
+                log.error(str_receive);
+                //由于dp_receive在接收了数据之后，其内部消息长度值会变为实际接收的消息的字节数，
+                //所以这里要将dp_receive的内部消息长度重新置为1024
+                dp_receive.setLength(DATA_LENGTH);
+            }
+            ds.close();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }catch(InterruptedIOException e){
+            log.error("获取监听端口的数据失败.",e);
+        } catch (IOException e) {
+            log.error("数据通讯异常.", e);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 更新大屏显示
+     */
+    public void updateScreenDisplay (String receiveMsg) {
+        Map<String,String> pointValueMap = new HashMap<String,String>();
+        String[] pointEntityArray = receiveMsg.split(";");
+        for (String pointStr:pointEntityArray) {
+            String[] paramArray = pointStr.split(",");
+            pointValueMap.put(paramArray[0],paramArray[1]);
+        }
+
+        List<ScreenPushData> screenPushDataList = fillCodeList();
+        List<ScreenInfo> screenInfoList = screenInfoRepository.findAll();
+        for (Map.Entry<String, String> entry : pointValueMap.entrySet()) {
+            String itemValue = entry.getValue();
+            for (ScreenPushData screenPushData:screenPushDataList) {
+                if (screenPushData.getItemCode().equals(entry.getKey())) {
+                    screenPushData.setItemValue(
+                            format.format(new BigDecimal(itemValue.substring(2, itemValue.length() - 2))));
+                }
+            }
+        }
+
+        pushScreenDataSync(screenInfoList,screenPushDataList);
+        screenInfoRepository.save(screenInfoList);
     }
 
     /**

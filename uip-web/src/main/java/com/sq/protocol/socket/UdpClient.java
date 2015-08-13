@@ -9,6 +9,7 @@ import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * UDP客户端，监听指定端口接收数据.
@@ -26,6 +27,8 @@ import java.net.InetAddress;
 public class UdpClient {
 
     private static final Logger log = LoggerFactory.getLogger(UdpClient.class);
+
+    private static final int DATA_LENGTH = 1024*100;
 
     /**
      * 开启udp数据监听服务
