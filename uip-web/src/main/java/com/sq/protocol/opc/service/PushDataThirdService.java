@@ -135,7 +135,7 @@ public class PushDataThirdService extends BaseService<MesuringPoint, Long> {
                 //接收从服务端发送回来的数据
                 ds.receive(dp_receive);
 
-                updateScreenDisplay(new String(dp_receive.getData(), 0, dp_receive.getLength()));
+                /*updateScreenDisplay(new String(dp_receive.getData(), 0, dp_receive.getLength()));*/
                 //如果收到数据，则打印出来
                 String str_receive = new String(dp_receive.getData(),0,dp_receive.getLength()) +
                         " from " + dp_receive.getAddress().getHostAddress() + ":" + dp_receive.getPort();
@@ -159,22 +159,17 @@ public class PushDataThirdService extends BaseService<MesuringPoint, Long> {
     /**
      * 更新大屏显示
      */
-    public void updateScreenDisplay (String receiveMsg) {
-        Map<String,String> pointValueMap = new HashMap<String,String>();
-        String[] pointEntityArray = receiveMsg.split(";");
-        for (String pointStr:pointEntityArray) {
-            String[] paramArray = pointStr.split(",");
-            pointValueMap.put(paramArray[0],paramArray[1]);
-        }
-
+    public void updateScreenDisplay() {
         List<ScreenPushData> screenPushDataList = fillCodeList();
         List<ScreenInfo> screenInfoList = screenInfoRepository.findAll();
-        for (Map.Entry<String, String> entry : pointValueMap.entrySet()) {
+        for (Map.Entry<String, String> entry : OpcRegisterFactory.mesuringPointCacheMap.entrySet()) {
+            System.out.println("itemId:" + entry.getKey() + ";itemValue:" + entry.getValue());
             String itemValue = entry.getValue();
             for (ScreenPushData screenPushData:screenPushDataList) {
                 if (screenPushData.getItemCode().equals(entry.getKey())) {
+                    System.out.println("itemCode:" + screenPushData.getItemCode() + ";itemValue:" + new BigDecimal(itemValue.substring(2, itemValue.length() - 2)));
                     screenPushData.setItemValue(
-                            format.format(new BigDecimal(itemValue.substring(2, itemValue.length() - 2))));
+                            format.format(new BigDecimal(itemValue)));
                 }
             }
         }
@@ -252,7 +247,6 @@ public class PushDataThirdService extends BaseService<MesuringPoint, Long> {
         screenPushData.setGroup(strArr[0]);
         screenPushData.setSerialNo(Integer.parseInt(strArr[1]));
         screenPushData.setItemCode(strArr[2]);
-        log.error("group->" + strArr[0] + ";serialNo->" + strArr[1] + ";itemCode->" + strArr[2]);
         return screenPushData;
     }
 
@@ -262,7 +256,7 @@ public class PushDataThirdService extends BaseService<MesuringPoint, Long> {
      * @param screenPushDataList
      * @return
      */
-    private List<ScreenInfo> pushScreenDataSync(List<ScreenInfo> screenInfoList,List<ScreenPushData> screenPushDataList) {
+    private static List<ScreenInfo> pushScreenDataSync(List<ScreenInfo> screenInfoList, List<ScreenPushData> screenPushDataList) {
         boolean flagGl1 = true;
         boolean flagGl2 = true;
         boolean flagGl3 = true;
@@ -270,14 +264,18 @@ public class PushDataThirdService extends BaseService<MesuringPoint, Long> {
 
         for (ScreenPushData screenPushData:screenPushDataList) {
             if (screenPushData.getGroup().equals("ZQ")) {
-                log.error("#:group:" + screenPushData.getGroup() + ";code:" + screenPushData.getItemCode() + "valie:" + Double.parseDouble(screenPushData.getItemValue()));
+                log.error("#:group:" + screenPushData.getGroup() + ";code:" + screenPushData.getItemCode() + "value:" + Double.parseDouble(screenPushData.getItemValue()));
                 if (screenPushData.getSerialNo() == 1 &&  Double.parseDouble(screenPushData.getItemValue()) <= 20) {
+                    System.out.println("1---" + Double.parseDouble(screenPushData.getItemValue()));
                     flagGl1 = false;
                 } else if (screenPushData.getSerialNo() == 2 &&  Double.parseDouble(screenPushData.getItemValue()) <= 20) {
+                    System.out.println("2---" + Double.parseDouble(screenPushData.getItemValue()));
                     flagGl2 = false;
                 } else if (screenPushData.getSerialNo() == 3 &&  Double.parseDouble(screenPushData.getItemValue()) <= 20) {
+                    System.out.println("3---" + Double.parseDouble(screenPushData.getItemValue()));
                     flagGl3 = false;
                 } else if (screenPushData.getSerialNo() == 4 &&  Double.parseDouble(screenPushData.getItemValue()) <= 20) {
+                    System.out.println("4---" + Double.parseDouble(screenPushData.getItemValue()));
                     flagGl4 = false;
                 }
             }

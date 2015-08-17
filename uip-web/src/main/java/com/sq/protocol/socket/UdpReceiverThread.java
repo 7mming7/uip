@@ -1,7 +1,9 @@
 package com.sq.protocol.socket;
 
 import com.sq.comput.repository.LimitTempRepository;
+import com.sq.protocol.opc.component.OpcRegisterFactory;
 import com.sq.protocol.opc.service.MesuringPointService;
+import com.sq.protocol.opc.service.PushDataThirdService;
 import com.sq.util.SpringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * UDP接收数据处理线程.
@@ -31,12 +35,14 @@ public class UdpReceiverThread extends Thread {
 
     private static final int TIMEOUT = 0;  //设置接收数据的超时时间
 
-    private static final int DATA_LENGTH = 1024*100;
+    private static final int DATA_LENGTH = 1024*1000;
 
     /**
      * 由于Thread非spring启动时实例化，而是根据具体的逻辑动态实例化，所以需要通过此方式从spring的context中获取相应的bean.
      */
     private MesuringPointService mesuringPointService = SpringUtils.getBean(MesuringPointService.class);
+
+    private PushDataThirdService pushDataThirdService = SpringUtils.getBean(PushDataThirdService.class);
 
     public int sysId;
 
@@ -73,17 +79,24 @@ public class UdpReceiverThread extends Thread {
 
             boolean connFlag = true;     //是否接收到数据的标志位
 
+            int i = 1;
             while(connFlag){
 
-                Thread.sleep(1000*60l);
+                Thread.sleep(1000l);
 
                 //接收从服务端发送回来的数据
                 ds.receive(dp_receive);
-                mesuringPointService.receiveUdpDataMysql(sysId, new String(dp_receive.getData(), 0, dp_receive.getLength()));
+                syncPointCache(new String(dp_receive.getData(), 0, dp_receive.getLength()));
+
+                if (i % 60 == 0) {
+                    mesuringPointService.receiveUdpDataMysql(sysId, new String(dp_receive.getData(), 0, dp_receive.getLength()));
+                }
+
+                i++;
+
                 //如果收到数据，则打印出来
                 String str_receive = new String(dp_receive.getData(),0,dp_receive.getLength()) +
                         " from " + dp_receive.getAddress().getHostAddress() + ":" + dp_receive.getPort();
-                log.error(str_receive);
                 //由于dp_receive在接收了数据之后，其内部消息长度值会变为实际接收的消息的字节数，
                 //所以这里要将dp_receive的内部消息长度重新置为1024
                 dp_receive.setLength(DATA_LENGTH);
@@ -97,6 +110,18 @@ public class UdpReceiverThread extends Thread {
             log.error("数据通讯异常.", e);
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 同步更新测点的缓存数据
+     * @param receiveMsg
+     */
+    public static void syncPointCache(String receiveMsg){
+        String[] pointEntityArray = receiveMsg.split(";");
+        for (String pointStr:pointEntityArray) {
+            String[] paramArray = pointStr.split(",");
+            OpcRegisterFactory.mesuringPointCacheMap.put(paramArray[0], paramArray[1]);
         }
     }
 }

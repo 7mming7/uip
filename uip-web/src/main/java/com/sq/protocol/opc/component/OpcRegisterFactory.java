@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * OPC服务注册中心.
@@ -37,6 +38,9 @@ public class OpcRegisterFactory {
 
     /** opc连接配置信息  K：clientID V：配置信息*/
     private static Map<Integer, OpcServerInfomation> conInfoMap = new ConcurrentHashMap<Integer, OpcServerInfomation>();
+
+    /** 测点实时数据缓存 */
+    public static Map<String, String> mesuringPointCacheMap = new ConcurrentHashMap<String, String>();
 
     /**
      * 注册连接信息，K 为server_id，V 为具体的连接信息

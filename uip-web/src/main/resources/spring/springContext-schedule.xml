@@ -15,6 +15,7 @@
                 <ref bean="indicatorReallTimeComputJobTrigger" />
                 <ref bean="njmbDataJobTrigger" />
                 <ref bean="execInterfaceIndicatorDataGaterTrigger" />-->
+
             </list>
         </property>
     </bean>
@@ -55,7 +56,7 @@
             <ref bean="njmbDataDetailJob"/>
         </property>
         <property name="cronExpression">
-            <value>30 */1 * * * ?</value>
+            <value>*/5 * * * * ?</value>
         </property>
     </bean>
 

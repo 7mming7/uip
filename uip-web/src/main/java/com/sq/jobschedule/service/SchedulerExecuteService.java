@@ -95,7 +95,7 @@ public class SchedulerExecuteService {
      */
     public void executeNjmbDataSync(){
         log.error("----------- 大屏数据同步计算任务开始 -----------");
-        pushDataThirdService.screenDataPush();
+        pushDataThirdService.updateScreenDisplay();
         log.error("----------- 大屏数据同步计算任务结束 -----------");
     }
 
