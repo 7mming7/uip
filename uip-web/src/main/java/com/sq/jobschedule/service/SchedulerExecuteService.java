@@ -1,7 +1,6 @@
 package com.sq.jobschedule.service;
 
 import com.sq.comput.service.IndiComputService;
-import com.sq.inject.annotation.BaseComponent;
 import com.sq.protocol.jodbc.service.TradeService;
 import com.sq.protocol.opc.component.BaseConfiguration;
 import com.sq.protocol.opc.service.MesuringPointService;

@@ -111,8 +111,7 @@ public class IndiComputTask implements Callable<IndicatorInstance> {
     public IndicatorInstance call() throws Exception {
         log.info("Module Comput " + indicatorTemp.getIndicatorCode() + ":发送计算请求.");
         IndicatorInstance indicatorInstance = new IndicatorInstance(indicatorTemp);
-        indicatorInstance.setInstanceTime(computCal);
-        indicatorInstance.setStatDateNum(Integer.parseInt(DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULT)));
+
         Calendar tempCal = (Calendar) computCal.clone();
         Object computResult = iComputStrategy.execIndiComput(indicatorTemp, tempCal);
         if (null == computResult) {
@@ -128,6 +127,13 @@ public class IndiComputTask implements Callable<IndicatorInstance> {
             indicatorInstance.setValueType(IndicatorConsts.VALUE_TYPE_DOUBLE);
             indicatorInstance.setFloatValue(Double.parseDouble(computResult.toString()));
         }
+
+        Calendar tempComputCal = (Calendar) computCal.clone();
+        if(iComputStrategy instanceof InterfaceStrategy) {
+            tempComputCal.add(Calendar.HOUR_OF_DAY, -1);
+        }
+        indicatorInstance.setInstanceTime(tempComputCal);
+        indicatorInstance.setStatDateNum(Integer.parseInt(DateUtil.formatCalendar(tempComputCal,DateUtil.DATE_FORMAT_DAFAULT)));
         indiComputService.saveAndFlush(indicatorInstance);
         synchronized(ComputHelper.threadCalculateMap) {
             ComputHelper.threadCalculateMap.put(indicatorTemp.getIndicatorCode(), IndicatorConsts.VALUE_TYPE_DOUBLE);

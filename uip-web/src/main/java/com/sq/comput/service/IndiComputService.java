@@ -71,15 +71,10 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
         List<IndicatorInstance> indicatorInstanceList = new LinkedList<IndicatorInstance>();
         for (IndicatorTemp indicatorTemp:indicatorTempList) {
             log.info("indicatorTemp:->" + indicatorTemp.getIndicatorName());
-            IndicatorInstance indicatorInstance = sendCalculateComm(_instance, indicatorTemp, computCal, new InterfaceStrategy());
-            computCal.add(Calendar.HOUR_OF_DAY,-1);
-            indicatorInstance.setInstanceTime(computCal);
-            if (null != indicatorInstance) {
-                indicatorInstanceList.add(indicatorInstance);
-            }
+            sendCalculateCommInterface(indicatorTemp, computCal, new InterfaceStrategy());
         }
 
-        limitInstanceService.limitRealTimeCalculate(indicatorInstanceList);
+        /*limitInstanceService.limitRealTimeCalculate(indicatorInstanceList);*/
     }
 
     /**
@@ -112,7 +107,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
                     break;
             }
             log.error("**indicatorCode->" + indicatorTemp.getIndicatorCode() + ",Interface ComputCal-》"
-                    + DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULT));
+                    + DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_DAFAULT));
             LimitComputTask limitComputTask = new LimitComputTask(indicatorTemp,computCal);
             try {
                 limitComputTask.call();
@@ -247,9 +242,23 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
                 indicatorInstance = future.get();
             }
         } catch (Exception e) {
-            log.error("IndiComputService->sendCalculateComm 线程执行出现异常.",e);
+            log.error("IndiComputService->sendCalculateComm 线程执行出现异常.", e);
         }
         return indicatorInstance;
+    }
+
+    public synchronized void sendCalculateCommInterface (IndicatorTemp indicatorTemplate,
+                                                             Calendar computCal, IComputStrategy iComputStrategy) {
+        IndiComputTask indiComputThread = new IndiComputTask();
+        indiComputThread.setComputCal(computCal);
+        indiComputThread.setAssignMillions(System.currentTimeMillis());
+        indiComputThread.setiComputStrategy(iComputStrategy);
+        indiComputThread.setIndicatorTemp(indicatorTemplate);
+        try {
+            indiComputThread.call();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
