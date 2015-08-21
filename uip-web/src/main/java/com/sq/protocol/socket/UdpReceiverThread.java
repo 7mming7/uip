@@ -31,7 +31,7 @@ import java.util.Map;
  */
 public class UdpReceiverThread extends Thread {
 
-    private Logger log = LoggerFactory.getLogger(UdpReceiverThread.class);
+    private static Logger log = LoggerFactory.getLogger(UdpReceiverThread.class);
 
     private static final int TIMEOUT = 0;  //设置接收数据的超时时间
 
@@ -120,7 +120,7 @@ public class UdpReceiverThread extends Thread {
     public static void syncPointCache(String receiveMsg){
         String[] pointEntityArray = receiveMsg.split(";");
         for (String pointStr:pointEntityArray) {
-            String[] paramArray = pointStr.split(",");
+            String[] paramArray = pointStr.split("-");
             OpcRegisterFactory.mesuringPointCacheMap.put(paramArray[0], paramArray[1]);
         }
     }

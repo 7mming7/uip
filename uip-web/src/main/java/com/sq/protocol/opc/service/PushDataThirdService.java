@@ -163,7 +163,6 @@ public class PushDataThirdService extends BaseService<MesuringPoint, Long> {
         List<ScreenPushData> screenPushDataList = fillCodeList();
         List<ScreenInfo> screenInfoList = screenInfoRepository.findAll();
         for (Map.Entry<String, String> entry : OpcRegisterFactory.mesuringPointCacheMap.entrySet()) {
-            System.out.println("itemId:" + entry.getKey() + ";itemValue:" + entry.getValue());
             String itemValue = entry.getValue();
             for (ScreenPushData screenPushData:screenPushDataList) {
                 if (screenPushData.getItemCode().equals(entry.getKey())) {
@@ -212,8 +211,8 @@ public class PushDataThirdService extends BaseService<MesuringPoint, Long> {
         //NOX
         screenPushDataList.add(generateScreenPushData("NOX->1->Macsv5.Device3.Group3.B1_NOxZSJ"));
         screenPushDataList.add(generateScreenPushData("NOX->2->Macsv5.Device3.Group3.B2_NOxZSJ"));
-        screenPushDataList.add(generateScreenPushData("NOX->3->Macsv5.Device3.Group3.B3_NOxZSJ"));
-        screenPushDataList.add(generateScreenPushData("NOX->4->Macsv5.Device3.Group3.B4_NOxZSJ"));
+        screenPushDataList.add(generateScreenPushData("NOX->3->Macsv5.Device3.Group3.B3_NOXZSJ"));
+        screenPushDataList.add(generateScreenPushData("NOX->4->Macsv5.Device3.Group3.B4_NOXZSJ"));
 
         //炉温
         screenPushDataList.add(generateScreenPushData("LUWEN->1->Macsv5.Device3.Group3.B1MNAI033"));
