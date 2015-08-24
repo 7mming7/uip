@@ -86,6 +86,7 @@ public class UdpReceiverThread extends Thread {
 
                 //接收从服务端发送回来的数据
                 ds.receive(dp_receive);
+                /*log.error("dp_receive:" + new String(dp_receive.getData(), 0, dp_receive.getLength()));*/
                 syncPointCache(new String(dp_receive.getData(), 0, dp_receive.getLength()));
 
                 if (i % 60 == 0) {
@@ -120,8 +121,10 @@ public class UdpReceiverThread extends Thread {
     public static void syncPointCache(String receiveMsg){
         String[] pointEntityArray = receiveMsg.split(";");
         for (String pointStr:pointEntityArray) {
-            String[] paramArray = pointStr.split("-");
+            String[] paramArray = pointStr.split("%%");
             OpcRegisterFactory.mesuringPointCacheMap.put(paramArray[0], paramArray[1]);
+            /*log.info("pointStr:" + pointStr);
+            log.info("receive data-- itemCode:" + paramArray[0] + ",itemValue:" + paramArray[1]);*/
         }
     }
 }

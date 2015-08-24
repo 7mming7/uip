@@ -139,7 +139,6 @@ public class PushDataThirdService extends BaseService<MesuringPoint, Long> {
                 //如果收到数据，则打印出来
                 String str_receive = new String(dp_receive.getData(),0,dp_receive.getLength()) +
                         " from " + dp_receive.getAddress().getHostAddress() + ":" + dp_receive.getPort();
-                log.error(str_receive);
                 //由于dp_receive在接收了数据之后，其内部消息长度值会变为实际接收的消息的字节数，
                 //所以这里要将dp_receive的内部消息长度重新置为1024
                 dp_receive.setLength(DATA_LENGTH);
@@ -166,7 +165,8 @@ public class PushDataThirdService extends BaseService<MesuringPoint, Long> {
             String itemValue = entry.getValue();
             for (ScreenPushData screenPushData:screenPushDataList) {
                 if (screenPushData.getItemCode().equals(entry.getKey())) {
-                    System.out.println("itemCode:" + screenPushData.getItemCode() + ";itemValue:" + new BigDecimal(itemValue.substring(2, itemValue.length() - 2)));
+                    System.out.print("itemCode:" + screenPushData.getItemCode());
+                    System.out.println(";itemValue:" + itemValue);
                     screenPushData.setItemValue(
                             format.format(new BigDecimal(itemValue)));
                 }
