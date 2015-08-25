@@ -182,7 +182,7 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
         Long batchNum = originalDataRepository.gernateNextBatchNumber(sysId);
         List<OriginalData> originalDataList = new LinkedList<OriginalData>();
         for (String pointStr:pointEntityArray) {
-            String[] paramArray = pointStr.split("-");
+            String[] paramArray = pointStr.split("%%");
             OriginalData originalData = new OriginalData();
             originalData.setInstanceTime(Calendar.getInstance());
             originalData.setBatchNum(batchNum);
