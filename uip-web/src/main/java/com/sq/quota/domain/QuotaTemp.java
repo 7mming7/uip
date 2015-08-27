@@ -42,6 +42,11 @@ public class QuotaTemp extends QuotaBase {
     private String calculateExpression;
 
     /**
+     * 原生基础指标
+     */
+    private String gernaterdNativeExpression;
+
+    /**
      * 指标创建时间
      */
     private Calendar createTime;
@@ -108,5 +113,13 @@ public class QuotaTemp extends QuotaBase {
 
     public void setCreateTime(Calendar createTime) {
         this.createTime = createTime;
+    }
+
+    public String getGernaterdNativeExpression() {
+        return gernaterdNativeExpression;
+    }
+
+    public void setGernaterdNativeExpression(String gernaterdNativeExpression) {
+        this.gernaterdNativeExpression = gernaterdNativeExpression;
     }
 }
