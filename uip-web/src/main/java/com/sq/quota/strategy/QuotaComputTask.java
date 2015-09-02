@@ -1,6 +1,7 @@
 package com.sq.quota.strategy;
 
 import com.sq.comput.domain.IndicatorConsts;
+import com.sq.quota.component.QuotaComputHelper;
 import com.sq.quota.domain.QuotaInstance;
 import com.sq.quota.domain.QuotaTemp;
 import com.sq.quota.service.QuotaComputService;
@@ -107,7 +108,11 @@ public class QuotaComputTask implements Callable<QuotaInstance> {
 
     @Override
     public QuotaInstance call() throws Exception {
-        log.error("Module Comput " + quotaTemp.getIndicatorCode() + " start comput comd.");
+        log.error("Module Comput "
+                + quotaTemp.getIndicatorCode()
+                + " ---- "
+                + DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULT)
+                + " start comput comd.");
         QuotaInstance quotaInstance = new QuotaInstance(quotaTemp);
 
         Calendar tempCal = (Calendar) computCal.clone();
@@ -122,7 +127,7 @@ public class QuotaComputTask implements Callable<QuotaInstance> {
             quotaInstance.setStringValue(computResult.toString());
         } else {
             quotaInstance.setValueType(IndicatorConsts.VALUE_TYPE_DOUBLE);
-            quotaInstance.setFloatValue(Double.parseDouble(computResult.toString()));
+            quotaInstance.setFloatValue(computResult != null ? Double.parseDouble(computResult.toString()):null);
         }
 
         Calendar tempComputCal = (Calendar) computCal.clone();
@@ -130,8 +135,12 @@ public class QuotaComputTask implements Callable<QuotaInstance> {
             tempComputCal.add(Calendar.HOUR_OF_DAY, -1);
         }
         quotaInstance.setInstanceTime(tempComputCal);
-        quotaInstance.setStatDateNum(Integer.parseInt(DateUtil.formatCalendar(tempComputCal,DateUtil.DATE_FORMAT_DAFAULT)));
+        quotaInstance.setStatDateNum(Integer.parseInt(DateUtil.formatCalendar(tempComputCal, DateUtil.DATE_FORMAT_DAFAULT)));
         quotaComputService.saveAndFlush(quotaInstance);
+
+        /** 执行完ComputTask之后，需要将单次执行计数器自增操作 */
+        QuotaComputHelper.computExecuteCounter.incrementAndGet();
+
         return quotaInstance;
     }
 }

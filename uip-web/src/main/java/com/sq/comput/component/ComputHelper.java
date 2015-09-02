@@ -47,6 +47,11 @@ public class ComputHelper {
      */
     public static ConcurrentHashMap<String, Integer> threadCalculateMap = new ConcurrentHashMap<String, Integer>();
 
+    static {
+        loadLocalFunctions(getEvaluatorInstance());
+        initThreadPooSingleInstance();
+    }
+
     /**
      * 初始化指标计算线程池
      * 2014年10月23日 下午4:05:22 ShuiQing PM 添加此方法
@@ -72,11 +77,6 @@ public class ComputHelper {
             evaluator = new Evaluator();
         }
         return evaluator;
-    }
-
-    static {
-        loadLocalFunctions(getEvaluatorInstance());
-        initThreadPooSingleInstance();
     }
 
     /**

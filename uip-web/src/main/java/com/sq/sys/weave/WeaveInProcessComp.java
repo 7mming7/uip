@@ -1,6 +1,7 @@
 package com.sq.sys.weave;
 
 import com.sq.protocol.socket.UdpClient;
+import com.sq.quota.service.QuotaComputService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
@@ -38,9 +39,11 @@ public class WeaveInProcessComp implements BeanPostProcessor {
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName)
             throws BeansException {
-        //开启socket服务
+
         if (bean instanceof UdpClient) {
-            ((UdpClient) bean).startLinsteningUdpService();
+            ((UdpClient) bean).startLinsteningUdpService();//开启socket服务
+        } else if (bean instanceof QuotaComputService) {
+            ((QuotaComputService) bean).reloadQuotaCalculateExp();//重新加载指标的native表达式
         }
         return bean;
     }

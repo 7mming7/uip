@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 指标计算辅助类.
@@ -39,7 +40,10 @@ public class QuotaComputHelper {
     public static int indicatorThreadPoolSize = 100;
 
     /** 线程超时时长 */
-    public static Long requestWaitTimeOutValue = 60l;
+    public static Long requestWaitTimeOutValue = 30l;
+
+    /** 原子性的int值，用作指标计算的计数器（线程安全） */
+    public static AtomicInteger computExecuteCounter = new AtomicInteger(0);
 
     /**
      * 同步Map对象记录了指标计算的进度
@@ -50,14 +54,14 @@ public class QuotaComputHelper {
 
     static {
         loadLocalFunctions(getEvaluatorInstance());
-        initThreadPooSingleInstance();
+        fetchThreadPooSingleInstance();
     }
 
     /**
      * 初始化指标计算线程池
      * 2014年10月23日 下午4:05:22 ShuiQing PM 添加此方法
      */
-    public static synchronized ThreadPoolExecutor initThreadPooSingleInstance() {
+    public static synchronized ThreadPoolExecutor fetchThreadPooSingleInstance() {
         /**
          * 初始化请求线程池
          * @param indicatorThreadPoolSize coreThreadSize

@@ -5,8 +5,10 @@ import com.sq.comput.domain.IndicatorConsts;
 import com.sq.comput.domain.IndicatorInstance;
 import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
+import com.sq.quota.domain.QuotaConsts;
 import com.sq.quota.domain.QuotaTemp;
 import com.sq.quota.repository.QuotaInstanceRepository;
+import com.sq.quota.service.QuotaComputService;
 import com.sq.util.DateUtil;
 import com.sq.util.SpringUtils;
 import net.sourceforge.jeval.EvaluationConstants;
@@ -39,7 +41,7 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
     @Override
     public Object execIndiComput(QuotaTemp quotaTemp, Calendar computCal) {
         Evaluator evaluator = ComputHelper.getEvaluatorInstance();
-        String calculateExp = quotaTemp.getCalculateExpression();
+        String calculateExp = quotaTemp.getGernaterdNativeExpression();
         List<String> variableList = ComputHelper.getVariableList(calculateExp,evaluator);
         if (variableList.isEmpty()) {
             log.error("表达式：" + calculateExp + " 没有动态参数!");
@@ -51,12 +53,21 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
         int fetchCycle = quotaTemp.getFetchCycle();
         searchable = fillSearchConditionByFetchType(searchable,fetchCycle,computCal);
         for (String variable : variableList) {
+
+            QuotaTemp variableQuotaTemp = QuotaComputService.quotaTempMapCache.get(variable);
+
             searchable.addSearchFilter("indicatorCode", MatchType.EQ, variable);
             List<IndicatorInstance> indicatorInstances = quotaInstanceRepository.findAll(searchable).getContent();
 
             if (indicatorInstances.isEmpty()) {
-                log.error(searchable.toString() + "计算指标：" + quotaTemp.getIndicatorCode() + "-》关联指标：" + variable + " 没有数据!默认为0.");
-                evaluator.putVariable(variable, "0");
+                if (variableQuotaTemp.getCalType() != QuotaConsts.CALTYPE_LOSS) {
+                    log.error(searchable.toString() +
+                            "计算指标：" + quotaTemp.getIndicatorCode() +
+                            "-》关联指标：" + variable + " 没有数据! -> 计算执行结果为NULL.");
+                    return null;
+                } else {
+                    evaluator.putVariable(variable, "0");
+                }
             }
 
             if (indicatorInstances.size() >= 1) {

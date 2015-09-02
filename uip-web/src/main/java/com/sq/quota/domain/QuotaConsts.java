@@ -29,12 +29,12 @@ public interface QuotaConsts {
     /** ======================
      *    指标计算类型
      *      1、元指标
-     *      2、累计指标
+     *      2、损耗指标
      *      3、库存指标
      */
     public static final int CALTYPE_ORIGINAL = 1;
 
-    public static final int CALTYPE_CUMULATIVE = 2;
+    public static final int CALTYPE_LOSS = 2;
 
     public static final int CALTYPE_INVENTORY = 3;
 

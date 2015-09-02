@@ -6,8 +6,10 @@ import com.sq.comput.domain.IndicatorInstance;
 import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
 import com.sq.quota.component.QuotaComputHelper;
+import com.sq.quota.domain.QuotaConsts;
 import com.sq.quota.domain.QuotaTemp;
 import com.sq.quota.repository.QuotaInstanceRepository;
+import com.sq.quota.service.QuotaComputService;
 import com.sq.util.DateUtil;
 import com.sq.util.SpringUtils;
 import net.sourceforge.jeval.EvaluationConstants;
@@ -40,8 +42,7 @@ public class InventoryQuotaStrategy extends IQuotaComputStrategy {
     @Override
     public Object execIndiComput(QuotaTemp quotaTemp, Calendar computCal) {
         Evaluator evaluator = QuotaComputHelper.getEvaluatorInstance();
-        String calculateExp = quotaTemp.getCalculateExpression();
-
+        String calculateExp = quotaTemp.getGernaterdNativeExpression();
         if (!checkQuotaExpression(evaluator,quotaTemp)) {
             return null;
         }
@@ -52,13 +53,22 @@ public class InventoryQuotaStrategy extends IQuotaComputStrategy {
                 .addSearchFilter("valueType", MatchType.EQ, IndicatorConsts.VALUE_TYPE_DOUBLE);
 
         for (String variable : variableList) {
+
+            QuotaTemp variableQuotaTemp = QuotaComputService.quotaTempMapCache.get(variable);
+
             searchable.addSearchFilter("indicatorCode", MatchType.EQ, variable);
             searchable.addSearchFilter("statDateNum", MatchType.EQ, DateUtil.getCurrDay(computCal));
             List<IndicatorInstance> indicatorInstances = quotaInstanceRepository.findAll(searchable).getContent();
 
             if (indicatorInstances.isEmpty()) {
-                log.error("关联指标：" + variable + " 没有数据!默认为0.");
-                evaluator.putVariable(variable, "0");
+                if (variableQuotaTemp.getCalType() != QuotaConsts.CALTYPE_LOSS) {
+                    log.error(searchable.toString() +
+                            "计算指标：" + quotaTemp.getIndicatorCode() +
+                            "-》关联指标：" + variable + " 没有数据! -> 计算执行结果为NULL.");
+                    return null;
+                } else {
+                    evaluator.putVariable(variable, "0");
+                }
             }
 
             if (indicatorInstances.size() == 1) {
@@ -90,7 +100,9 @@ public class InventoryQuotaStrategy extends IQuotaComputStrategy {
                 result = result + quotaInstanceRepository.findAll(searchable).getContent().get(0).getFloatValue();
             }
         } catch (EvaluationException e) {
-            e.printStackTrace();
+            log.error("indicatorTemp->" + quotaTemp.getIndicatorName()
+                    + "，computCal->" + DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_DAFAULT)
+                    + ",计算结果cast to double error. calculateExp->" + calculateExp, e);
         }
         return result;
     }
