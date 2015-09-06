@@ -49,7 +49,7 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
         }
 
         Searchable searchable = Searchable.newSearchable()
-                .addSearchFilter("valueType", MatchType.EQ, IndicatorConsts.VALUE_TYPE_DOUBLE);
+                .addSearchFilter("valueType", MatchType.EQ, QuotaConsts.VALUE_TYPE_DOUBLE);
         int fetchCycle = quotaTemp.getFetchCycle();
         searchable = fillSearchConditionByFetchType(searchable,fetchCycle,computCal);
         for (String variable : variableList) {

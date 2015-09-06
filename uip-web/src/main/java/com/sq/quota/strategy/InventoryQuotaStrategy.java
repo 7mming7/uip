@@ -50,7 +50,7 @@ public class InventoryQuotaStrategy extends IQuotaComputStrategy {
         List<String> variableList = ComputHelper.getVariableList(calculateExp,evaluator);
 
         Searchable searchable = Searchable.newSearchable()
-                .addSearchFilter("valueType", MatchType.EQ, IndicatorConsts.VALUE_TYPE_DOUBLE);
+                .addSearchFilter("valueType", MatchType.EQ, QuotaConsts.VALUE_TYPE_DOUBLE);
 
         for (String variable : variableList) {
 
@@ -61,7 +61,7 @@ public class InventoryQuotaStrategy extends IQuotaComputStrategy {
             List<IndicatorInstance> indicatorInstances = quotaInstanceRepository.findAll(searchable).getContent();
 
             if (indicatorInstances.isEmpty()) {
-                if (variableQuotaTemp.getCalType() != QuotaConsts.CALTYPE_LOSS) {
+                if (null == variableQuotaTemp | null != variableQuotaTemp.getCalType() |  variableQuotaTemp.getCalType() != QuotaConsts.CALTYPE_LOSS) {
                     log.error(searchable.toString() +
                             "计算指标：" + quotaTemp.getIndicatorCode() +
                             "-》关联指标：" + variable + " 没有数据! -> 计算执行结果为NULL.");
