@@ -175,23 +175,5 @@ public class UtgardOpcHelper {
         } catch (UnknownHostException e1) {
             log.error("Host无法识别或者格式错误",e1);
         }
-
-        /*Server server = new Server(
-                BaseConfiguration.getCLSIDConnectionInfomation(1),
-                Executors.newSingleThreadScheduledExecutor());
-        try {
-            server.connect();
-            FlatBrowser browser = server.getFlatBrowser();
-            for (String name : browser.browse()) {
-                System.out.println(name);
-            }
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (JIException e) {
-            e.printStackTrace();
-        } catch (AlreadyConnectedException e) {
-            e.printStackTrace();
-        }
-        ut.dumpServerStatus(server);*/
     }
 }

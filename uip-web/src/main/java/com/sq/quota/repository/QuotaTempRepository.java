@@ -1,6 +1,5 @@
 package com.sq.quota.repository;
 
-import com.sq.comput.domain.IndicatorTemp;
 import com.sq.quota.domain.QuotaTemp;
 import com.sq.repository.BaseRepository;
 
@@ -18,4 +17,5 @@ import com.sq.repository.BaseRepository;
  */
 public interface QuotaTempRepository extends BaseRepository<QuotaTemp,Long> {
 
+    QuotaTemp findByIndicatorCode(String indicatorCode);
 }

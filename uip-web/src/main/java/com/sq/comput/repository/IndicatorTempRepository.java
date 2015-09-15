@@ -17,4 +17,5 @@ import com.sq.repository.BaseRepository;
  */
 public interface IndicatorTempRepository extends BaseRepository<IndicatorTemp,Long> {
 
+    public IndicatorTemp findByIndicatorCode(String indicatorCode);
 }
