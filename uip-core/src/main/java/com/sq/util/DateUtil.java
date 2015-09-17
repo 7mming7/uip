@@ -41,7 +41,7 @@ public class DateUtil {
     /**
      * 默认日期类型格式.
      */
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_DAFAULT);
+    public static SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_DAFAULT);
 
     private static SimpleDateFormat stringToSdf(String str) {
         SimpleDateFormat sdf = new SimpleDateFormat(str);

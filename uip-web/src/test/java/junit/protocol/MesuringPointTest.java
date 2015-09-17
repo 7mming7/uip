@@ -32,9 +32,9 @@ public class MesuringPointTest extends TestCase {
         this.mesuringPointService.fetchReadSyncItems(1);
     }
 */
-    /*@Test
+    @Test
     public void fetchNextBatchNum () {
-        Long nextBatchNum = originalDataRepository.gernateNextBatchNumber();
+        Long nextBatchNum = originalDataRepository.gernateNextBatchNumber(1);
         System.out.println("****--->>>" + nextBatchNum);
-    }*/
+    }
 }

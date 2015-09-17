@@ -26,32 +26,28 @@ import java.util.List;
 public class OriginalDataRepositoryImpl{
 
     private EntityManagerFactory emf;
+    private EntityManager em;
     @PersistenceUnit
     public void setEntityManagerFactory(EntityManagerFactory emf) {
         this.emf = emf;
+        this.em = emf.createEntityManager();
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     public void dcsDataMigration(final String calculateDay) {
-        EntityManager em = this.emf.createEntityManager();
         em.getTransaction().begin();
         em.createNativeQuery("call data_migration_indicator(" + calculateDay + ") ").executeUpdate();
         em.getTransaction().commit();
         em.close();
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     public void njmbDataSync() {
-        EntityManager em = this.emf.createEntityManager();
         em.getTransaction().begin();
         em.createNativeQuery("call njmb_every5min_flush() ").executeUpdate();
         em.getTransaction().commit();
         em.close();
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
     public List<OriginalData> listAnHourPreOriginalData(final String tableName, final String indiCode, final Calendar computCal){
-        EntityManager em = this.emf.createEntityManager();
         StringBuilder nativeSql = new StringBuilder();
         nativeSql.append(" SELECT od.id, ")
                  .append("       icm.targetCode AS itemCode, ")

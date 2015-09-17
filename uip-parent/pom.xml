@@ -62,7 +62,7 @@
 
         <quartz.version>2.2.1</quartz.version>
 
-        <org.apache.cxf.version>3.0.2</org.apache.cxf.version>
+        <org.apache.cxf.version>2.7.14</org.apache.cxf.version>
 
         <ehcache.core.version>2.6.6</ehcache.core.version>
 
@@ -90,8 +90,6 @@
         <utgard-lib.version>1.2</utgard-lib.version>
 
         <jna.version>4.1</jna.version>
-
-        <hik.version>1.0</hik.version>
 
         <ojdbc.version>4.0</ojdbc.version>
     </properties>
@@ -259,6 +257,11 @@
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-transports-http</artifactId>
+            <version>${org.apache.cxf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http-jetty</artifactId>
             <version>${org.apache.cxf.version}</version>
         </dependency>
 
@@ -549,13 +552,6 @@
             <groupId>com.hikvision</groupId>
             <artifactId>jna</artifactId>
             <version>${jna.version}</version>
-        </dependency>
-
-        <!-- hikvision相关jar -->
-        <dependency>
-            <groupId>com.hikvision</groupId>
-            <artifactId>hik</artifactId>
-            <version>${hik.version}</version>
         </dependency>
 
         <!-- jodbc -->

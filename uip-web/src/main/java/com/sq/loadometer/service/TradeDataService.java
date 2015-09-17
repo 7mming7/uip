@@ -5,27 +5,26 @@ import com.sq.comput.domain.IndicatorInstance;
 import com.sq.comput.domain.IndicatorTemp;
 import com.sq.comput.repository.IndicatorInstanceRepository;
 import com.sq.comput.repository.IndicatorTempRepository;
-import com.sq.comput.service.IndicatorTempService;
 import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
 import com.sq.inject.annotation.BaseComponent;
 import com.sq.loadometer.component.JdbcHelper;
-import com.sq.loadometer.domain.LoadometerConsts;
 import com.sq.loadometer.domain.LoadometerIndicatorDto;
 import com.sq.loadometer.domain.Trade;
 import com.sq.loadometer.repository.TradeDataRepository;
-import com.sq.protocol.opc.domain.MesuringPoint;
-import com.sq.protocol.opc.repository.MesuringPointRepository;
 import com.sq.service.BaseService;
 import com.sq.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -58,37 +57,39 @@ public class TradeDataService extends BaseService<Trade, Long> {
     /**
      * 地磅流水数据同步
      */
-    public void syncLoadometerTrade (Calendar syncCal) {
-        String syncTradeDay = DateUtil.formatCalendar(syncCal, DateUtil.DATE_FORMAT_DAFAULT);
-        removeCurrDayTradeData(syncTradeDay);
-        insertCurrDayTradeData(syncTradeDay);
-        generateLoadometerIndicator(syncTradeDay);
+    public void syncLoadometerTrade (String syncCal) {
+        removeCurrDayTradeData(syncCal);
+        insertCurrDayTradeData(syncCal);
+        generateLoadometerIndicator(syncCal);
     }
 
     /**
      * 清除当日的已同步的流水数据
      * @param removeTradeDay 删除日期
      */
+    @Transactional(propagation = Propagation.REQUIRED)
     public void removeCurrDayTradeData (String removeTradeDay) {
-        Searchable removeSearchable= Searchable.newSearchable()
-                .addSearchFilter("DATE_FORMAT(seconddatetime,'%Y%m%d')", MatchType.EQ, removeTradeDay);
-        List<Trade> tradeList = tradeDataRepository.findAll(removeSearchable).getContent();
-        tradeDataRepository.delete(tradeList);
+        tradeDataRepository.deleteDataBySecondTime(removeTradeDay);
     }
 
     /**
      * 填充当日的流水数据
      * @param fillTradeData 填充日期
      */
+    @Transactional(propagation = Propagation.REQUIRED)
     public void insertCurrDayTradeData (String fillTradeData) {
         List<Trade> tradeList = new ArrayList<Trade>();
 
         StringBuilder insertTradeBuilder = new StringBuilder();
         insertTradeBuilder
-                .append(" select * from Trade where productNet is not null and DATE_FORMAT(seconddatetime,'%Y%m%d') = ")
+                .append(" select * from Trade where productNet is not null and CONVERT(varchar(12) , seconddatetime, 112 ) = ")
                 .append(fillTradeData);
         try {
-            tradeList = JdbcHelper.query(insertTradeBuilder.toString());
+            List<HashMap<String,String>> resultList = JdbcHelper.query(insertTradeBuilder.toString());
+            for (HashMap tradeMap:resultList) {
+                Trade trade = new Trade(tradeMap);
+                tradeList.add(trade);
+            }
         } catch (SQLException e) {
             log.error("执行query error：" + insertTradeBuilder.toString());
         }
@@ -99,6 +100,7 @@ public class TradeDataService extends BaseService<Trade, Long> {
      * 生成日地磅指标
      * @param generateDate 生成日期
      */
+    @Transactional(propagation = Propagation.REQUIRED)
     public void generateLoadometerIndicator (String generateDate) {
         List<IndicatorInstance> indicatorInstanceList = new ArrayList<IndicatorInstance>();
 

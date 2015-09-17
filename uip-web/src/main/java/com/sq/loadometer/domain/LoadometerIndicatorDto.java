@@ -1,5 +1,14 @@
 package com.sq.loadometer.domain;
 
+import com.sq.annotation.NativeQueryResultColumn;
+import com.sq.annotation.NativeQueryResultEntity;
+
+import javax.persistence.ColumnResult;
+import javax.persistence.ConstructorResult;
+import javax.persistence.Entity;
+import javax.persistence.SqlResultSetMapping;
+import java.io.Serializable;
+
 /**
  * 地磅指标DTO
  * User: shuiqing
@@ -12,12 +21,18 @@ package com.sq.loadometer.domain;
  * |_)._ _
  * | o| (_
  */
-public class LoadometerIndicatorDto {
+@NativeQueryResultEntity
+public class LoadometerIndicatorDto implements Serializable {
 
+    private static final long serialVersionUID = 4275590174385725787L;
+
+    @NativeQueryResultColumn(index=0)
     private String sourceCode;
 
+    @NativeQueryResultColumn(index=1)
     private String indicatorCode;
 
+    @NativeQueryResultColumn(index=2)
     private String totalAmount;
 
     public String getSourceCode() {

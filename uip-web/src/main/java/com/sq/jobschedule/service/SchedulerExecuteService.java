@@ -1,7 +1,6 @@
 package com.sq.jobschedule.service;
 
 import com.sq.comput.service.IndiComputService;
-import com.sq.protocol.jodbc.service.TradeService;
 import com.sq.protocol.opc.component.BaseConfiguration;
 import com.sq.protocol.opc.service.MesuringPointService;
 import com.sq.protocol.opc.service.OriginalDataService;
@@ -36,9 +35,6 @@ public class SchedulerExecuteService {
 
     @Autowired
     private OriginalDataService originalDataService;
-
-    @Autowired
-    private TradeService tradeService;
 
     @Autowired
     private IndiComputService indiComputService;
@@ -103,7 +99,7 @@ public class SchedulerExecuteService {
      */
     public void execLoadometerOrignalDataGathering () {
         log.error("----------- 地磅原始数据汇集任务开始 -----------");
-        tradeService.listTradesBySearchable();
+        /*tradeService.listTradesBySearchable();*/
         log.error("----------- 地磅原始数据汇集任务结束 -----------");
     }
 }

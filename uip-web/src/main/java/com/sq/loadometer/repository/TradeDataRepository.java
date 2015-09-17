@@ -18,6 +18,10 @@ import java.util.List;
  */
 public interface TradeDataRepository extends BaseRepository<Trade, Long> {
 
+    /** 根据给定的日期查询，这个日期所产生的指标 */
     List<LoadometerIndicatorDto> queryForLoadometerIndicator(String queryDate);
+
+    /** 根据二次称重的时间删除地磅流水同步表T_trade的数据 */
+    void deleteDataBySecondTime(String secondTime);
 }
 

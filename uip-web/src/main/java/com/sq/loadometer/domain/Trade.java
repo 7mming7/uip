@@ -4,6 +4,7 @@ import com.sq.entity.AbstractEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashMap;
 
 /**
  * 地磅数据进出场流水记录.
@@ -22,6 +23,51 @@ import java.io.Serializable;
 public class Trade extends AbstractEntity<Long> implements Serializable {
 
     private static final long serialVersionUID = 2211368658057245960L;
+
+    public Trade(HashMap<String,Object> map) {
+        this.ticketno1 = map.get("ticketno1") != null ? map.get("ticketno1").toString() : null;
+        this.ticketno2 = map.get("ticketno2") != null ? map.get("ticketno2").toString() : null;
+        this.station1 = map.get("station1") != null ? map.get("station1").toString() : null;
+        this.station2 = map.get("station2") != null ? map.get("station2").toString() : null;
+        this.scaleno1 = map.get("scaleno1") != null ? map.get("scaleno1").toString() : null;
+        this.scaleno2 = map.get("scaleno2") != null ? map.get("scaleno2").toString() : null;
+        this.truckno = map.get("truckno") != null ? map.get("truckno").toString() : null;
+        this.cardno = map.get("cardno") != null ? map.get("cardno").toString() : null;
+        this.contractno = map.get("contractno") != null ? map.get("contractno").toString() : null;
+        this.productcode = map.get("productcode") != null ? map.get("productcode").toString() : null;
+        this.product = map.get("product") != null ? map.get("product").toString() : null;
+        this.specification = map.get("specification") != null ? map.get("specification").toString() : null;
+        this.sender = map.get("sender") != null ? map.get("sender").toString() : null;
+        this.receiver = map.get("receiver") != null ? map.get("receiver").toString() : null;
+        this.transporter = map.get("transporter") != null ? map.get("transporter").toString() : null;
+        this.firstdatetime = map.get("firstdatetime") != null ? map.get("firstdatetime").toString() : null;
+        this.seconddatetime = map.get("seconddatetime") != null ? map.get("seconddatetime").toString() : null;
+        this.grossdatetime = map.get("grossdatetime") != null ? map.get("grossdatetime").toString() : null;
+        this.taredatetime = map.get("taredatetime") != null ? map.get("taredatetime").toString() : null;
+        this.firstweight = map.get("firstweight") != null ? map.get("firstweight").toString() : null;
+        this.secondweight = map.get("secondweight") != null ? map.get("secondweight").toString() : null;
+        this.gross = map.get("gross") != null ? map.get("gross").toString() : null;
+        this.tare = map.get("tare") != null ? map.get("tare").toString() : null;
+        this.net = map.get("net") != null ? map.get("net").toString() : null;
+        this.productnet = map.get("productnet") != null ? map.get("productnet").toString() : null;
+        this.exceptwater = map.get("exceptwater") != null ? map.get("exceptwater").toString() : null;
+        this.exceptother = map.get("exceptother") != null ? map.get("exceptother").toString() : null;
+        this.userid1 = map.get("userid1") != null ? map.get("userid1").toString() : null;
+        this.username1 = map.get("username1") != null ? map.get("username1").toString() : null;
+        this.userid2 = map.get("userid2") != null ? map.get("userid2").toString() : null;
+        this.username2 = map.get("username2") != null ? map.get("username2").toString() : null;
+        this.bc1 = map.get("bc1") != null ? map.get("bc1").toString() : null;
+        this.bc2 = map.get("bc2") != null ? map.get("bc2").toString() : null;
+        this.scaleweightflag = map.get("scaleweightflag") != null ? map.get("scaleweightflag").toString() : null;
+        this.uploadflag = map.get("uploadflag") != null ? map.get("uploadflag").toString() : null;
+        this.dataeditflag = map.get("dataeditflag") != null ? map.get("dataeditflag").toString() : null;
+        this.datastatus = map.get("datastatus") != null ? map.get("datastatus").toString() : null;
+        this.manualinputflag = map.get("manualinputflag") != null ? map.get("manualinputflag").toString() : null;
+        this.scalemode = map.get("scalemode") != null ? map.get("scalemode").toString() : null;
+        this.finalflag = map.get("finalflag") != null ? map.get("finalflag").toString() : null;
+        this.leftweight = map.get("leftweight") != null ? map.get("leftweight").toString() : null;
+        this.autosaveflag = map.get("autosaveflag") != null ? map.get("autosaveflag").toString() : null;
+    }
 
     /**
      * 唯一标示
@@ -521,5 +567,12 @@ public class Trade extends AbstractEntity<Long> implements Serializable {
 
     public void setAutosaveflag(String autosaveflag) {
         this.autosaveflag = autosaveflag;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("ticketno1:" + this.ticketno1 + ",ticketno2:" + this.ticketno2);
+        return sb.toString();
     }
 }
