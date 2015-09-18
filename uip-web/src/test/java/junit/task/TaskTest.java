@@ -1,6 +1,6 @@
 package junit.task;
 
-import com.sq.jobschedule.service.SchedulerExecuteService;
+import com.sq.quartz.service.SchedulerExecuteService;
 import com.sq.protocol.opc.repository.OriginalDataRepository;
 import junit.base.TestCase;
 import org.junit.Test;
@@ -36,10 +36,10 @@ public class TaskTest extends TestCase{
         schedulerExecuteService.execDcsDataMigration();
     }*/
 
-    /*@Test
+    @Test
     public void testExecLoadometerData(){
         schedulerExecuteService.execLoadometerOrignalDataGathering();
-    }*/
+    }
 
     /*@Test
     public void testProcedure () {

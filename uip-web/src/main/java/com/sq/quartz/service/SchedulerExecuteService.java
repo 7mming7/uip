@@ -1,6 +1,7 @@
-package com.sq.jobschedule.service;
+package com.sq.quartz.service;
 
 import com.sq.comput.service.IndiComputService;
+import com.sq.loadometer.service.TradeDataService;
 import com.sq.protocol.opc.component.BaseConfiguration;
 import com.sq.protocol.opc.service.MesuringPointService;
 import com.sq.protocol.opc.service.OriginalDataService;
@@ -41,6 +42,9 @@ public class SchedulerExecuteService {
 
     @Autowired
     private PushDataThirdService pushDataThirdService;
+
+    @Autowired
+    private TradeDataService tradeDataService;
 
     /**
      * opc实时数据同步任务
@@ -99,7 +103,10 @@ public class SchedulerExecuteService {
      */
     public void execLoadometerOrignalDataGathering () {
         log.error("----------- 地磅原始数据汇集任务开始 -----------");
-        /*tradeService.listTradesBySearchable();*/
+        Calendar syncCal = Calendar.getInstance();
+        syncCal.add(Calendar.HOUR_OF_DAY, -1);
+        String syncDate = DateUtil.formatCalendar(syncCal,DateUtil.DATE_FORMAT_DAFAULT);
+        tradeDataService.syncLoadometerTrade(syncDate);
         log.error("----------- 地磅原始数据汇集任务结束 -----------");
     }
 }

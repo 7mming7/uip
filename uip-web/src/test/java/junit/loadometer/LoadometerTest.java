@@ -27,7 +27,7 @@ public class LoadometerTest extends TestCase {
     @Test
     public void syncLoadometerTrade(){
         Calendar syncCal = Calendar.getInstance();
-        String syncDate = DateUtil.formatCalendar(syncCal, DateUtil.DATE_FORMAT_DAFAULT);
+        String syncDate = DateUtil.formatCalendar(syncCal);
         tradeDataService.syncLoadometerTrade("20150901");
     }
 }

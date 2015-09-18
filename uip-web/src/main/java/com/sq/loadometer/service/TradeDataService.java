@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -121,10 +122,14 @@ public class TradeDataService extends BaseService<Trade, Long> {
         for(LoadometerIndicatorDto loadometerIndicatorDto:loadometerIndicatorDtoList) {
             IndicatorTemp indicatorTemp = indicatorTempRepository.findByIndicatorCode(loadometerIndicatorDto.getIndicatorCode());
             IndicatorInstance indicatorInstance = new IndicatorInstance(indicatorTemp);
-            indicatorInstance.setFloatValue(Double.parseDouble(loadometerIndicatorDto.getTotalAmount()));
-            indicatorInstance.setValueType(IndicatorConsts.VALUE_TYPE_DOUBLE);
-            indicatorInstance.setStatDateNum(Integer.parseInt(DateUtil.DATE_FORMAT_DAFAULT));
-            indicatorInstance.setInstanceTime(Calendar.getInstance());
+            try {
+                indicatorInstance.setFloatValue(Double.parseDouble(loadometerIndicatorDto.getTotalAmount()));
+                indicatorInstance.setValueType(IndicatorConsts.VALUE_TYPE_DOUBLE);
+                indicatorInstance.setStatDateNum(Integer.parseInt(generateDate));
+                indicatorInstance.setInstanceTime(DateUtil.stringToCalendar(generateDate,DateUtil.DATE_FORMAT_DAFAULT));
+            } catch (ParseException e) {
+                log.error("stringToCalendar error:", e);
+            }
             indicatorInstanceList.add(indicatorInstance);
         }
         indicatorInstanceRepository.save(indicatorInstanceList);

@@ -11,16 +11,14 @@
                 <!--<ref bean="execLoadometerOrignalDataGatheringTrigger" />
                 <ref bean="opcSyncDataJobTrigger" />
                 <ref bean="dcsDataMigrationJobTrigger" />
-
                 <ref bean="indicatorReallTimeComputJobTrigger" />
                 <ref bean="njmbDataJobTrigger" />
                 <ref bean="execInterfaceIndicatorDataGaterTrigger" />-->
-
             </list>
         </property>
     </bean>
 
-    <bean id="schedulerExecuteService" class="com.sq.jobschedule.service.SchedulerExecuteService" />
+    <bean id="schedulerExecuteService" class="com.sq.quartz.service.SchedulerExecuteService" />
 
     <!-- OPC定时获取DCS数据定时任务 -->
     <bean id="opcSyncDataDetailJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
@@ -113,7 +111,7 @@
             <ref bean="execLoadometerOrignalDataGatheringJob"/>
         </property>
         <property name="cronExpression">
-            <value>0 */3 * * * ?</value>
+            <value>0 0 * * * ?</value>
         </property>
     </bean>
 
