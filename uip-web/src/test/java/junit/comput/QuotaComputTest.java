@@ -34,7 +34,7 @@ public class QuotaComputTest extends TestCase {
     @Autowired
     private QuotaTempService quotaTempService;
 
-    @Test
+    /*@Test
     public void testReComput () {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DATE, 30);
@@ -44,5 +44,5 @@ public class QuotaComputTest extends TestCase {
                 .addSearchFilter("indicatorCode", MatchType.EQ,"AMDMMG007_D");
         quotaTempList = quotaTempService.findAll(searchable).getContent();
         this.quotaComputService.reComputQuota(cal, quotaTempList);
-    }
+    }*/
 }

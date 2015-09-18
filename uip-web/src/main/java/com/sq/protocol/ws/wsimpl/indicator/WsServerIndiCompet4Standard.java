@@ -1,16 +1,15 @@
 package com.sq.protocol.ws.wsimpl.indicator;
 
-import com.sq.comput.domain.IndicatorTemp;
-import com.sq.comput.service.IndiComputService;
-import com.sq.comput.service.IndicatorTempService;
 import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
-import com.sq.entity.search.condition.Condition;
 import com.sq.entity.search.condition.OrCondition;
 import com.sq.entity.search.condition.SearchFilterHelper;
 import com.sq.exception.BaseException;
 import com.sq.protocol.ws.component.WsProtocalParser;
 import com.sq.protocol.ws.domain.*;
+import com.sq.quota.domain.QuotaTemp;
+import com.sq.quota.service.QuotaComputService;
+import com.sq.quota.service.QuotaTempService;
 import com.sq.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,89 +40,10 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 	private static Logger log = LoggerFactory.getLogger(WsServerIndiCompet4Standard.class);
 
 	@Autowired
-	private IndiComputService indicatorComputService;
+	private QuotaComputService quotaComputService;
 
 	@Autowired
-	private IndicatorTempService indicatorTempService;
-
-	/**
-	 * 接受指标计算请求
-	 * @param xmlStr 请求报文
-	 * @return
-	 */
-	@SuppressWarnings({ "unchecked", "static-access" })
-	@Override
-	public String receiveIndicatorCompetInfo(String xmlStr) {
-		WsProtocalParser wsProtocalParser = WsProtocalParser.createInstance();
-		System.out.println(xmlStr);
-		MrpElementResponse<StandardResponse> mrpElementResponse = wsProtocalParser.createRpsMrpObject(true, null);
-		String responseXml = "";
-		StringWriter sw = new StringWriter();
-        try {
-            log.error("receiveIndicatorCompetInfo开始接收指标计算请求报文！开始时间："+new Date());
-            log.error("请求收到同步时间---" + DateUtil.formatCalendar(Calendar.getInstance()));
-
-            Calendar cal = DateUtil.stringToCalendar(xmlStr, DateUtil.DATE_FORMAT_DAFAULT);
-            this.indicatorComputService.calculateDataGater(cal);
-            
-            sw = wsProtocalParser.beanToXml(mrpElementResponse, StandardResponse.class);
-            responseXml = sw.toString();
-			System.out.println(sw.toString());
-            return responseXml;
-        } catch (BaseException e) {
-            String msg = "解析报文失败: " + e.getMessage();
-            log.error(msg, e);
-            mrpElementResponse.getRpsHeader().setSuccess(false);
-            mrpElementResponse.getRpsHeader().setRemark(msg);
-            try {
-				sw = WsProtocalParser.beanToXml(mrpElementResponse, IndicatorRpsElement.class);
-			} catch (FileNotFoundException | JAXBException e1) {
-				String msgEx = "解析报文失败: " + e1.getMessage();
-	            log.error(msgEx, e1);
-			}
-			System.out.println(sw.toString());
-            return sw.toString();
-        } catch (JAXBException e) {
-        	String msg = "解析报文失败: " + e.getMessage();
-            log.error(msg, e);
-            mrpElementResponse.getRpsHeader().setSuccess(false);
-            mrpElementResponse.getRpsHeader().setRemark(msg);
-            try {
-				sw = WsProtocalParser.beanToXml(mrpElementResponse, IndicatorRpsElement.class);
-			} catch (FileNotFoundException | JAXBException e1) {
-				String msgEx = "解析报文失败: " + e1.getMessage();
-	            log.error(msgEx, e1);
-			}
-			System.out.println(sw.toString());
-            return sw.toString();
-		} catch (FileNotFoundException e) {
-			String msg = "bean2XML转化出错: " + e.getMessage();
-            log.error(msg, e);
-            mrpElementResponse.getRpsHeader().setSuccess(false);
-            mrpElementResponse.getRpsHeader().setRemark(msg);
-            try {
-				sw = WsProtocalParser.beanToXml(mrpElementResponse, IndicatorRpsElement.class);
-			} catch (FileNotFoundException | JAXBException e1) {
-				String msgEx = "bean2XML转化出错: " + e1.getMessage();
-	            log.error(msgEx, e1);
-			}
-			System.out.println(sw.toString());
-            return sw.toString();
-		} catch (ParseException e) {
-			String msg = "时间转化出现错误。";
-			log.error(msg, e);
-            mrpElementResponse.getRpsHeader().setSuccess(false);
-            mrpElementResponse.getRpsHeader().setRemark(msg);
-            try {
-				sw = WsProtocalParser.beanToXml(mrpElementResponse, IndicatorRpsElement.class);
-			} catch (FileNotFoundException | JAXBException e1) {
-				String msgEx = "bean2XML转化出错: " + e1.getMessage();
-	            log.error(msgEx, e1);
-			}
-			System.out.println(sw.toString());
-			return sw.toString();
-		}
-	}
+	private QuotaTempService quotaTempService;
 
 	/**
 	 * 接受指标重新计算
@@ -134,7 +54,6 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 	@Override
 	public String receiveReComputIndicatorInfo(String xmlStr) {
 		WsProtocalParser wsProtocalParser = WsProtocalParser.createInstance();
-		System.out.println(xmlStr);
 		MrpElementResponse<IndicatorReqElement> mrpElementResponse = wsProtocalParser.createRpsMrpObject(true, null);
 		String responseXml = "";
 		StringWriter sw = new StringWriter();
@@ -157,14 +76,14 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 			if (!indicatorEleList.isEmpty()) {
 				Searchable searchable = Searchable.newSearchable();
 				Calendar cal = DateUtil.stringToCalendar(reqHeader.getActionTime(), DateUtil.DATE_FORMAT_DAFAULT);
-				List<IndicatorTemp> itemCodeList = new ArrayList<IndicatorTemp>();
+				List<QuotaTemp> itemCodeList = new ArrayList<QuotaTemp>();
 				OrCondition orCondition = new OrCondition();
 				for (IndicatorReqElement ir : indicatorEleList) {
 					orCondition.add(SearchFilterHelper.newCondition("indicatorCode", MatchType.EQ, ir.getItemCode()));
 				}
 				searchable.or(orCondition);
-				itemCodeList = indicatorTempService.findAll(searchable).getContent();
-				indicatorComputService.reComputIndicator(cal,itemCodeList);
+				itemCodeList = quotaTempService.findAll(searchable).getContent();
+				quotaComputService.reComputQuota(cal, itemCodeList);
 			}
 
 			sw = wsProtocalParser.beanToXml(mrpElementResponse, StandardResponse.class);

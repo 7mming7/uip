@@ -10,13 +10,6 @@ import javax.jws.WebService;
  */
 @WebService
 public interface IWsServerIndicatorCompet {
-	
-	/**
-	 * 接受指标计算请求
-	 * @param xmlStr 请求报文
-	 * @return 响应报文
-	 */
-	public String receiveIndicatorCompetInfo(String xmlStr);
 
 	/**
 	 * 接受指标重新计算的请求

@@ -24,10 +24,10 @@ public class LoadometerTest extends TestCase {
     @Autowired
     private TradeDataService tradeDataService;
 
-    @Test
+    /*@Test
     public void syncLoadometerTrade(){
         Calendar syncCal = Calendar.getInstance();
         String syncDate = DateUtil.formatCalendar(syncCal);
         tradeDataService.syncLoadometerTrade("20150901");
-    }
+    }*/
 }

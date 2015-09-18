@@ -33,12 +33,12 @@ public class IndiComputTest extends TestCase {
     @Autowired
     private UdpSocketConfig udpSocketConfig;
 
-    @Test
+   /* @Test
     public void testInterfaceDataGather () {
         Calendar cal = Calendar.getInstance();
         System.out.println("uuuuuuuuuuuuu" + DateUtil.formatCalendar(cal, DateUtil.DATE_FORMAT_Y_M_D));
         this.indiComputService.interfaceDataGather(cal);
-    }
+    }*/
 /*
     @Test
     public void testInterfaceReComput () {
