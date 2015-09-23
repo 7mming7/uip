@@ -83,7 +83,7 @@ public class TradeDataService extends BaseService<Trade, Long> {
 
         StringBuilder insertTradeBuilder = new StringBuilder();
         insertTradeBuilder
-                .append(" select * from Trade where productNet is not null and CONVERT(varchar(12) , seconddatetime, 112 ) = ")
+                .append(" select * from Trade where productNet is not null and datastatus = 1 and CONVERT(varchar(12) , seconddatetime, 112 ) = ")
                 .append(fillTradeData);
         try {
             List<HashMap<String,String>> resultList = JdbcHelper.query(insertTradeBuilder.toString());

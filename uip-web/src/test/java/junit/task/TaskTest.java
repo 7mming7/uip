@@ -36,11 +36,11 @@ public class TaskTest extends TestCase{
         schedulerExecuteService.execDcsDataMigration();
     }*/
 
-    @Test
+    /*@Test
     public void testExecLoadometerData(){
         schedulerExecuteService.execLoadometerOrignalDataGathering();
     }
-
+*/
     /*@Test
     public void testProcedure () {
         originalDataRepository.njmbDataSync();

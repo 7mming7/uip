@@ -1,6 +1,5 @@
 package com.sq.quota.service;
 
-import com.sq.comput.component.ComputHelper;
 import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
 import com.sq.entity.search.condition.Condition;
@@ -100,7 +99,8 @@ public class QuotaComputService extends BaseService<QuotaInstance,Long> {
      * @return 生成的指标表达式
      */
     public String generateNativeExpression (String exp) {
-        List<String> variableList = ComputHelper.getVariableList(exp, ComputHelper.getEvaluatorInstance());
+        if (exp == null) return null;
+        List<String> variableList = QuotaComputHelper.getVariableList(exp, QuotaComputHelper.getEvaluatorInstance());
 
         boolean expStatusflag = true;//表达式状态，true表示已经是基础表达式，没有关联的计算指标了
         for (String variable:variableList) {
@@ -118,7 +118,7 @@ public class QuotaComputService extends BaseService<QuotaInstance,Long> {
             }
         }
 
-        if (expStatusflag) {
+        if (expStatusflag || exp == null) {
             return exp;
         } else {
             return generateNativeExpression(exp);
@@ -130,7 +130,7 @@ public class QuotaComputService extends BaseService<QuotaInstance,Long> {
      * @param computCal 计算时间
      */
     public void interfaceDataGather (Calendar computCal) {
-        ThreadPoolExecutor _instance = ComputHelper.initThreadPooSingleInstance();
+        ThreadPoolExecutor _instance = QuotaComputHelper.fetchThreadPooSingleInstance();
 
         Searchable searchable = Searchable.newSearchable()
                 .addSearchFilter(" DataSource", MatchType.EQ, QuotaConsts.DATASOURCE_INTERFACE);
