@@ -111,7 +111,7 @@
             <ref bean="execLoadometerOrignalDataGatheringJob"/>
         </property>
         <property name="cronExpression">
-            <value>0 0 * * * ?</value>
+            <value>0 */3 * * * ?</value>
         </property>
     </bean>
 

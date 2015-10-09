@@ -26,20 +26,18 @@ import java.util.List;
 public class TradeDataRepositoryImpl {
     private EntityManagerFactory emf;
 
-    private EntityManager em;
-
     @PersistenceUnit
     public void setEntityManagerFactory(EntityManagerFactory emf) {
         this.emf = emf;
-        this.em = emf.createEntityManager();
     }
 
     public List<LoadometerIndicatorDto> queryForLoadometerIndicator(String queryDate){
         StringBuilder nativeSql = new StringBuilder();
+        EntityManager em = emf.createEntityManager();
         nativeSql.append(" SELECT ")
                 .append("      MP.sourceCode as sourceCode, ")
                 .append("      MP.targetCode as indicatorCode, ")
-                .append("      IFNULL(SUM(T.productnet),0) as totalAmount ")
+                .append("      IFNULL(SUM(T.productnet)/1000,0) as totalAmount ")
                 .append("  FROM ")
                 .append("      t_indicatortemp IT LEFT JOIN ")
                 .append("      t_mesuringpoint MP on IT.indicatorCode = MP.targetCode LEFT JOIN ")
@@ -56,9 +54,9 @@ public class TradeDataRepositoryImpl {
      * 删除某一日的地磅流水同步表中的流水数据
      * @param secondTime 二次称重时间
      */
-    @Transactional(propagation = Propagation.REQUIRED)
     public void deleteDataBySecondTime (String secondTime) {
         StringBuilder nativeSql = new StringBuilder();
+        EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         nativeSql.append("delete from t_trade where DATE_FORMAT(seconddatetime,'%Y%m%d') = ").append(secondTime);
         Query query = em.createNativeQuery(nativeSql.toString());

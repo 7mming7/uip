@@ -1,5 +1,6 @@
 package com.sq.quota.service;
 
+import com.sq.comput.domain.IndicatorConsts;
 import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
 import com.sq.entity.search.condition.Condition;
@@ -23,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -51,7 +53,7 @@ public class QuotaComputService extends BaseService<QuotaInstance,Long> {
     private QuotaTempRepository quotaTempRepository;
 
     /** 单个计算轮回中的超时时限 */
-    public static Long computWaitTimeOutValue = 60l;
+    public static Long computWaitTimeOutValue = 10l;
 
     /** 指标模板缓存 */
     public static Map<String,QuotaTemp> quotaTempMapCache = new HashMap<String,QuotaTemp>();
@@ -118,7 +120,7 @@ public class QuotaComputService extends BaseService<QuotaInstance,Long> {
             }
         }
 
-        if (expStatusflag || exp == null) {
+        if (expStatusflag) {
             return exp;
         } else {
             return generateNativeExpression(exp);
@@ -183,6 +185,8 @@ public class QuotaComputService extends BaseService<QuotaInstance,Long> {
      */
     public synchronized void sendCalculateComm (QuotaTemp quotaTemp,
                                                          Calendar computCal, IQuotaComputStrategy iComputStrategy) {
+
+
         QuotaComputTask quotaComputTask = new QuotaComputTask();
         quotaComputTask.setComputCal(computCal);
         quotaComputTask.setAssignMillions(System.currentTimeMillis());
@@ -199,16 +203,27 @@ public class QuotaComputService extends BaseService<QuotaInstance,Long> {
      */
     public void reComputQuota (Calendar computCal, List<QuotaTemp> quotaTempList) {
 
-        List<QuotaTemp> associatedQuotaTempList = searchAssociatedQuotaTemp(quotaTempList);
+
+        List<String> calculateStringList = new ArrayList<String>();
+        for (QuotaTemp quotaTemp:quotaTempList) {
+            if (quotaTemp.getDataSource() == IndicatorConsts.DATASOURCE_CALCULATE) {
+                calculateStringList.addAll(QuotaComputHelper.getVariableList(quotaTemp.getGernaterdNativeExpression(), QuotaComputHelper.getEvaluatorInstance()));
+            } else if (quotaTemp.getDataSource() == IndicatorConsts.DATASOURCE_ENTRY) {
+                calculateStringList.add(quotaTemp.getIndicatorCode());
+            }
+        }
+
+        List<QuotaTemp> associatedQuotaTempList = searchAssociatedQuotaTemp(calculateStringList);
 
         //删除计算指标的关联指标
-        deleteNeedReComputIndicator(computCal,associatedQuotaTempList);
+        deleteNeedReComputIndicator(computCal, associatedQuotaTempList);
         for (QuotaTemp quotaTemp:associatedQuotaTempList) {
             System.out.println(quotaTemp.getIndicatorCode());
         }
 
         List<Calendar> calendarList = DateUtil.dayListSinceCal(computCal);
         QuotaComputHelper.computExecuteCounter.set(associatedQuotaTempList.size());
+        System.out.println("associatedQuotaTempList size: " + associatedQuotaTempList.size());
         for (Calendar reComputCal : calendarList) {
             long startComputMillions = System.currentTimeMillis();
             while(QuotaComputHelper.computExecuteCounter.get() < associatedQuotaTempList.size()
@@ -245,15 +260,15 @@ public class QuotaComputService extends BaseService<QuotaInstance,Long> {
     /**
      * 找出指标集合的关联指标
      */
-    public List<QuotaTemp> searchAssociatedQuotaTemp (List<QuotaTemp> quotaTempList) {
-        Assert.notEmpty(quotaTempList);
+    public List<QuotaTemp> searchAssociatedQuotaTemp (List<String> calculateStringList) {
+        Assert.notEmpty(calculateStringList,"searchAssociatedQuotaTemp需要查询关联指标的参数指标不存在.");
         Searchable searchable = Searchable.newSearchable()
                 .addSearchFilter("dataSource", MatchType.EQ, QuotaConsts.DATASOURCE_CALCULATE);
         OrCondition orCondition = new OrCondition();
-        for (QuotaTemp quotaTemp:quotaTempList) {
+        for (String quotaTempStr:calculateStringList) {
             orCondition.add(
                     SearchFilterHelper.newCondition("gernaterdNativeExpression",
-                            MatchType.LIKE, "%#{" + quotaTemp.getIndicatorCode() + "}%"));
+                            MatchType.LIKE, "%#{" + quotaTempStr + "}%"));
         }
         searchable.addSearchFilter(orCondition);
         return quotaTempRepository.findAll(searchable).getContent();
@@ -263,7 +278,7 @@ public class QuotaComputService extends BaseService<QuotaInstance,Long> {
      * 删除需要重计算的指标以及关联指标实例
      */
     public void deleteNeedReComputIndicator(Calendar computCal, List<QuotaTemp> associatedQuotaTempList){
-        Assert.notEmpty(associatedQuotaTempList, "deleteNeedReComputIndicator: 关联指标列表不能为空.");
+        if (associatedQuotaTempList.isEmpty()) return;
         List<String> indicatorCodeList = new ArrayList<String>();
         for(QuotaTemp quotaTemp:associatedQuotaTempList) {
             indicatorCodeList.add(quotaTemp.getIndicatorCode());

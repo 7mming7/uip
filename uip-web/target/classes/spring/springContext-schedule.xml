@@ -8,10 +8,9 @@
     <bean name="startQuertz" lazy-init="false" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
-                <ref bean="execLoadometerOrignalDataGatheringTrigger" />
-                <!--<ref bean="opcSyncDataJobTrigger" />
+                <!--<ref bean="execLoadometerOrignalDataGatheringTrigger" />
+                <ref bean="opcSyncDataJobTrigger" />
                 <ref bean="dcsDataMigrationJobTrigger" />
-
                 <ref bean="indicatorReallTimeComputJobTrigger" />
                 <ref bean="njmbDataJobTrigger" />
                 <ref bean="execInterfaceIndicatorDataGaterTrigger" />-->
@@ -19,7 +18,7 @@
         </property>
     </bean>
 
-    <bean id="schedulerExecuteService" class="com.sq.jobschedule.service.SchedulerExecuteService" />
+    <bean id="schedulerExecuteService" class="com.sq.quartz.service.SchedulerExecuteService" />
 
     <!-- OPC定时获取DCS数据定时任务 -->
     <bean id="opcSyncDataDetailJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
@@ -55,7 +54,7 @@
             <ref bean="njmbDataDetailJob"/>
         </property>
         <property name="cronExpression">
-            <value>30 */1 * * * ?</value>
+            <value>*/5 * * * * ?</value>
         </property>
     </bean>
 
@@ -93,7 +92,7 @@
             <ref bean="dcsDataMigrationDetailJob"/>
         </property>
         <property name="cronExpression">
-            <value>0 5 0 * * ?</value>
+            <value>0 35 0 * * ?</value>
         </property>
     </bean>
 

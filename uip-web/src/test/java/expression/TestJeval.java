@@ -21,7 +21,7 @@ public class TestJeval {
         Evaluator eva = ComputHelper.getEvaluatorInstance();
 
         try {
-            System.out.println(eva.evaluate("div(sum(sum(531.46,496.55,0.0,508.19)),sum(1.28))*1000"));
+            System.out.println(Double.valueOf(eva.evaluate("2/3")));
 
             eva.putVariable("a","23");
             eva.putVariable("b","5");

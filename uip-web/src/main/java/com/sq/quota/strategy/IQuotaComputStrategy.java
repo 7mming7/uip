@@ -35,7 +35,6 @@ public abstract class IQuotaComputStrategy {
 
     /**
      * 校验计算表达式的正确性
-     * @param expression 指标表达式
      * @return 是否有效
      */
     public static boolean checkQuotaExpression (Evaluator evaluator, QuotaTemp quotaTemp) {
@@ -59,6 +58,11 @@ public abstract class IQuotaComputStrategy {
         Assert.notNull(searchable, "searchable can not be null!");
         int[] dayArray = new int[2];
         switch (fetchCycle) {
+            case IndicatorConsts.FETCH_CYCLE_HOUR:
+                dayArray[0] = Integer.parseInt(DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_DAFAULT));
+                dayArray[1] = Integer.parseInt(DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_DAFAULT));
+
+                break;
             case IndicatorConsts.FETCH_CYCLE_DAY:
                 dayArray = DateUtil.getDayFirstAndLastInt(computCal);
                 break;

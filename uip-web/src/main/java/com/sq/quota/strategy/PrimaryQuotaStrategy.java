@@ -86,7 +86,8 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
 
         Double result = null;
         try {
-            result = Double.valueOf(evaluator.evaluate(calculateExp));
+            System.out.println(calculateExp);
+            result = Double.valueOf(evaluator.evaluate(calculateExp)).doubleValue();
         } catch (EvaluationException e) {
             log.error("indicatorTemp->" + quotaTemp.getIndicatorName()
                     + "，computCal->" + DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULT)

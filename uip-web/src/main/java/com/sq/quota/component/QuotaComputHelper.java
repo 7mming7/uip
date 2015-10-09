@@ -1,6 +1,7 @@
 package com.sq.quota.component;
 
 import com.sq.comput.function.*;
+import com.sq.quota.function.MinAllFunction;
 import net.sourceforge.jeval.EvaluationConstants;
 import net.sourceforge.jeval.EvaluationHelper;
 import net.sourceforge.jeval.Evaluator;
@@ -92,6 +93,7 @@ public class QuotaComputHelper {
     private static void loadLocalFunctions (Evaluator evaluator) {
         evaluator.putFunction(new AvgFunction());
         evaluator.putFunction(new MaxAllFunction());
+        evaluator.putFunction(new MinAllFunction());
         evaluator.putFunction(new SubFunction());
         evaluator.putFunction(new SumFunction());
         evaluator.putFunction(new MultiplyFunction());
