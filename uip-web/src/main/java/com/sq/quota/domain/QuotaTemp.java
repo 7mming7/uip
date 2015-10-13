@@ -51,11 +51,6 @@ public class QuotaTemp extends QuotaBase {
      */
     private Calendar createTime;
 
-    /**
-     * 序列
-     */
-    private int serialNo;
-
     @ManyToOne(cascade=CascadeType.REFRESH, fetch=FetchType.LAZY)
     @JoinColumn(name="categoryId")
     @ForeignKey(name="fk_it_categoryId")
@@ -97,14 +92,6 @@ public class QuotaTemp extends QuotaBase {
 
     public void setQuotaCategory(QuotaCategory quotaCategory) {
         this.quotaCategory = quotaCategory;
-    }
-
-    public int getSerialNo() {
-        return serialNo;
-    }
-
-    public void setSerialNo(int serialNo) {
-        this.serialNo = serialNo;
     }
 
     public Calendar getCreateTime() {

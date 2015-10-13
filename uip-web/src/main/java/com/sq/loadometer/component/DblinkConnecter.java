@@ -57,7 +57,6 @@ public class DblinkConnecter {
         prop = new Properties();
         try {
             prop.load(DblinkConnecter.class.getResourceAsStream(CONFIG_FILE_NAME));
-            prop.load(DblinkConnecter.class.getResourceAsStream(CONFIG_FILE_NAME));
         } catch (IOException e){
             log.error("ODBC-JDBC 加载" + CONFIG_FILE_NAME + "配置文件出错.", e);
         }

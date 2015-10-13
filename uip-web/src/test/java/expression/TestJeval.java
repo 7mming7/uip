@@ -1,6 +1,6 @@
 package expression;
 
-import com.sq.comput.component.ComputHelper;
+import com.sq.quota.component.QuotaComputHelper;
 import net.sourceforge.jeval.EvaluationException;
 import net.sourceforge.jeval.Evaluator;
 
@@ -18,17 +18,17 @@ import net.sourceforge.jeval.Evaluator;
  */
 public class TestJeval {
     public static void main(String[] args) {
-        Evaluator eva = ComputHelper.getEvaluatorInstance();
+        Evaluator eva = QuotaComputHelper.getEvaluatorInstance();
 
         try {
-            System.out.println(Double.valueOf(eva.evaluate("2/3")));
+            System.out.println(Double.valueOf(eva.evaluate("div(sum(6.0,5.0,4.0,3.0,2.0,1.0),sum(sum(6.0,5.0,4.0,3.0,2.0,1.0,5.0,6.0,4.0,3.0,2.0,1.0,5.0,6.0,4.0,3.0,2.0,1.0)))/10")));
 
             eva.putVariable("a","23");
             eva.putVariable("b","5");
             System.out.println(eva.evaluate("sum(10.0,sum(#{a},2,sum(#{b},3)))"));
             System.out.println(eva.evaluate("div(mul(#{a},#{b}),100)"));
             System.out.println(eva.evaluate("div(0,8508.72)*100"));
-            System.out.println(eva.evaluate("pst(sub(2,1))*100"));
+            System.out.println(eva.evaluate("maxAll(maxAll(5.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0,13.0,14.0,15.0,16.0,17.0,18.0,19.0,20.0,21.0,22.0,23.0,24.0,34.0,5.0,5.0,5.0,5.0,5.0,5.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,7.0,2.0,3.0,6.0,5.0,2.0,5.0,4.0,2.0,4.0,2.0,4.0,2.0,4.0,2.0,4.0,2.0,9.0,9.0,2.0,2.0,2.0,2.0,4.0,6.0,9.0,6.0,3.0,4.0,5.0,6.0,5.0,3.0,7.0,5.0,9.0,5.0,6.0,4.0,9.0,5.0,8.0,2.0,8.0,2.0,8.0,2.0,5.0,9.0,9.0,9.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,6.0,5.0,8.0,8.0,8.0,81.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,4.0,14.0,5.0,5.0,2.0,5.0,8.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,5.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,8.0,9.0,4.0,15.0,6.0,5.0,8.0,1.0,6.0,4.0,5.0,8.0,4.0,6.0,8.0,5.0,5.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0,10.0,10.0,10.0,10.0,10.0,10.0,10.0,10.0,10.0,10.0,10.0,10.0,10.0,10.0,10.0,10.0,10.0))"));
 
         } catch (EvaluationException e) {
             e.printStackTrace();

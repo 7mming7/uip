@@ -1,14 +1,12 @@
 package com.sq.quota.strategy;
 
-import com.sq.comput.component.ComputHelper;
-import com.sq.comput.domain.IndicatorConsts;
-import com.sq.comput.domain.IndicatorInstance;
 import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
+import com.sq.quota.component.QuotaComputHelper;
 import com.sq.quota.domain.QuotaConsts;
+import com.sq.quota.domain.QuotaInstance;
 import com.sq.quota.domain.QuotaTemp;
 import com.sq.quota.repository.QuotaInstanceRepository;
-import com.sq.quota.service.QuotaComputService;
 import com.sq.util.DateUtil;
 import com.sq.util.SpringUtils;
 import net.sourceforge.jeval.EvaluationConstants;
@@ -40,9 +38,10 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
 
     @Override
     public Object execIndiComput(QuotaTemp quotaTemp, Calendar computCal) {
-        Evaluator evaluator = ComputHelper.getEvaluatorInstance();
+        Evaluator evaluator = new Evaluator();
+        QuotaComputHelper.loadLocalFunctions(evaluator);
         String calculateExp = quotaTemp.getGernaterdNativeExpression();
-        List<String> variableList = ComputHelper.getVariableList(calculateExp,evaluator);
+        List<String> variableList = QuotaComputHelper.getVariableList(calculateExp,evaluator);
         if (variableList.isEmpty()) {
             log.error("表达式：" + calculateExp + " 没有动态参数!");
             return null;
@@ -53,26 +52,17 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
         int fetchCycle = quotaTemp.getFetchCycle();
         searchable = fillSearchConditionByFetchType(searchable,fetchCycle,computCal);
         for (String variable : variableList) {
-
-            QuotaTemp variableQuotaTemp = QuotaComputService.quotaTempMapCache.get(variable);
-
             searchable.addSearchFilter("indicatorCode", MatchType.EQ, variable);
-            List<IndicatorInstance> indicatorInstances = quotaInstanceRepository.findAll(searchable).getContent();
+            searchable.addSearchFilter("floatValue", MatchType.isNotNull, "");
+            List<QuotaInstance> quotaInstances = quotaInstanceRepository.findAll(searchable).getContent();
 
-            if (indicatorInstances.isEmpty()) {
-                if (variableQuotaTemp.getCalType() != QuotaConsts.CALTYPE_LOSS) {
-                    log.error(searchable.toString() +
-                            "计算指标：" + quotaTemp.getIndicatorCode() +
-                            "-》关联指标：" + variable + " 没有数据! -> 计算执行结果为NULL.");
-                    return null;
-                } else {
-                    evaluator.putVariable(variable, "0");
-                }
+            if (quotaInstances.isEmpty()) {
+                evaluator.putVariable(variable, "0");
             }
 
-            if (indicatorInstances.size() >= 1) {
+            if (quotaInstances.size() >= 1) {
                 StringBuilder variableBuilder = new StringBuilder();
-                for (IndicatorInstance indicatorInstance : indicatorInstances) {
+                for (QuotaInstance indicatorInstance : quotaInstances) {
                     String itemValue = indicatorInstance.getFloatValue().toString();
                     variableBuilder.append(itemValue).append(",");
                 }
@@ -87,11 +77,13 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
         Double result = null;
         try {
             System.out.println(calculateExp);
-            result = Double.valueOf(evaluator.evaluate(calculateExp)).doubleValue();
+            result = Double.parseDouble(evaluator.evaluate(calculateExp));
         } catch (EvaluationException e) {
-            log.error("indicatorTemp->" + quotaTemp.getIndicatorName()
+            log.error("/n indicatorTemp->" + quotaTemp.getIndicatorName()
+                    + "，indicatorCode->" + quotaTemp.getIndicatorCode()
+                    + "，GernaterdNativeExpression->" + quotaTemp.getGernaterdNativeExpression()
                     + "，computCal->" + DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULT)
-                    + ",计算结果cast to double error. calculateExp->" + calculateExp, e);
+                    + ", calculateExp->" + calculateExp, e);
         }
         return result;
     }

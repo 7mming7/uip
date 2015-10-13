@@ -10,8 +10,8 @@ import javax.persistence.MappedSuperclass;
  * Date: 2015/4/1
  * Time: 11:36
  * Email: shuiqing301@gmail.com
- * GitHub: https://github.com/ShuiQing301
- * Blog: http://shuiqing301.github.io/
+ * GitHub: https://github.com/shuiqing301
+ * Blog: http://shuiqing301.github.io
  * _
  * |_)._ _
  * | o| (_
@@ -25,8 +25,6 @@ public abstract class QuotaBase extends AbstractEntity<Long> implements Cloneabl
     /** 指标名称 */
     private String indicatorName;
 
-    private String description;
-
     /**
      * 数据来源方式
      * 字典值  tableName->INDICATORBASE  attribute->DATASOURCE
@@ -37,14 +35,6 @@ public abstract class QuotaBase extends AbstractEntity<Long> implements Cloneabl
     private int dataSource;
 
     /**
-     * 计算类型
-     *    1、元计算
-     *    2、累计计算
-     *    3、库存计算
-     */
-    private Integer calType;
-
-    /**
      * 指标数值单位
      * 字典值 tableName->INDICATORBASE  attribute->UNIT
      */
@@ -53,8 +43,11 @@ public abstract class QuotaBase extends AbstractEntity<Long> implements Cloneabl
     /** 小数点位数 */
     private int decimalNum;
 
-    /** 获取频率    */
+    /** 计算维度    */
     private int fetchCycle;
+
+    /** 计算频率 */
+    private int calFrequency;
 
     /**
      * 数据聚合方式
@@ -76,14 +69,6 @@ public abstract class QuotaBase extends AbstractEntity<Long> implements Cloneabl
 
     public void setIndicatorName(String indicatorName) {
         this.indicatorName = indicatorName;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public int getDataSource() {
@@ -126,11 +111,11 @@ public abstract class QuotaBase extends AbstractEntity<Long> implements Cloneabl
         this.operCalType = operCalType;
     }
 
-    public Integer getCalType() {
-        return calType;
+    public int getCalFrequency() {
+        return calFrequency;
     }
 
-    public void setCalType(Integer calType) {
-        this.calType = calType;
+    public void setCalFrequency(int calFrequency) {
+        this.calFrequency = calFrequency;
     }
 }

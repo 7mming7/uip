@@ -4,7 +4,7 @@ import com.sq.comput.domain.IndicatorConsts;
 import com.sq.quota.component.QuotaComputHelper;
 import com.sq.quota.domain.QuotaInstance;
 import com.sq.quota.domain.QuotaTemp;
-import com.sq.quota.service.QuotaComputService;
+import com.sq.quota.service.QuotaComputInsService;
 import com.sq.util.DateUtil;
 import com.sq.util.SpringUtils;
 import org.slf4j.Logger;
@@ -33,7 +33,7 @@ public class QuotaComputTask implements Callable<QuotaInstance> {
     /**
      * 由于Thread非spring启动时实例化，而是根据具体的逻辑动态实例化，所以需要通过此方式从spring的context中获取相应的bean.
      */
-    private QuotaComputService quotaComputService = SpringUtils.getBean(QuotaComputService.class);
+    private QuotaComputInsService quotaComputService = SpringUtils.getBean(QuotaComputInsService.class);
 
     /** 信号量 指定来自具体某一算法 */
     private String semaphore;
@@ -137,9 +137,6 @@ public class QuotaComputTask implements Callable<QuotaInstance> {
         quotaInstance.setInstanceTime(tempComputCal);
         quotaInstance.setStatDateNum(Integer.parseInt(DateUtil.formatCalendar(tempComputCal, DateUtil.DATE_FORMAT_DAFAULT)));
         quotaComputService.saveAndFlush(quotaInstance);
-
-        /** 执行完ComputTask之后，需要将单次执行计数器自增操作 */
-        QuotaComputHelper.computExecuteCounter.incrementAndGet();
 
         return quotaInstance;
     }

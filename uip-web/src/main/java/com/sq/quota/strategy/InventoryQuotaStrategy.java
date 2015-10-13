@@ -2,11 +2,11 @@ package com.sq.quota.strategy;
 
 import com.sq.comput.component.ComputHelper;
 import com.sq.comput.domain.IndicatorConsts;
-import com.sq.comput.domain.IndicatorInstance;
 import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
 import com.sq.quota.component.QuotaComputHelper;
 import com.sq.quota.domain.QuotaConsts;
+import com.sq.quota.domain.QuotaInstance;
 import com.sq.quota.domain.QuotaTemp;
 import com.sq.quota.repository.QuotaInstanceRepository;
 import com.sq.quota.service.QuotaComputService;
@@ -41,7 +41,8 @@ public class InventoryQuotaStrategy extends IQuotaComputStrategy {
 
     @Override
     public Object execIndiComput(QuotaTemp quotaTemp, Calendar computCal) {
-        Evaluator evaluator = QuotaComputHelper.getEvaluatorInstance();
+        Evaluator evaluator = new Evaluator();
+        QuotaComputHelper.loadLocalFunctions(evaluator);
         String calculateExp = quotaTemp.getGernaterdNativeExpression();
         if (!checkQuotaExpression(evaluator,quotaTemp)) {
             return null;
@@ -58,9 +59,11 @@ public class InventoryQuotaStrategy extends IQuotaComputStrategy {
 
             searchable.addSearchFilter("indicatorCode", MatchType.EQ, variable);
             searchable.addSearchFilter("statDateNum", MatchType.EQ, DateUtil.getCurrDay(computCal));
-            List<IndicatorInstance> indicatorInstances = quotaInstanceRepository.findAll(searchable).getContent();
+            searchable.addSearchFilter("floatValue", MatchType.isNotNull, "");
+            List<QuotaInstance> quotaInstances = quotaInstanceRepository.findAll(searchable).getContent();
 
-            if (indicatorInstances.isEmpty()) {
+            if (quotaInstances.isEmpty()) {
+                System.out.println(variableQuotaTemp.getIndicatorName());
                 if (null == variableQuotaTemp | null != variableQuotaTemp.getCalType() |  variableQuotaTemp.getCalType() != QuotaConsts.CALTYPE_LOSS) {
                     log.error(searchable.toString() +
                             "计算指标：" + quotaTemp.getIndicatorCode() +
@@ -71,13 +74,13 @@ public class InventoryQuotaStrategy extends IQuotaComputStrategy {
                 }
             }
 
-            if (indicatorInstances.size() == 1) {
-                evaluator.putVariable(variable, indicatorInstances.get(0).getFloatValue().toString());
+            if (quotaInstances.size() == 1) {
+                evaluator.putVariable(variable, quotaInstances.get(0).getFloatValue().toString());
             }
 
-            if (indicatorInstances.size() > 1) {
+            if (quotaInstances.size() > 1) {
                 StringBuilder variableBuilder = new StringBuilder();
-                for (IndicatorInstance indicatorInstance : indicatorInstances) {
+                for (QuotaInstance indicatorInstance : quotaInstances) {
                     String itemValue = indicatorInstance.getFloatValue().toString();
                     variableBuilder.append(itemValue).append(",");
                 }
@@ -92,7 +95,7 @@ public class InventoryQuotaStrategy extends IQuotaComputStrategy {
 
         Double result = null;
         try {
-            result = Double.valueOf(evaluator.evaluate(calculateExp));
+            result = Double.parseDouble(evaluator.evaluate(calculateExp));
             searchable.addSearchFilter("indicatorCode", MatchType.EQ, quotaTemp.getIndicatorCode());
             searchable.addSearchFilter("statDateNum", MatchType.EQ, DateUtil.getPreDay(computCal));
             if (!quotaInstanceRepository.findAll(searchable).getContent().isEmpty()
@@ -100,8 +103,10 @@ public class InventoryQuotaStrategy extends IQuotaComputStrategy {
                 result = result + quotaInstanceRepository.findAll(searchable).getContent().get(0).getFloatValue();
             }
         } catch (EvaluationException e) {
-            log.error("indicatorTemp->" + quotaTemp.getIndicatorName()
-                    + "，computCal->" + DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_DAFAULT)
+            log.error("/n indicatorTemp->" + quotaTemp.getIndicatorName()
+                    + "，indicatorCode->" + quotaTemp.getIndicatorCode()
+                    + "，GernaterdNativeExpression->" + quotaTemp.getGernaterdNativeExpression()
+                    + "，computCal->" + DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULT)
                     + ",计算结果cast to double error. calculateExp->" + calculateExp, e);
         }
         return result;

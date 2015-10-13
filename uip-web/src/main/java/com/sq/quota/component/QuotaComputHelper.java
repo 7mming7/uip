@@ -1,7 +1,7 @@
 package com.sq.quota.component;
 
-import com.sq.comput.function.*;
-import com.sq.quota.function.MinAllFunction;
+
+import com.sq.quota.function.*;
 import net.sourceforge.jeval.EvaluationConstants;
 import net.sourceforge.jeval.EvaluationHelper;
 import net.sourceforge.jeval.Evaluator;
@@ -44,12 +44,15 @@ public class QuotaComputHelper {
     public static Long requestWaitTimeOutValue = 30l;
 
     /** 原子性的int值，用作指标计算的计数器（线程安全） */
-    public static AtomicInteger computExecuteCounter = new AtomicInteger(0);
+    /*public static AtomicInteger computExecuteCounter = new AtomicInteger(0);*/
 
     /**
      * 同步Map对象记录了指标计算的进度
      */
     public static ConcurrentHashMap<String, Integer> threadCalculateMap = new ConcurrentHashMap<String, Integer>();
+
+    /** 计算线程队列 */
+    public static LinkedBlockingQueue<Runnable> computThreadQueue = new LinkedBlockingQueue<Runnable>();
 
     public static ThreadPoolExecutor _instance = null;
 
@@ -74,7 +77,7 @@ public class QuotaComputHelper {
          * @param DiscardOldestPolicy 线程池的拒绝策略，当等待提交到线程池的线程对象超过缓冲队列的时候，将丢弃缓冲队列列头的对象。
          */
         _instance = new ThreadPoolExecutor(indicatorThreadPoolSize, Integer.MAX_VALUE, requestWaitTimeOutValue,
-                TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), new ThreadPoolExecutor.DiscardOldestPolicy());
+                TimeUnit.SECONDS, computThreadQueue, new ThreadPoolExecutor.DiscardOldestPolicy());
         return _instance;
     }
 
@@ -90,7 +93,7 @@ public class QuotaComputHelper {
      * 2014年10月27日 下午2:32:50 ShuiQing PM 添加此方法
      * @param evaluator 表达式执行器
      */
-    private static void loadLocalFunctions (Evaluator evaluator) {
+    public static void loadLocalFunctions (Evaluator evaluator) {
         evaluator.putFunction(new AvgFunction());
         evaluator.putFunction(new MaxAllFunction());
         evaluator.putFunction(new MinAllFunction());

@@ -64,13 +64,12 @@ public class QuotaInstance extends QuotaBase {
                 .getQuotaCategory().getId() : null;
         this.setDataSource(indicatorTemplate.getDataSource());
         this.setDecimalNum(indicatorTemplate.getDecimalNum());
-        this.setDescription(indicatorTemplate.getDescription());
         this.setFetchCycle(indicatorTemplate.getFetchCycle());
+        this.setCalFrequency(indicatorTemplate.getCalFrequency());
         this.setIndicatorCode(indicatorTemplate.getIndicatorCode());
         this.setIndicatorName(indicatorTemplate.getIndicatorName());
         this.indicatorTempId = indicatorTemplate.getId();
         this.setUnit(indicatorTemplate.getUnit());
-        this.setCalType(indicatorTemplate.getCalType());
         this.setOperCalType(indicatorTemplate.getOperCalType());
     }
 

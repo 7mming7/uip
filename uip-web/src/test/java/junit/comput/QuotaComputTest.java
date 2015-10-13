@@ -1,18 +1,9 @@
 package junit.comput;
 
-import com.sq.comput.domain.IndicatorConsts;
-import com.sq.entity.search.MatchType;
-import com.sq.entity.search.Searchable;
-import com.sq.quota.domain.QuotaTemp;
 import com.sq.quota.service.QuotaComputService;
 import com.sq.quota.service.QuotaTempService;
 import junit.base.TestCase;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.

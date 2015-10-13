@@ -39,7 +39,7 @@ public interface QuotaConsts {
     public static final int CALTYPE_INVENTORY = 3;
 
     /** ======================
-     *    数据获取频率
+     *    维度
      *      1、小时
      *      2、日
      *      3、周
@@ -58,6 +58,27 @@ public interface QuotaConsts {
     public static final int FETCH_CYCLE_Quarter = 5;
 
     public static final int FETCH_CYCLE_Year = 6;
+
+    /** ======================
+     *    频率
+     *      1、小时
+     *      2、日
+     *      3、周
+     *      4、月
+     *      5、季度
+     *      6、年
+     */
+    public static final int CAL_FREQUENCY_HOUR = 1;
+
+    public static final int CAL_FREQUENCY_DAY = 2;
+
+    public static final int CAL_FREQUENCY_WEEK = 3;
+
+    public static final int CAL_FREQUENCY_Month = 4;
+
+    public static final int CAL_FREQUENCY_Quarter = 5;
+
+    public static final int CAL_FREQUENCY_Year = 6;
 
 
     /** ======================

@@ -41,8 +41,8 @@ public class MinAllFunction implements Function {
         ArrayList<Double> numbers = FunctionHelper.getDoubles(arguments,
                 EvaluationConstants.FUNCTION_ARGUMENT_SEPARATOR);
 
-        if (numbers.size() < 2) {
-            throw new FunctionException("arguments should more than two.");
+        if (numbers.size() < 1) {
+            throw new FunctionException("arguments should more than one.");
         }
 
         try {
