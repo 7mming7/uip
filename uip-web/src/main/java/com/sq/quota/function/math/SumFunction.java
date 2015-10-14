@@ -1,15 +1,13 @@
-package com.sq.quota.function;
+package com.sq.quota.function.math;
 
 import net.sourceforge.jeval.EvaluationConstants;
 import net.sourceforge.jeval.Evaluator;
 import net.sourceforge.jeval.function.*;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
- * 求最大值函数.
+ * 求和函数，对参数列表求和.
  * User: shuiqing
  * Date: 2015/4/1
  * Time: 11:36
@@ -20,10 +18,10 @@ import java.util.Collections;
  * |_)._ _
  * | o| (_
  */
-public class MaxAllFunction implements Function {
+public class SumFunction implements Function {
 
     public String getName() {
-        return "maxAll";
+        return "sum";
     }
 
     /**
@@ -37,19 +35,15 @@ public class MaxAllFunction implements Function {
     @SuppressWarnings("unchecked")
     public FunctionResult execute(Evaluator evaluator, String arguments)
             throws FunctionException {
-        Double result = null;
+        Double result = 0d;
 
         ArrayList<Double> numbers = FunctionHelper.getDoubles(arguments,
                 EvaluationConstants.FUNCTION_ARGUMENT_SEPARATOR);
 
-        if (numbers.size() < 1) {
-            throw new FunctionException("arguments should more than one.");
-        }
-
         try {
-            result = (Double) Collections.max(numbers);
-            BigDecimal bigDecimal = new BigDecimal(result);
-            result = bigDecimal.setScale(10, BigDecimal.ROUND_HALF_UP).doubleValue();
+            for (double num : numbers) {
+                result += num;
+            }
         } catch (Exception e) {
             throw new FunctionException("参数列表格式或数量出错!", e);
         }

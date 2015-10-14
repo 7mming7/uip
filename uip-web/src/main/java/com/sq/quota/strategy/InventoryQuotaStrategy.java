@@ -9,7 +9,7 @@ import com.sq.quota.domain.QuotaConsts;
 import com.sq.quota.domain.QuotaInstance;
 import com.sq.quota.domain.QuotaTemp;
 import com.sq.quota.repository.QuotaInstanceRepository;
-import com.sq.quota.service.QuotaComputService;
+import com.sq.quota.service.QuotaComputInsService;
 import com.sq.util.DateUtil;
 import com.sq.util.SpringUtils;
 import net.sourceforge.jeval.EvaluationConstants;
@@ -55,24 +55,10 @@ public class InventoryQuotaStrategy extends IQuotaComputStrategy {
 
         for (String variable : variableList) {
 
-            QuotaTemp variableQuotaTemp = QuotaComputService.quotaTempMapCache.get(variable);
-
             searchable.addSearchFilter("indicatorCode", MatchType.EQ, variable);
             searchable.addSearchFilter("statDateNum", MatchType.EQ, DateUtil.getCurrDay(computCal));
             searchable.addSearchFilter("floatValue", MatchType.isNotNull, "");
             List<QuotaInstance> quotaInstances = quotaInstanceRepository.findAll(searchable).getContent();
-
-            if (quotaInstances.isEmpty()) {
-                System.out.println(variableQuotaTemp.getIndicatorName());
-                if (null == variableQuotaTemp | null != variableQuotaTemp.getCalType() |  variableQuotaTemp.getCalType() != QuotaConsts.CALTYPE_LOSS) {
-                    log.error(searchable.toString() +
-                            "计算指标：" + quotaTemp.getIndicatorCode() +
-                            "-》关联指标：" + variable + " 没有数据! -> 计算执行结果为NULL.");
-                    return null;
-                } else {
-                    evaluator.putVariable(variable, "0");
-                }
-            }
 
             if (quotaInstances.size() == 1) {
                 evaluator.putVariable(variable, quotaInstances.get(0).getFloatValue().toString());

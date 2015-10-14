@@ -20,6 +20,8 @@ public class DateUtil {
 
     public static final String DATE_FORMAT_DAFAULT = "yyyyMMdd";
 
+    public static final String DATE_FORMAT_YYMMDDHH= "yyyyMMdd";
+
     public static final String DATE_FORMAT_MONTH = "yyyyMM";
 
     public static final String DATE_FORMAT_Y_M_D = "yyyy-MM-dd";
@@ -733,6 +735,32 @@ public class DateUtil {
     public static int getCurrDay(Calendar calendar) {
         int day = calendar.get(Calendar.DATE);
         return Integer.parseInt(formatCalendar(calendar));
+    }
+
+    /**
+     * 日期迁移
+     * @param cycleType 日期维度
+     * @param disDateNum 迁移数量
+     * @param computCal 计算日期
+     * @return 迁移后的日期
+     */
+    public static String dateMigrate (String cycleType, int disDateNum, String computCal) {
+        try {
+            Calendar computCalendar = stringToCalendar(computCal, DATE_FORMAT_YMDHMS);
+            if (cycleType.equalsIgnoreCase("Hour")) {
+                computCalendar.add(Calendar.HOUR_OF_DAY, disDateNum);
+            } else if (cycleType.equalsIgnoreCase("Day")) {
+                computCalendar.add(Calendar.DAY_OF_YEAR, disDateNum);
+            } else if (cycleType.equalsIgnoreCase("Week")) {
+                computCalendar.add(Calendar.WEEK_OF_YEAR, disDateNum);
+            } else if (cycleType.equalsIgnoreCase("Month")) {
+                computCalendar.add(Calendar.MONTH, disDateNum);
+            }
+            computCal = formatCalendar(computCalendar, DATE_FORMAT_YYMMDDHH);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return computCal;
     }
 
     public static void main(String[] args) {

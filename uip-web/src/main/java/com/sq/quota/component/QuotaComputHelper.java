@@ -1,7 +1,8 @@
 package com.sq.quota.component;
 
 
-import com.sq.quota.function.*;
+import com.sq.quota.function.logical.DateTimeFunction;
+import com.sq.quota.function.math.*;
 import net.sourceforge.jeval.EvaluationConstants;
 import net.sourceforge.jeval.EvaluationHelper;
 import net.sourceforge.jeval.Evaluator;
@@ -16,7 +17,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 指标计算辅助类.
@@ -102,6 +102,7 @@ public class QuotaComputHelper {
         evaluator.putFunction(new MultiplyFunction());
         evaluator.putFunction(new DivideFunction());
         evaluator.putFunction(new PstFunction());
+        evaluator.putFunction(new DateTimeFunction());
     }
 
     /**
@@ -137,12 +138,12 @@ public class QuotaComputHelper {
                                     .length(), closedIndex);
 
                     // Validate that the variable name is valid.
-                    try {
+                    /*try {
                         evaluator.isValidName(variableName);
                     } catch (IllegalArgumentException iae) {
                         String msg = "获取动态参数失败,Invalid variable name of \"" + variableName + "\".";
                         log.error(msg, iae);
-                    }
+                    }*/
                     variableList.add(variableName);
 
                     String variableString = EvaluationConstants.OPEN_VARIABLE

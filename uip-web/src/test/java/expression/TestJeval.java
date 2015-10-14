@@ -4,6 +4,8 @@ import com.sq.quota.component.QuotaComputHelper;
 import net.sourceforge.jeval.EvaluationException;
 import net.sourceforge.jeval.Evaluator;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * User: shuiqing
@@ -21,7 +23,12 @@ public class TestJeval {
         Evaluator eva = QuotaComputHelper.getEvaluatorInstance();
 
         try {
-            System.out.println(Double.valueOf(eva.evaluate("div(sum(6.0,5.0,4.0,3.0,2.0,1.0),sum(sum(6.0,5.0,4.0,3.0,2.0,1.0,5.0,6.0,4.0,3.0,2.0,1.0,5.0,6.0,4.0,3.0,2.0,1.0)))/10")));
+            String calculateExpression = "#{dateTime(day,1,ABD)}";
+            List<String> variableList = QuotaComputHelper.getVariableList(calculateExpression,eva);
+            for (String var:variableList) {
+                System.out.println(var);
+            }
+
 
             eva.putVariable("a","23");
             eva.putVariable("b","5");

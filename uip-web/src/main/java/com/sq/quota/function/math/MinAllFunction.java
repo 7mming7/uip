@@ -1,4 +1,4 @@
-package com.sq.quota.function;
+package com.sq.quota.function.math;
 
 import net.sourceforge.jeval.EvaluationConstants;
 import net.sourceforge.jeval.Evaluator;

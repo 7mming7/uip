@@ -1,8 +1,7 @@
 package com.sq.comput.component;
 
-import com.sq.comput.domain.IndicatorInstance;
 import com.sq.comput.function.*;
-import com.sq.quota.function.MinAllFunction;
+import com.sq.quota.function.math.MinAllFunction;
 import net.sourceforge.jeval.EvaluationConstants;
 import net.sourceforge.jeval.EvaluationHelper;
 import net.sourceforge.jeval.Evaluator;

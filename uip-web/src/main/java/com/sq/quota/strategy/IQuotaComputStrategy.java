@@ -61,7 +61,6 @@ public abstract class IQuotaComputStrategy {
             case IndicatorConsts.FETCH_CYCLE_HOUR:
                 dayArray[0] = Integer.parseInt(DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_DAFAULT));
                 dayArray[1] = Integer.parseInt(DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_DAFAULT));
-
                 break;
             case IndicatorConsts.FETCH_CYCLE_DAY:
                 dayArray = DateUtil.getDayFirstAndLastInt(computCal);

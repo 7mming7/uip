@@ -8,7 +8,7 @@ import com.sq.exception.BaseException;
 import com.sq.protocol.ws.component.WsProtocalParser;
 import com.sq.protocol.ws.domain.*;
 import com.sq.quota.domain.QuotaTemp;
-import com.sq.quota.service.QuotaComputService;
+import com.sq.quota.service.QuotaComputInsService;
 import com.sq.quota.service.QuotaTempService;
 import com.sq.util.DateUtil;
 import org.slf4j.Logger;
@@ -40,7 +40,7 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 	private static Logger log = LoggerFactory.getLogger(WsServerIndiCompet4Standard.class);
 
 	@Autowired
-	private QuotaComputService quotaComputService;
+	private QuotaComputInsService quotaComputInsService;
 
 	@Autowired
 	private QuotaTempService quotaTempService;
@@ -83,7 +83,7 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 				}
 				searchable.or(orCondition);
 				itemCodeList = quotaTempService.findAll(searchable).getContent();
-				quotaComputService.reComputQuota(cal, itemCodeList);
+				quotaComputInsService.reComputQuota(cal, itemCodeList);
 			}
 
 			sw = wsProtocalParser.beanToXml(mrpElementResponse, StandardResponse.class);

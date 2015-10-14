@@ -19,15 +19,14 @@ import com.sq.quota.strategy.PrimaryQuotaStrategy;
 import com.sq.quota.strategy.QuotaComputTask;
 import com.sq.service.BaseService;
 import com.sq.util.DateUtil;
+import net.sourceforge.jeval.EvaluationConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -42,6 +41,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * |_)._ _
  * | o| (_
  */
+@Service
 public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
 
     private static final Logger log = LoggerFactory.getLogger(QuotaComputInsService.class);
@@ -55,6 +55,78 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
 
     /** 单个计算轮回中的超时时限 */
     public static Long computWaitTimeOutValue = 10l;
+
+    /** 指标模板缓存 */
+    public static Map<String,QuotaTemp> quotaTempMapCache = new HashMap<String,QuotaTemp>();
+
+    /**
+     * 初始化操作
+     *     1、缓存指标模板
+     *     2、更新指标模板的指标模板基础表达式
+     */
+    public void reloadQuotaCalculateExp() {
+        cacheQuotaTemp();
+        updateQuotaNativeExp();
+    }
+
+    /**
+     * 缓存指标模板
+     */
+    public void cacheQuotaTemp () {
+        List<QuotaTemp> quotaTempList = quotaTempRepository.findAll();
+        for (QuotaTemp quotaTemp:quotaTempList) {
+            quotaTempMapCache.put(quotaTemp.getIndicatorCode(), quotaTemp);
+        }
+    }
+
+    /**
+     * 更新指标的基础表达式
+     */
+    public void updateQuotaNativeExp () {
+        List<QuotaTemp> quotaTempList = new LinkedList<QuotaTemp>();
+        for (Map.Entry<String, QuotaTemp> entry : quotaTempMapCache.entrySet()) {
+            if (entry.getValue().getDataSource() != QuotaConsts.DATASOURCE_CALCULATE) {
+                continue;
+            }
+            String nativeExpression = generateNativeExpression(entry.getValue().getCalculateExpression());
+            entry.getValue().setGernaterdNativeExpression(nativeExpression);
+            quotaTempList.add(entry.getValue());
+        }
+        quotaTempRepository.save(quotaTempList);
+    }
+
+
+    /**
+     * 生成最低级别的计算表达式
+     * @param exp 计算表达式
+     * @return 生成的指标表达式
+     */
+    public String generateNativeExpression (String exp) {
+        if (exp == null) return null;
+        List<String> variableList = QuotaComputHelper.getVariableList(exp, QuotaComputHelper.getEvaluatorInstance());
+
+        boolean expStatusflag = true;//表达式状态，true表示已经是基础表达式，没有关联的计算指标了
+        for (String variable:variableList) {
+            //生成native expression时校验关联指标编码所对应的指标模板的存在性
+            //   判断表达式中的编码是否存在，留到具体的计算处统一校验
+            QuotaTemp quotaTemp = quotaTempMapCache.get(variable);
+            if (null == quotaTemp) {
+                return null;//关联指标不存在，直接退出
+            }
+            if (quotaTemp.getDataSource() == QuotaConsts.DATASOURCE_CALCULATE) {
+                String replaceString = quotaTemp.getCalculateExpression();
+                String needReplaceString = EvaluationConstants.OPEN_VARIABLE + variable + EvaluationConstants.CLOSED_BRACE;
+                exp = exp.replace(needReplaceString,replaceString);
+                expStatusflag = false;
+            }
+        }
+
+        if (expStatusflag || exp == null) {
+            return exp;
+        } else {
+            return generateNativeExpression(exp);
+        }
+    }
 
     /**
      * 接口数据汇集到系统的最小维度小时级

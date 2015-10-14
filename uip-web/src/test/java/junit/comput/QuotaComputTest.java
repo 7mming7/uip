@@ -1,6 +1,6 @@
 package junit.comput;
 
-import com.sq.quota.service.QuotaComputService;
+import com.sq.quota.service.QuotaComputInsService;
 import com.sq.quota.service.QuotaTempService;
 import junit.base.TestCase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class QuotaComputTest extends TestCase {
 
     @Autowired
-    private QuotaComputService quotaComputService;
+    private QuotaComputInsService quotaComputInsService;
 
     @Autowired
     private QuotaTempService quotaTempService;
