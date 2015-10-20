@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<configuration debug="false">
+<configuration debug="true">
 
-    <property name="log.dir" value="D:/log/uip" />
+    <property name="log.dir" value="/log/uip" />
 
     <!-- 控制台 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender" >

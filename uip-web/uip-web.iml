@@ -88,7 +88,7 @@
     <orderEntry type="library" name="Maven: org.apache.geronimo.specs:geronimo-javamail_1.4_spec:1.7.1" level="project" />
     <orderEntry type="library" name="Maven: wsdl4j:wsdl4j:1.6.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.cxf:cxf-rt-core:2.7.14" level="project" />
-    <orderEntry type="library" name="Maven: com.sun.xml.bind:jaxb-impl:2.2.6" level="project" />
+    <orderEntry type="library" name="Maven: com.sun.xml.bind:jaxb-impl:2.1.13" level="project" />
     <orderEntry type="library" name="Maven: org.apache.cxf:cxf-rt-bindings-soap:2.7.14" level="project" />
     <orderEntry type="library" name="Maven: org.apache.cxf:cxf-rt-databinding-jaxb:2.7.14" level="project" />
     <orderEntry type="library" name="Maven: org.apache.cxf:cxf-rt-bindings-xml:2.7.14" level="project" />
@@ -152,7 +152,6 @@
     <orderEntry type="library" name="Maven: org.jsoup:jsoup:1.7.3" level="project" />
     <orderEntry type="library" name="Maven: org.openscada.opc:lib:1.2" level="project" />
     <orderEntry type="library" name="Maven: org.openscada.opc:utgard-dcom:1.2" level="project" />
-    <orderEntry type="library" name="Maven: com.hikvision:jna:4.1" level="project" />
     <orderEntry type="library" name="Maven: com.microsoft.sqlserver.jdbc:sqljdbc:4.0" level="project" />
     <orderEntry type="library" name="Maven: org.mongodb:mongo-java-driver:2.12.4" level="project" />
   </component>

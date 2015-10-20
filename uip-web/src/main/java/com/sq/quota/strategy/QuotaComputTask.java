@@ -26,7 +26,7 @@ import java.util.concurrent.Callable;
  * |_)._ _
  * | o| (_
  */
-public class QuotaComputTask implements Callable<QuotaInstance> {
+public class QuotaComputTask implements Runnable {
 
     private Logger log = LoggerFactory.getLogger(QuotaComputTask.class);
 
@@ -107,7 +107,7 @@ public class QuotaComputTask implements Callable<QuotaInstance> {
     }
 
     @Override
-    public QuotaInstance call() throws Exception {
+    public void run() {
         log.error("Module Comput "
                 + quotaTemp.getIndicatorCode()
                 + " ---- "
@@ -137,7 +137,5 @@ public class QuotaComputTask implements Callable<QuotaInstance> {
         quotaInstance.setInstanceTime(tempComputCal);
         quotaInstance.setStatDateNum(Integer.parseInt(DateUtil.formatCalendar(tempComputCal, DateUtil.DATE_FORMAT_DAFAULT)));
         quotaComputService.saveAndFlush(quotaInstance);
-
-        return quotaInstance;
     }
 }

@@ -159,7 +159,8 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
         quotaComputTask.setAssignMillions(System.currentTimeMillis());
         quotaComputTask.setiQuotaComputStrategy(iComputStrategy);
         quotaComputTask.setQuotaTemp(quotaTemp);
-        QuotaComputHelper.fetchThreadPooSingleInstance().submit(quotaComputTask);
+        QuotaComputHelper.fetchThreadPooSingleInstance().execute(quotaComputTask);
+        /*QuotaComputHelper.fetchThreadPooSingleInstance().submit(quotaComputTask);*/
     }
 
 
@@ -196,14 +197,14 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
             if (quotaTemp.getCalFrequency() != currCalFrequency) {
                 currCalFrequency = quotaTemp.getCalFrequency();
                 while (QuotaComputHelper.computThreadQueue.isEmpty()
-                        || QuotaComputHelper.fetchThreadPooSingleInstance().getActiveCount() == 0) {
-                    continue;
+                        && QuotaComputHelper.fetchThreadPooSingleInstance().getActiveCount() == 0) {
+                    break;
                 }
             }
             if (quotaTemp.getCalFrequency() == QuotaConsts.CAL_FREQUENCY_HOUR) {
                 List<Calendar> hourCalList = DateUtil.get24Hours(computCal);
                 for (Calendar hourCal:hourCalList) {
-                    sendCalculateComm(quotaTemp, computCal, new PrimaryQuotaStrategy());
+                    sendCalculateComm(quotaTemp, hourCal, new PrimaryQuotaStrategy());
                 }
             } else {
                 sendCalculateComm(quotaTemp, computCal, new PrimaryQuotaStrategy());
@@ -271,11 +272,13 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
 
         //删除计算指标的关联指标
         deleteNeedReComputIndicator(computCal, associatedQuotaTempList);
-        Collections.sort(associatedQuotaTempList, new DimensionComparator());
+        /*Collections.sort(associatedQuotaTempList, new DimensionComparator());*/
 
         List<Calendar> calendarList = DateUtil.dayListSinceCal(computCal);
 
         for(Calendar computCalTemp:calendarList) {
+            System.out.println("Start send comput request computCal: " + DateUtil.formatCalendar(computCalTemp));
+            waitComputQuotaQueue.addAll(associatedQuotaTempList);
             stepSendComputRequest(waitComputQuotaQueue, QuotaConsts.CAL_FREQUENCY_HOUR, computCalTemp);
         }
     }

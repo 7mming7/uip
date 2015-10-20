@@ -547,13 +547,6 @@
             <version>${utgard-dcom.version}</version>
         </dependency>
 
-        <!-- jna相关jar -->
-        <dependency>
-            <groupId>com.hikvision</groupId>
-            <artifactId>jna</artifactId>
-            <version>${jna.version}</version>
-        </dependency>
-
         <!-- jodbc -->
         <dependency>
             <groupId>com.microsoft.sqlserver.jdbc</groupId>

@@ -58,10 +58,16 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
         int fetchCycle = quotaTemp.getFetchCycle();
         searchable = fillSearchConditionByFetchType(searchable,fetchCycle,computCal);
 
+        //动态参数替换，主要是为了将时间加入到时间函数的参数列表中
         calculateExp = dynamicVariableReplace(variableList,calculateExp,searchable);
+
+        //表达式计算的前置处理，将时间性的逻辑函数先做处理，然后再做数学计算
+        calculateExp = parseExpressionFront(evaluator,
+                variableList, calculateExp, DateUtil.formatCalendar(computCal));
 
         Double result = null;
         try {
+            System.out.println("calculateExp: " + calculateExp);
             result = Double.parseDouble(evaluator.evaluate(calculateExp));
         } catch (EvaluationException e) {
             log.error("/n indicatorTemp->" + quotaTemp.getIndicatorName()

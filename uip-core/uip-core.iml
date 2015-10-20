@@ -124,7 +124,6 @@
     <orderEntry type="library" name="Maven: org.jsoup:jsoup:1.7.3" level="project" />
     <orderEntry type="library" name="Maven: org.openscada.opc:lib:1.2" level="project" />
     <orderEntry type="library" name="Maven: org.openscada.opc:utgard-dcom:1.2" level="project" />
-    <orderEntry type="library" name="Maven: com.hikvision:jna:4.1" level="project" />
     <orderEntry type="library" name="Maven: com.microsoft.sqlserver.jdbc:sqljdbc:4.0" level="project" />
     <orderEntry type="library" name="Maven: org.mongodb:mongo-java-driver:2.12.4" level="project" />
   </component>

@@ -46,7 +46,9 @@ public class DblinkConnecter {
         try {
             log.info("ODBC->开始链接。。。。。。。。");
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            connection = DriverManager.getConnection(getEntryValue(ODBC_CONFIG_URL), getEntryValue(ODBC_CONFIG_USERNAME), getEntryValue(ODBC_CONFIG_PASSWORD));
+            connection = DriverManager.getConnection(getEntryValue(ODBC_CONFIG_URL),
+                    getEntryValue(ODBC_CONFIG_USERNAME),
+                    getEntryValue(ODBC_CONFIG_PASSWORD));
         } catch (Exception e) {
             log.error("ODBC连接失败.", e);
         }
