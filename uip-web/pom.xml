@@ -130,7 +130,7 @@
                 <jpa.generateDdl>false</jpa.generateDdl>
                 <jpa.database>MYSQL</jpa.database>
                 <jpa.databasePlatform>org.hibernate.dialect.MySQL5InnoDBDialect</jpa.databasePlatform>
-                <log.dir>D:/log/uip</log.dir>
+                <log.dir>/log/uip</log.dir>
             </properties>
         </profile>
         <profile>
