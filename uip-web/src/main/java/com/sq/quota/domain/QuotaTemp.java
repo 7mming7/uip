@@ -37,6 +37,11 @@ public class QuotaTemp extends QuotaBase {
     private boolean indicatorStatus;
 
     /**
+     * 空值处理方式
+     */
+    private int doWithNull;
+
+    /**
      * 指标计算公式
      */
     private String calculateExpression;
@@ -45,6 +50,11 @@ public class QuotaTemp extends QuotaBase {
      * 原生基础指标
      */
     private String gernaterdNativeExpression;
+
+    /**
+     * 用于真实计算
+     */
+    private String mathExpression;
 
     /**
      * 指标创建时间
@@ -108,5 +118,29 @@ public class QuotaTemp extends QuotaBase {
 
     public void setGernaterdNativeExpression(String gernaterdNativeExpression) {
         this.gernaterdNativeExpression = gernaterdNativeExpression;
+    }
+
+    public String getMathExpression() {
+        return mathExpression;
+    }
+
+    public void setMathExpression(String mathExpression) {
+        this.mathExpression = mathExpression;
+    }
+
+    public QuotaTemp getParentIndiTemp() {
+        return parentIndiTemp;
+    }
+
+    public void setParentIndiTemp(QuotaTemp parentIndiTemp) {
+        this.parentIndiTemp = parentIndiTemp;
+    }
+
+    public int getDoWithNull() {
+        return doWithNull;
+    }
+
+    public void setDoWithNull(int doWithNull) {
+        this.doWithNull = doWithNull;
     }
 }

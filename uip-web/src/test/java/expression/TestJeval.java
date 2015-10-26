@@ -1,8 +1,10 @@
 package expression;
 
 import com.sq.quota.component.QuotaComputHelper;
+import junit.base.TestCase;
 import net.sourceforge.jeval.EvaluationException;
 import net.sourceforge.jeval.Evaluator;
+import org.junit.Test;
 
 import java.util.List;
 
@@ -18,17 +20,36 @@ import java.util.List;
  * |_)._ _
  * | o| (_
  */
-public class TestJeval {
-    public static void main(String[] args) {
-        Evaluator eva = QuotaComputHelper.getEvaluatorInstance();
+public class TestJeval extends TestCase {
 
+    /*@Test
+    public void test () {
+        Evaluator eva = new Evaluator();
+        QuotaComputHelper.loadLocalFunctions(eva);
         try {
-            String calculateExpression = "#{dateTime(day,1,ABD)}";
+            String calculateExpression = "dateTime('day',0,'T1YGDS_Dnum',20151022000000)";
+            System.out.println(calculateExpression);
             List<String> variableList = QuotaComputHelper.getVariableList(calculateExpression,eva);
             for (String var:variableList) {
                 System.out.println(var);
             }
+            System.out.println(eva.evaluate(calculateExpression));
+        } catch (EvaluationException e) {
+            e.printStackTrace();
+        }
+    }*/
 
+    public static void main(String[] args) {
+        Evaluator eva = new Evaluator();
+        QuotaComputHelper.loadLocalFunctions(eva);
+        try {
+            String calculateExpression = "dateTime(1,0,2,201)";
+            System.out.println(calculateExpression);
+            List<String> variableList = QuotaComputHelper.getVariableList(calculateExpression,eva);
+            for (String var:variableList) {
+                System.out.println(var);
+            }
+            System.out.println(eva.evaluate(calculateExpression));
 
             eva.putVariable("a","23");
             eva.putVariable("b","5");

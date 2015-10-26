@@ -19,6 +19,7 @@ public interface QuotaConsts {
      *      1、录入
      *      2、计算
      *      3、接口
+     *      4、补录
      */
     public static final int DATASOURCE_ENTRY = 1;
 
@@ -92,4 +93,14 @@ public interface QuotaConsts {
     public static final int VALUE_TYPE_DOUBLE = 2;
 
     public static final int VALUE_TYPE_SPACE = 3;
+
+    /** ======================
+     *     空值处理
+     *        1、NULL
+     *        2、0
+     *
+     */
+    public static final int DOWITH_NULL_BENULL = 1;
+
+    public static final int DOWITH_NULL_0 = 2;
 }

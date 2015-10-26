@@ -79,6 +79,7 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 				List<QuotaTemp> itemCodeList = new ArrayList<QuotaTemp>();
 				OrCondition orCondition = new OrCondition();
 				for (IndicatorReqElement ir : indicatorEleList) {
+					System.out.println("IndicatorReqElement-> " + ir.getItemCode());
 					orCondition.add(SearchFilterHelper.newCondition("indicatorCode", MatchType.EQ, ir.getItemCode()));
 				}
 				searchable.or(orCondition);
@@ -88,6 +89,8 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 
 			sw = wsProtocalParser.beanToXml(mrpElementResponse, StandardResponse.class);
 			responseXml = sw.toString();
+
+			System.out.println("计算完成：" + responseXml);
 			return responseXml;
 		} catch (BaseException e) {
 			String msg = "解析报文失败: " + e.getMessage();

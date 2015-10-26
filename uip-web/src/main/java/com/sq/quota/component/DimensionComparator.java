@@ -19,7 +19,6 @@ import java.util.Comparator;
 public class DimensionComparator implements Comparator<QuotaTemp> {
     @Override
     public int compare(QuotaTemp o1, QuotaTemp o2) {
-
         return o1.getCalFrequency() - o2.getCalFrequency();
     }
 }

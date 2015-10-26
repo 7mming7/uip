@@ -24,6 +24,8 @@ public class DateUtil {
 
     public static final String DATE_FORMAT_MONTH = "yyyyMM";
 
+    public static final String DATE_FORMAT_YMDH = "yyyyMMddHH";
+
     public static final String DATE_FORMAT_Y_M_D = "yyyy-MM-dd";
 
     public static final String DATE_FORMAT_YMDHMS = "yyyy-MM-dd HH:mm:ss";
@@ -707,11 +709,10 @@ public class DateUtil {
      */
     public static List<Calendar> get24Hours (Calendar calendar) {
         List<Calendar> calendarList = new ArrayList<Calendar>();
-        for (int i=1;i<=24;i++) {
+        for (int i=0;i<24;i++) {
             Calendar clone = (Calendar) calendar.clone();
-            clone.add(Calendar.HOUR_OF_DAY, i);
+            clone.set(Calendar.HOUR_OF_DAY, i);
             calendarList.add(clone);
-
         }
         return calendarList;
     }
@@ -746,7 +747,7 @@ public class DateUtil {
      */
     public static String dateMigrate (String cycleType, int disDateNum, String computCal) {
         try {
-            Calendar computCalendar = stringToCalendar(computCal, DATE_FORMAT_YMDHMS);
+            Calendar computCalendar = stringToCalendar(computCal, DATE_FORMAT_DAFAULTYMDHMS);
             if (cycleType.equalsIgnoreCase("Hour")) {
                 computCalendar.add(Calendar.HOUR_OF_DAY, disDateNum);
             } else if (cycleType.equalsIgnoreCase("Day")) {
@@ -756,7 +757,7 @@ public class DateUtil {
             } else if (cycleType.equalsIgnoreCase("Month")) {
                 computCalendar.add(Calendar.MONTH, disDateNum);
             }
-            computCal = formatCalendar(computCalendar, DATE_FORMAT_YYMMDDHH);
+            computCal = formatCalendar(computCalendar, DATE_FORMAT_DAFAULT);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -765,16 +766,16 @@ public class DateUtil {
 
     public static void main(String[] args) {
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.DAY_OF_MONTH, 18);
+        /*cal.set(Calendar.DAY_OF_MONTH, 18);
         cal.set(Calendar.HOUR_OF_DAY,0);
-        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.MINUTE, 0);*/
         Calendar cal1 = Calendar.getInstance();
         cal1.set(Calendar.DAY_OF_MONTH, 3);
         cal1.set(Calendar.HOUR_OF_DAY,0);
         cal1.set(Calendar.MINUTE, 0);
-        List<Calendar> calendarList = DateUtil.dayListSinceCal(Calendar.getInstance());
-        for (Calendar calendar:calendarList) {
-            System.out.println(formatCalendar(calendar));
-        }
+        System.out.println(DateUtil.dateMigrate("Day", 1, "'2015-10-22 00:00:00'"));
+        /*for (Calendar calendar:calendarList) {
+            System.out.println(formatCalendar(calendar,DATE_FORMAT_YMDH));
+        }*/
     }
 }

@@ -111,7 +111,7 @@ public class QuotaComputTask implements Runnable {
         log.error("Module Comput "
                 + quotaTemp.getIndicatorCode()
                 + " ---- "
-                + DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULT)
+                + DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_YMDH)
                 + " start comput comd.");
         QuotaInstance quotaInstance = new QuotaInstance(quotaTemp);
 
@@ -119,7 +119,7 @@ public class QuotaComputTask implements Runnable {
         Object computResult = iQuotaComputStrategy.execIndiComput(quotaTemp, tempCal);
 
         log.error(quotaTemp.getIndicatorCode() + "，"
-                + DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULT)
+                + DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_YMDH)
                 + " 计算结果为：-- " + (null != computResult ? computResult.toString() : "null"));
 
         if (computResult instanceof String) {
@@ -134,7 +134,7 @@ public class QuotaComputTask implements Runnable {
         if(iQuotaComputStrategy instanceof InterfaceQuotaStrategy) {
             tempComputCal.add(Calendar.HOUR_OF_DAY, -1);
         }
-        quotaInstance.setInstanceTime(tempComputCal);
+        quotaInstance.setInstanceTime(tempComputCal.getTime());
         quotaInstance.setStatDateNum(Integer.parseInt(DateUtil.formatCalendar(tempComputCal, DateUtil.DATE_FORMAT_DAFAULT)));
         quotaComputService.saveAndFlush(quotaInstance);
     }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<configuration debug="true">
+<configuration debug="false">
 
     <property name="log.dir" value="/log/uip" />
 

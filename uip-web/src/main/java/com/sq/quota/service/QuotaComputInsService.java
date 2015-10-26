@@ -66,7 +66,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
      */
     public void reloadQuotaCalculateExp() {
         cacheQuotaTemp();
-        updateQuotaNativeExp();
+        updateQuotaExp();
     }
 
     /**
@@ -82,7 +82,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
     /**
      * 更新指标的基础表达式
      */
-    public void updateQuotaNativeExp () {
+    public void updateQuotaExp () {
         List<QuotaTemp> quotaTempList = new LinkedList<QuotaTemp>();
         for (Map.Entry<String, QuotaTemp> entry : quotaTempMapCache.entrySet()) {
             if (entry.getValue().getDataSource() != QuotaConsts.DATASOURCE_CALCULATE) {
@@ -90,6 +90,13 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
             }
             String nativeExpression = generateNativeExpression(entry.getValue().getCalculateExpression());
             entry.getValue().setGernaterdNativeExpression(nativeExpression);
+
+            String mathExpression = generateMathExpression(entry.getValue().getCalculateExpression(),
+                    entry.getValue().getFetchCycle());
+            entry.getValue().setMathExpression(mathExpression);
+            System.out.println("CalculateExpression:" + entry.getValue().getCalculateExpression()
+                    + ",nativeExpression:" + nativeExpression
+                    + ",mathExpression:" + mathExpression);
             quotaTempList.add(entry.getValue());
         }
         quotaTempRepository.save(quotaTempList);
@@ -103,12 +110,17 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
      */
     public String generateNativeExpression (String exp) {
         if (exp == null) return null;
+
+        if (exp.contains("dateTime")) {
+            return exp;
+        }
+
         List<String> variableList = QuotaComputHelper.getVariableList(exp, QuotaComputHelper.getEvaluatorInstance());
 
         boolean expStatusflag = true;//表达式状态，true表示已经是基础表达式，没有关联的计算指标了
         for (String variable:variableList) {
             //生成native expression时校验关联指标编码所对应的指标模板的存在性
-            //   判断表达式中的编码是否存在，留到具体的计算处统一校验
+            //判断表达式中的编码是否存在，留到具体的计算处统一校验
             QuotaTemp quotaTemp = quotaTempMapCache.get(variable);
             if (null == quotaTemp) {
                 return null;//关联指标不存在，直接退出
@@ -126,6 +138,35 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
         } else {
             return generateNativeExpression(exp);
         }
+    }
+
+    /**
+     * 生成数学计算指标表达式
+     * @param exp 配置在模板上的表达式
+     * @return 生成的数学计算表达式
+     */
+    public String generateMathExpression (String exp, int fetchCycle){
+        if (exp == null) return null;
+
+        if (exp.contains("dateTime")) {
+            return exp;
+        }
+
+        List<String> variableList = QuotaComputHelper.getVariableList(exp, QuotaComputHelper.getEvaluatorInstance());
+        for (String variable:variableList) {
+            //判断表达式中的编码是否存在，留到具体的计算处统一校验
+            QuotaTemp quotaTemp = quotaTempMapCache.get(variable);
+            if (null == quotaTemp ) {
+                return null;//关联指标不存在，直接退出
+            }
+            if (quotaTemp.getFetchCycle() == fetchCycle && quotaTemp.getDataSource() == QuotaConsts.DATASOURCE_CALCULATE) {
+                String replaceString = quotaTemp.getCalculateExpression();
+                String needReplaceString = EvaluationConstants.OPEN_VARIABLE + variable + EvaluationConstants.CLOSED_BRACE;
+                exp = exp.replace(needReplaceString,replaceString);
+            }
+        }
+
+        return exp;
     }
 
     /**
@@ -159,7 +200,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
         quotaComputTask.setAssignMillions(System.currentTimeMillis());
         quotaComputTask.setiQuotaComputStrategy(iComputStrategy);
         quotaComputTask.setQuotaTemp(quotaTemp);
-        QuotaComputHelper.fetchThreadPooSingleInstance().execute(quotaComputTask);
+        QuotaComputHelper._instance.execute(quotaComputTask);
         /*QuotaComputHelper.fetchThreadPooSingleInstance().submit(quotaComputTask);*/
     }
 
@@ -196,9 +237,22 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
             QuotaTemp quotaTemp = waitComputQuotaQueue.poll();
             if (quotaTemp.getCalFrequency() != currCalFrequency) {
                 currCalFrequency = quotaTemp.getCalFrequency();
-                while (QuotaComputHelper.computThreadQueue.isEmpty()
-                        && QuotaComputHelper.fetchThreadPooSingleInstance().getActiveCount() == 0) {
-                    break;
+
+                QuotaComputHelper._instance.shutdown();
+                while (true) {
+                    System.out.println("Computcal:" + DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULTYMDHMS)
+                            + ",Active count:" + QuotaComputHelper._instance.getActiveCount()
+                            + ",currCalFrequency:" + currCalFrequency);
+                    if (!QuotaComputHelper._instance.isTerminating()) {
+                        System.out.println("Instance thread pool!");
+                        QuotaComputHelper.fetchThreadPooSingleInstance();
+                        break;
+                    }
+                    try {
+                        Thread.sleep(100l);
+                    } catch (InterruptedException e) {
+                        log.error("Thread sleep error!");
+                    }
                 }
             }
             if (quotaTemp.getCalFrequency() == QuotaConsts.CAL_FREQUENCY_HOUR) {
@@ -223,7 +277,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
         for (String quotaTempStr:calculateStringList) {
             orCondition.add(
                     SearchFilterHelper.newCondition("gernaterdNativeExpression",
-                            MatchType.LIKE, "%#{" + quotaTempStr + "}%"));
+                            MatchType.LIKE, "%" + quotaTempStr + "%"));
         }
         searchable.addSearchFilter(orCondition);
         return quotaTempRepository.findAll(searchable).getContent();
@@ -254,7 +308,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
      * @param quotaTempList
      */
     public void reComputQuota (Calendar computCal, List<QuotaTemp> quotaTempList) {
-
+        System.out.println(quotaTempList.size());
         LinkedBlockingQueue<QuotaTemp> waitComputQuotaQueue = new LinkedBlockingQueue<QuotaTemp>();
 
         List<String> calculateStringList = new ArrayList<String>();
@@ -269,15 +323,21 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
         }
 
         List<QuotaTemp> associatedQuotaTempList = searchAssociatedQuotaTemp(calculateStringList);
+        List<QuotaTemp> sortQuotaTempList = new ArrayList<QuotaTemp>(associatedQuotaTempList);
 
         //删除计算指标的关联指标
         deleteNeedReComputIndicator(computCal, associatedQuotaTempList);
-        /*Collections.sort(associatedQuotaTempList, new DimensionComparator());*/
+
+        Collections.sort(sortQuotaTempList, new DimensionComparator());
 
         List<Calendar> calendarList = DateUtil.dayListSinceCal(computCal);
 
         for(Calendar computCalTemp:calendarList) {
+            System.out.println("sortQuotaTempList size: " + sortQuotaTempList.size());
             System.out.println("Start send comput request computCal: " + DateUtil.formatCalendar(computCalTemp));
+            for (QuotaTemp quotaTemp:sortQuotaTempList) {
+                System.out.println("Need Comput QuotaTemp: " + quotaTemp.getIndicatorCode() + ", mathExpression:" + quotaTemp.getMathExpression());
+            }
             waitComputQuotaQueue.addAll(associatedQuotaTempList);
             stepSendComputRequest(waitComputQuotaQueue, QuotaConsts.CAL_FREQUENCY_HOUR, computCalTemp);
         }

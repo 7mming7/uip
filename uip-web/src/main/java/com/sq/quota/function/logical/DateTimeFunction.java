@@ -10,7 +10,10 @@ import net.sourceforge.jeval.EvaluationConstants;
 import net.sourceforge.jeval.Evaluator;
 import net.sourceforge.jeval.function.*;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.sq.util.DateUtil;
 
@@ -34,36 +37,48 @@ public class DateTimeFunction implements Function {
         return "dateTime";
     }
 
+    DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
+
     @Override
     public FunctionResult execute(Evaluator evaluator, String arguments)
             throws FunctionException {
         Double result = null;
         ArrayList<String> argList = FunctionHelper.getStrings(arguments,
                 EvaluationConstants.FUNCTION_ARGUMENT_SEPARATOR);
+        System.out.println("*******************************************");
 
-        String cycleStr = argList.get(0);
+        String cycleStr = (String)argList.get(0);
 
-        String disDateNum = argList.get(1);
+        Integer disDateInt = Double.valueOf(argList.get(1)).intValue();
 
-        Integer disDateInt = Integer.parseInt(disDateNum);
+        String assQuotaCode = (String)argList.get(2);
+        assQuotaCode = assQuotaCode.substring(1,assQuotaCode.length()-1);
+        System.out.println("assQuotaCode: " + assQuotaCode);
 
-        String assQuotaCode = argList.get(2);
+        BigDecimal bigDecimal = new BigDecimal((String)argList.get(3));
 
-        String computCal = argList.get(3);
+        String computCal = bigDecimal.toPlainString();
+        System.out.println(computCal);
 
         //计算指标的迁移之后的日期
         String assComputCal = DateUtil.dateMigrate(cycleStr, disDateInt, computCal);
         Searchable searchable = Searchable.newSearchable()
                 .addSearchFilter("indicatorCode", MatchType.EQ, assQuotaCode)
-                .addSearchFilter("statDateNum", MatchType.EQ, assComputCal);
+                .addSearchFilter("statDateNum", MatchType.EQ, Integer.parseInt(assComputCal));
 
-        QuotaInstance quotaInstance = quotaInstanceRepository.findAll(searchable).getContent().get(0);
+
+        List<QuotaInstance> quotaInstanceList = quotaInstanceRepository.findAll(searchable).getContent();
+        if (quotaInstanceList.isEmpty())
+            return new FunctionResult(null,
+                FunctionConstants.FUNCTION_RESULT_TYPE_STRING);;
+
+        QuotaInstance quotaInstance = quotaInstanceList.get(0);
         if (null == quotaInstance || quotaInstance.getValueType() == QuotaConsts.VALUE_TYPE_STRING) {
-            return null;
+            result = null;
         } else if (quotaInstance.getValueType() == QuotaConsts.VALUE_TYPE_DOUBLE){
             result = quotaInstance.getFloatValue();
         }
         return new FunctionResult(result.toString(),
-                FunctionConstants.FUNCTION_RESULT_TYPE_NUMERIC);
+                FunctionConstants.FUNCTION_RESULT_TYPE_STRING);
     }
 }

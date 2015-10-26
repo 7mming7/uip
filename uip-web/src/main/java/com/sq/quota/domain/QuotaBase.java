@@ -31,6 +31,7 @@ public abstract class QuotaBase extends AbstractEntity<Long> implements Cloneabl
      * 1---录入
      * 2---计算
      * 3---接口
+     * 4---损耗
      */
     private int dataSource;
 

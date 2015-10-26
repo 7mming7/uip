@@ -1,7 +1,10 @@
 package com.sq.quota.domain;
 
+import org.joda.time.DateTime;
+
 import javax.persistence.*;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * 指标实例.
@@ -42,7 +45,8 @@ public class QuotaInstance extends QuotaBase {
     /**
      * 指标获取时间
      */
-    private Calendar instanceTime;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date instanceTime;
 
     /** 创建时间 */
     private Calendar createTime = Calendar.getInstance();
@@ -105,11 +109,11 @@ public class QuotaInstance extends QuotaBase {
         this.stringValue = stringValue;
     }
 
-    public Calendar getInstanceTime() {
+    public Date getInstanceTime() {
         return instanceTime;
     }
 
-    public void setInstanceTime(Calendar instanceTime) {
+    public void setInstanceTime(Date instanceTime) {
         this.instanceTime = instanceTime;
     }
 

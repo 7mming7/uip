@@ -8,6 +8,7 @@ import com.sq.quota.domain.QuotaInstance;
 import com.sq.quota.domain.QuotaTemp;
 import com.sq.quota.function.logical.LogicalFunctions;
 import com.sq.quota.repository.QuotaInstanceRepository;
+import com.sq.quota.service.QuotaComputInsService;
 import com.sq.util.DateUtil;
 import com.sq.util.SpringUtils;
 import net.sourceforge.jeval.EvaluationConstants;
@@ -19,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -46,34 +48,70 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
         Evaluator evaluator = new Evaluator();
         QuotaComputHelper.loadLocalFunctions(evaluator);
 
-        String calculateExp = quotaTemp.getCalculateExpression();
+        String calculateExp = quotaTemp.getMathExpression();
         List<String> variableList = QuotaComputHelper.getVariableList(calculateExp,evaluator);
         if (variableList.isEmpty()) {
             log.error("表达式：" + calculateExp + " 没有动态参数!");
             return null;
         }
 
+        long step1 = System.currentTimeMillis();
+
         Searchable searchable = Searchable.newSearchable()
                 .addSearchFilter("valueType", MatchType.EQ, QuotaConsts.VALUE_TYPE_DOUBLE);
         int fetchCycle = quotaTemp.getFetchCycle();
         searchable = fillSearchConditionByFetchType(searchable,fetchCycle,computCal);
 
-        //动态参数替换，主要是为了将时间加入到时间函数的参数列表中
-        calculateExp = dynamicVariableReplace(variableList,calculateExp,searchable);
+        log.error("step 0: ComputCal: " + DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_YMDH)
+                + ", indicatorCode: " + quotaTemp.getIndicatorCode()
+                + ", calculateExp: " + calculateExp
+                + "，MathExpression->" + quotaTemp.getMathExpression()
+                + "，GernaterdNativeExpression->" + quotaTemp.getGernaterdNativeExpression());
 
         //表达式计算的前置处理，将时间性的逻辑函数先做处理，然后再做数学计算
         calculateExp = parseExpressionFront(evaluator,
-                variableList, calculateExp, DateUtil.formatCalendar(computCal));
+                variableList, calculateExp, DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_DAFAULTYMDHMS));
+        if(null == calculateExp) return null;
+
+        long step2 = System.currentTimeMillis();
+
+        log.error("step 1: ComputCal: " + DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_YMDH)
+                + ", indicatorCode: " + quotaTemp.getIndicatorCode()
+                + ", calculateExp: " + calculateExp
+                + "，MathExpression->" + quotaTemp.getMathExpression()
+                + "，GernaterdNativeExpression->" + quotaTemp.getGernaterdNativeExpression()
+                + ", parseExpressionFront cost time: " + (step2 - step1));
+
+        //动态参数替换
+        calculateExp = dynamicVariableReplace(variableList,calculateExp,searchable);
+
+        long step3 = System.currentTimeMillis();
+
+        log.error("step 2: ComputCal: " + DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_YMDH)
+                + ", indicatorCode: " + quotaTemp.getIndicatorCode()
+                + ", calculateExp: " + calculateExp
+                + "，MathExpression->" + quotaTemp.getMathExpression()
+                + "，GernaterdNativeExpression->" + quotaTemp.getGernaterdNativeExpression()
+                + ", dynamicVariableReplace cost time: " + (step3 - step2));
+
+        log.error("computCal->" + DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_YMDH)
+                + ", quotaTemp->" + quotaTemp.getIndicatorCode()
+                + ", calculateExp: " + calculateExp
+                + "，MathExpression->" + quotaTemp.getMathExpression()
+                + "，GernaterdNativeExpression->" + quotaTemp.getGernaterdNativeExpression());
+
+        if (null == calculateExp) return null;
 
         Double result = null;
         try {
-            System.out.println("calculateExp: " + calculateExp);
             result = Double.parseDouble(evaluator.evaluate(calculateExp));
         } catch (EvaluationException e) {
-            log.error("/n indicatorTemp->" + quotaTemp.getIndicatorName()
+            log.error(" indicatorTemp->" + quotaTemp.getIndicatorName()
                     + "，indicatorCode->" + quotaTemp.getIndicatorCode()
+                    + "，expression->" + quotaTemp.getCalculateExpression()
+                    + "，MathExpression->" + quotaTemp.getMathExpression()
                     + "，GernaterdNativeExpression->" + quotaTemp.getGernaterdNativeExpression()
-                    + "，computCal->" + DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULT)
+                    + "，computCal->" + DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_YMDH)
                     + ", calculateExp->" + calculateExp, e);
         }
         return result;
@@ -90,20 +128,30 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
             searchable.addSearchFilter("floatValue", MatchType.isNotNull, "");
             List<QuotaInstance> quotaInstances = quotaInstanceRepository.findAll(searchable).getContent();
 
+            QuotaTemp quotaTemp = QuotaComputInsService.quotaTempMapCache.get(variable);
+            if (null == quotaTemp) {
+                log.error("Method dynamicVariableReplace error. QuotaTemp -> variable: " + variable + " is not exist!");
+            }
+
+            StringBuilder variableBuilder = new StringBuilder();
             if (quotaInstances.isEmpty()) {
-                return null;
+                if (quotaTemp.getDoWithNull() == QuotaConsts.DOWITH_NULL_BENULL) {
+                    return null;
+                } else {
+                    variableBuilder.append("0");
+                }
             }
 
             if (quotaInstances.size() >= 1) {
-                StringBuilder variableBuilder = new StringBuilder();
                 for (QuotaInstance indicatorInstance : quotaInstances) {
                     String itemValue = indicatorInstance.getFloatValue().toString();
                     variableBuilder.append(itemValue).append(",");
                 }
                 variableBuilder.deleteCharAt(variableBuilder.lastIndexOf(","));
-                String replaceVariable = EvaluationConstants.OPEN_VARIABLE + variable + EvaluationConstants.CLOSED_BRACE;
-                calculateExp = calculateExp.replace(replaceVariable, variableBuilder.toString());
+
             }
+            String replaceVariable = EvaluationConstants.OPEN_VARIABLE + variable + EvaluationConstants.CLOSED_BRACE;
+            calculateExp = calculateExp.replace(replaceVariable, variableBuilder.toString());
             searchable.removeSearchFilter("indicatorCode", MatchType.EQ);
         }
         return calculateExp;
@@ -122,15 +170,18 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
         for (String variable:variableList) {
             for (Function function:functionList) {
                 if (variable.startsWith(function.getName())) {
+                    String variableTemp = new String(variable);
                     needDeleteVariableList.add(variable);
-                    variable.replace(")", "," + computCal + ")");
+                    variable = variable.replace(")", "," + computCal + ")");
                     String result = "";
                     try {
                         result = evaluator.evaluate(variable);
                     } catch (EvaluationException e) {
-                        log.error("DateTime 指标计算出现错误.");
+                        log.error("DateTime 指标计算出现错误.", e);
                     }
-                    String replaceVariable = EvaluationConstants.OPEN_VARIABLE + variable + EvaluationConstants.CLOSED_BRACE;
+                    result = result.substring(1,result.length() - 1);
+                    if (result.equals("null")) return null;
+                    String replaceVariable = EvaluationConstants.OPEN_VARIABLE + variableTemp + EvaluationConstants.CLOSED_BRACE;
                     calculateExp = calculateExp.replace(replaceVariable, result);
                 }
             }

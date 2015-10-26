@@ -113,8 +113,7 @@ public class QuotaComputHelper {
      * @return 动态参数列表
      */
     public static List<String> getVariableList (String expression,Evaluator evaluator) {
-        Assert.notNull(expression);
-
+        System.out.println("getVariable -> expression ---- " + expression);
         List<String> variableList = new ArrayList<String>();
         int openIndex = expression.indexOf(EvaluationConstants.OPEN_VARIABLE);
 

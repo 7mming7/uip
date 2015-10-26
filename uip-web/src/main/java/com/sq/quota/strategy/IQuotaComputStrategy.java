@@ -3,10 +3,12 @@ package com.sq.quota.strategy;
 import com.sq.comput.domain.IndicatorConsts;
 import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
+import com.sq.entity.search.condition.Condition;
 import com.sq.quota.component.QuotaComputHelper;
 import com.sq.quota.domain.QuotaTemp;
 import com.sq.util.DateUtil;
 import net.sourceforge.jeval.Evaluator;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -61,6 +63,8 @@ public abstract class IQuotaComputStrategy {
             case IndicatorConsts.FETCH_CYCLE_HOUR:
                 dayArray[0] = Integer.parseInt(DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_DAFAULT));
                 dayArray[1] = Integer.parseInt(DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_DAFAULT));
+                searchable.addSearchFilter("instanceTime", MatchType.EQ, computCal);
+                System.out.println(DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_YMDHMS));
                 break;
             case IndicatorConsts.FETCH_CYCLE_DAY:
                 dayArray = DateUtil.getDayFirstAndLastInt(computCal);
@@ -77,6 +81,8 @@ public abstract class IQuotaComputStrategy {
             case IndicatorConsts.FETCH_CYCLE_Year:
                 dayArray = DateUtil.getYearFirstAndInputInt(computCal);
                 break;
+            default:
+                dayArray = DateUtil.getDayFirstAndLastInt(computCal);
         }
         searchable.addSearchFilter("statDateNum", MatchType.GTE, dayArray[0]);
         searchable.addSearchFilter("statDateNum", MatchType.LTE, dayArray[1]);
