@@ -773,7 +773,7 @@ public class DateUtil {
         cal1.set(Calendar.DAY_OF_MONTH, 3);
         cal1.set(Calendar.HOUR_OF_DAY,0);
         cal1.set(Calendar.MINUTE, 0);
-        System.out.println(DateUtil.dateMigrate("Day", 1, "'2015-10-22 00:00:00'"));
+        System.out.println(DateUtil.dateMigrate("Day", -1, "20151022000000"));
         /*for (Calendar calendar:calendarList) {
             System.out.println(formatCalendar(calendar,DATE_FORMAT_YMDH));
         }*/

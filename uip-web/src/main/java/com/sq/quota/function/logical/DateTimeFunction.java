@@ -48,8 +48,11 @@ public class DateTimeFunction implements Function {
         System.out.println("*******************************************");
 
         String cycleStr = (String)argList.get(0);
+        cycleStr = cycleStr.substring(1,cycleStr.length()-1);
+        System.out.println("cycleStr: " + cycleStr);
 
         Integer disDateInt = Double.valueOf(argList.get(1)).intValue();
+        System.out.println("disDateInt: " + disDateInt);
 
         String assQuotaCode = (String)argList.get(2);
         assQuotaCode = assQuotaCode.substring(1,assQuotaCode.length()-1);
@@ -58,10 +61,12 @@ public class DateTimeFunction implements Function {
         BigDecimal bigDecimal = new BigDecimal((String)argList.get(3));
 
         String computCal = bigDecimal.toPlainString();
-        System.out.println(computCal);
+        System.out.println("Start dateMigrate computCal: " + computCal);
 
         //计算指标的迁移之后的日期
         String assComputCal = DateUtil.dateMigrate(cycleStr, disDateInt, computCal);
+
+        System.out.println("End dateMigrate computCal: " + assComputCal);
         Searchable searchable = Searchable.newSearchable()
                 .addSearchFilter("indicatorCode", MatchType.EQ, assQuotaCode)
                 .addSearchFilter("statDateNum", MatchType.EQ, Integer.parseInt(assComputCal));

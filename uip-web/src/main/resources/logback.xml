@@ -2,7 +2,7 @@
 
 <configuration debug="false">
 
-    <property name="log.dir" value="/log/uip" />
+    <property name="log.dir" value="${user.dir}/log/uip" />
 
     <!-- 控制台 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender" >

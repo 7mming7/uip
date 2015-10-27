@@ -136,6 +136,7 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
             StringBuilder variableBuilder = new StringBuilder();
             if (quotaInstances.isEmpty()) {
                 if (quotaTemp.getDoWithNull() == QuotaConsts.DOWITH_NULL_BENULL) {
+                    System.out.println("QuotaTemp -> variable: " + variable + " exist no instance!");
                     return null;
                 } else {
                     variableBuilder.append("0");
@@ -177,7 +178,7 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
                     try {
                         result = evaluator.evaluate(variable);
                     } catch (EvaluationException e) {
-                        log.error("DateTime 指标计算出现错误.", e);
+                        log.error("DateTime 指标计算出现错误.calculateExp: " + calculateExp, e);
                     }
                     result = result.substring(1,result.length() - 1);
                     if (result.equals("null")) return null;
