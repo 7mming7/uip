@@ -119,10 +119,10 @@
                 <db.name>snmis_zbcs_20151020</db.name>
                 <connection.driver_class>com.mysql.jdbc.Driver</connection.driver_class>
                 <connection.admin.url>
-                    <![CDATA[ jdbc:mysql://snmis.xicp.net:3306?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull ]]>
+                    <![CDATA[ jdbc:mysql://192.168.1.239:3306?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull ]]>
                 </connection.admin.url>
                 <connection.url>
-                    <![CDATA[ jdbc:mysql://snmis.xicp.net:3306/${db.name}?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull ]]>
+                    <![CDATA[ jdbc:mysql://192.168.1.239:3306/${db.name}?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull ]]>
                 </connection.url>
                 <connection.username>root</connection.username>
                 <connection.password>87783121</connection.password>

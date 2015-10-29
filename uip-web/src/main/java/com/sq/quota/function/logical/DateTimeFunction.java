@@ -75,11 +75,12 @@ public class DateTimeFunction implements Function {
         List<QuotaInstance> quotaInstanceList = quotaInstanceRepository.findAll(searchable).getContent();
         if (quotaInstanceList.isEmpty())
             return new FunctionResult(null,
-                FunctionConstants.FUNCTION_RESULT_TYPE_STRING);;
+                FunctionConstants.FUNCTION_RESULT_TYPE_STRING);
 
         QuotaInstance quotaInstance = quotaInstanceList.get(0);
         if (null == quotaInstance || quotaInstance.getValueType() == QuotaConsts.VALUE_TYPE_STRING) {
-            result = null;
+            return new FunctionResult(null,
+                    FunctionConstants.FUNCTION_RESULT_TYPE_STRING);
         } else if (quotaInstance.getValueType() == QuotaConsts.VALUE_TYPE_DOUBLE){
             result = quotaInstance.getFloatValue();
         }

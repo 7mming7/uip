@@ -19,6 +19,17 @@ import java.util.Comparator;
 public class DimensionComparator implements Comparator<QuotaTemp> {
     @Override
     public int compare(QuotaTemp o1, QuotaTemp o2) {
-        return o1.getCalFrequency() - o2.getCalFrequency();
+        if (o1.getCalFrequency() > o2.getCalFrequency()) {
+            return 1;
+        } else if (o1.getCalFrequency() == o2.getCalFrequency()
+                && o1.getFetchCycle() >= o2.getFetchCycle()) {
+            return 1;
+        } else if (o1.getCalFrequency() == o2.getCalFrequency()
+                && o1.getFetchCycle() >= o2.getFetchCycle()
+                && o1.getSemaphore() <= o2.getSemaphore()) {
+            return 1;
+        } else {
+            return -1;
+        }
     }
 }

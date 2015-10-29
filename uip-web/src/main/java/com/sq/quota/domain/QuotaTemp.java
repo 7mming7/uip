@@ -57,6 +57,11 @@ public class QuotaTemp extends QuotaBase {
     private String mathExpression;
 
     /**
+     * 用于计算的信号量
+     */
+    private Integer semaphore;
+
+    /**
      * 指标创建时间
      */
     private Calendar createTime;
@@ -142,5 +147,13 @@ public class QuotaTemp extends QuotaBase {
 
     public void setDoWithNull(int doWithNull) {
         this.doWithNull = doWithNull;
+    }
+
+    public Integer getSemaphore() {
+        return semaphore;
+    }
+
+    public void setSemaphore(Integer semaphore) {
+        this.semaphore = semaphore;
     }
 }
