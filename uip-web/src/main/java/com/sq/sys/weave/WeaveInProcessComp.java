@@ -41,7 +41,7 @@ public class WeaveInProcessComp implements BeanPostProcessor {
             throws BeansException {
 
         if (bean instanceof UdpClient) {
-            ((UdpClient) bean).startLinsteningUdpService();//开启socket服务
+            /*((UdpClient) bean).startLinsteningUdpService();*///开启socket服务
         } else if (bean instanceof QuotaComputInsService) {
             ((QuotaComputInsService) bean).reloadQuotaCalculateExp();//重新加载指标的native表达式
         }

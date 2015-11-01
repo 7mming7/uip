@@ -48,7 +48,7 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
         Evaluator evaluator = new Evaluator();
         QuotaComputHelper.loadLocalFunctions(evaluator);
 
-        String calculateExp = quotaTemp.getMathExpression();
+        String calculateExp = quotaTemp.getCalculateExpression();
         List<String> variableList = QuotaComputHelper.getVariableList(calculateExp,evaluator);
         if (variableList.isEmpty()) {
             log.error("表达式：" + calculateExp + " 没有动态参数!");
@@ -65,7 +65,6 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
         log.error("step 0: ComputCal: " + DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_YMDH)
                 + ", indicatorCode: " + quotaTemp.getIndicatorCode()
                 + ", calculateExp: " + calculateExp
-                + "，MathExpression->" + quotaTemp.getMathExpression()
                 + "，GernaterdNativeExpression->" + quotaTemp.getGernaterdNativeExpression());
 
         //表达式计算的前置处理，将时间性的逻辑函数先做处理，然后再做数学计算
@@ -78,7 +77,6 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
         log.error("step 1: ComputCal: " + DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_YMDH)
                 + ", indicatorCode: " + quotaTemp.getIndicatorCode()
                 + ", calculateExp: " + calculateExp
-                + "，MathExpression->" + quotaTemp.getMathExpression()
                 + "，GernaterdNativeExpression->" + quotaTemp.getGernaterdNativeExpression()
                 + ", parseExpressionFront cost time: " + (step2 - step1));
 
@@ -90,14 +88,12 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
         log.error("step 2: ComputCal: " + DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_YMDH)
                 + ", indicatorCode: " + quotaTemp.getIndicatorCode()
                 + ", calculateExp: " + calculateExp
-                + "，MathExpression->" + quotaTemp.getMathExpression()
                 + "，GernaterdNativeExpression->" + quotaTemp.getGernaterdNativeExpression()
                 + ", dynamicVariableReplace cost time: " + (step3 - step2));
 
         log.error("computCal->" + DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_YMDH)
                 + ", quotaTemp->" + quotaTemp.getIndicatorCode()
                 + ", calculateExp: " + calculateExp
-                + "，MathExpression->" + quotaTemp.getMathExpression()
                 + "，GernaterdNativeExpression->" + quotaTemp.getGernaterdNativeExpression());
 
         if (null == calculateExp) return null;
@@ -109,7 +105,6 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
             log.error(" indicatorTemp->" + quotaTemp.getIndicatorName()
                     + "，indicatorCode->" + quotaTemp.getIndicatorCode()
                     + "，expression->" + quotaTemp.getCalculateExpression()
-                    + "，MathExpression->" + quotaTemp.getMathExpression()
                     + "，GernaterdNativeExpression->" + quotaTemp.getGernaterdNativeExpression()
                     + "，computCal->" + DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_YMDH)
                     + ", calculateExp->" + calculateExp, e);
@@ -138,7 +133,7 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
             while (quotaInstances.isEmpty() && computMillions<=QuotaComputHelper.requestWaitTimeOutValue*1000) {
                 computMillions = System.currentTimeMillis() - whileStartMillions;
                 try {
-                    Thread.sleep(1000l);
+                    Thread.sleep(10l);
                 } catch (InterruptedException e) {
                     log.error("Thread sleep error.", e);
                 }

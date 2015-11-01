@@ -90,15 +90,17 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
                 continue;
             }
             QuotaTemp quotaTemp = entry.getValue();
+            System.out.println(quotaTemp.getIndicatorCode() + "-----" + quotaTemp.getCalculateExpression());
+            String calExp = new String(quotaTemp.getCalculateExpression());
             String nativeExpression = generateNativeExpression(quotaTemp);
             entry.getValue().setGernaterdNativeExpression(nativeExpression);
+            entry.getValue().setCalculateExpression(calExp);
 
-            String mathExpression = generateMathExpression(entry.getValue().getCalculateExpression(),
+            /*String mathExpression = generateMathExpression(entry.getValue().getCalculateExpression(),
                     entry.getValue().getFetchCycle());
-            entry.getValue().setMathExpression(mathExpression);
-            System.out.println("CalculateExpression:" + entry.getValue().getCalculateExpression()
-                    + ",nativeExpression:" + nativeExpression
-                    + ",mathExpression:" + mathExpression);
+            entry.getValue().setMathExpression(mathExpression);*/
+            log.error("CalculateExpression:" + entry.getValue().getCalculateExpression()
+                    + ",nativeExpression:" + nativeExpression);
             quotaTempList.add(entry.getValue());
         }
         quotaTempRepository.save(quotaTempList);
@@ -110,6 +112,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
      * @return 生成的指标表达式
      */
     public String generateNativeExpression (QuotaTemp quota) {
+        log.error("QuotaTemp :" + quota.getIndicatorCode() + " generateNativeExpression.Exp:" + quota.getCalculateExpression());
         if (quota.getCalculateExpression() == null) return null;
 
         if (quota.getCalculateExpression().contains("dateTime")) {
@@ -124,7 +127,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
             //判断表达式中的编码是否存在，留到具体的计算处统一校验
             QuotaTemp quotaTemp = quotaTempMapCache.get(variable);
             if (null == quotaTemp) {
-                System.out.println("generateNativeExpression-->>QuotaTemp :" + variable + " 不存在.");
+                log.error("generateNativeExpression-->>QuotaTemp :" + variable + " 不存在.");
                 return null;//关联指标不存在，直接退出
             }
             if (quotaTemp.getDataSource() == QuotaConsts.DATASOURCE_CALCULATE) {
@@ -148,12 +151,8 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
      * @param exp 配置在模板上的表达式
      * @return 生成的数学计算表达式
      */
-    public String generateMathExpression (String exp, int fetchCycle){
+    /*public String generateMathExpression (String exp, int fetchCycle){
         if (exp == null) return null;
-
-        if (exp.contains("dateTime")) {
-            return exp;
-        }
 
         List<String> variableList = QuotaComputHelper.getVariableList(exp, QuotaComputHelper.getEvaluatorInstance());
         for (String variable:variableList) {
@@ -170,7 +169,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
         }
 
         return exp;
-    }
+    }*/
 
     /**
      * 接口数据汇集到系统的最小维度小时级
