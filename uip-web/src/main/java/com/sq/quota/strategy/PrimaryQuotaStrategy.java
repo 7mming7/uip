@@ -164,6 +164,7 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
 
             if (quotaDyList.size() >= 1) {
                 for (QuotaInstance indicatorInstance : quotaDyList) {
+                    System.out.println("quotaDyList code:" + indicatorInstance.getIndicatorCode() + ",value:" + indicatorInstance.getFloatValue());
                     String itemValue = indicatorInstance.getFloatValue().toString();
                     variableBuilder.append(itemValue).append(",");
                 }
