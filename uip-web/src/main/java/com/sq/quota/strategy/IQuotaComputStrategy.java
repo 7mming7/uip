@@ -56,15 +56,29 @@ public abstract class IQuotaComputStrategy {
      * @param computCal   输入时间
      * @return 拼装的查询条件
      */
-    public static Searchable fillSearchConditionByFetchType (Searchable searchable, int fetchCycle, Calendar computCal) {
+    public static Searchable fillSearchConditionByFetchType (Searchable searchable, QuotaTemp quotaTemp,
+                                                             QuotaTemp computQuotaTemp, Calendar computCal) {
         Assert.notNull(searchable, "searchable can not be null!");
         int[] dayArray = new int[2];
-        switch (fetchCycle) {
+        int switchParam = computQuotaTemp.getFetchCycle();
+        System.out.println("computQuotaTemp1:" + computQuotaTemp.getIndicatorCode()
+                + ",varQuotaTemp:" + quotaTemp.getIndicatorCode()
+                + ",comput fetchCycle:" + computQuotaTemp.getFetchCycle()
+                + ",quotaTemp fetchCycle:" + quotaTemp.getFetchCycle()
+                + ",switchParam:" + switchParam);
+        if (computQuotaTemp.getFetchCycle() == quotaTemp.getFetchCycle()) {
+            switchParam = computQuotaTemp.getCalFrequency();
+        }
+        System.out.println("computQuotaTemp2:" + computQuotaTemp.getIndicatorCode()
+                + ",varQuotaTemp:" + quotaTemp.getIndicatorCode()
+                + ",comput fetchCycle:" + computQuotaTemp.getFetchCycle()
+                + ",quotaTemp fetchCycle:" + quotaTemp.getFetchCycle()
+                + ",switchParam:" + switchParam);
+        switch (switchParam) {
             case IndicatorConsts.FETCH_CYCLE_HOUR:
                 dayArray[0] = Integer.parseInt(DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_DAFAULT));
                 dayArray[1] = Integer.parseInt(DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_DAFAULT));
                 searchable.addSearchFilter("instanceTime", MatchType.EQ, computCal);
-                System.out.println(DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_YMDHMS));
                 break;
             case IndicatorConsts.FETCH_CYCLE_DAY:
                 dayArray = DateUtil.getDayFirstAndLastInt(computCal);

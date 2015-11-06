@@ -102,6 +102,7 @@
                 <entry key="hibernate.cache.use_structured_entries" value="${hibernate.cache.use_structured_entries}"/>
                 <entry key="hibernate.connection.autocommit" value="true"/>
                 <entry key="hibernate.current_session_context_class" value="thread"/>
+                <entry key="hibernate.hbm2ddl.auto" value="false"/>
             </map>
         </property>
     </bean>
@@ -174,5 +175,4 @@
     <import resource="springContext-config-monitor.xml"/>
     <import resource="springContext-schedule.xml"/>
     <import resource="springContext-cxf.xml"/>
-    <import resource="springContext-mongodb.xml"/>
 </beans>

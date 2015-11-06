@@ -20,14 +20,14 @@ public class DimensionComparator implements Comparator<QuotaTemp> {
     @Override
     public int compare(QuotaTemp o1, QuotaTemp o2) {
         if (o1.getCalFrequency() > o2.getCalFrequency()) {
-            return 1;
+            return o1.getCalFrequency() - o2.getCalFrequency();
         } else if (o1.getCalFrequency() == o2.getCalFrequency()
                 && o1.getFetchCycle() > o2.getFetchCycle()) {
-            return 1;
+            return o1.getFetchCycle() - o2.getFetchCycle();
         } else if (o1.getCalFrequency() == o2.getCalFrequency()
                 && o1.getFetchCycle() == o2.getFetchCycle()
                 && o1.getSemaphore() >= o2.getSemaphore()) {
-            return 1;
+            return o1.getSemaphore() - o2.getSemaphore();
         } else {
             return -1;
         }

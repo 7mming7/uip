@@ -1,21 +1,16 @@
 package com.sq.protocol.opc.service;
 
-import com.mongo.domain.MongoOrignalDataRealTime;
-import com.mongo.repository.MongoOrignalDataRealTimeRespository;
 import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
 import com.sq.inject.annotation.BaseComponent;
 import com.sq.protocol.opc.component.BaseConfiguration;
 import com.sq.protocol.opc.component.OpcRegisterFactory;
 import com.sq.protocol.opc.domain.MesuringPoint;
-import com.mongo.domain.MongoOriginalDataHistory;
 import com.sq.protocol.opc.domain.OpcServerInfomation;
 import com.sq.protocol.opc.domain.OriginalData;
 import com.sq.protocol.opc.repository.MesuringPointRepository;
-import com.mongo.repository.MongoOrignalDataHistoryRespository;
 import com.sq.protocol.opc.repository.OriginalDataRepository;
 import com.sq.service.BaseService;
-import com.sq.util.DateUtil;
 import org.jinterop.dcom.common.JIException;
 import org.openscada.opc.lib.common.NotConnectedException;
 import org.openscada.opc.lib.da.*;
@@ -55,20 +50,9 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
     @Autowired
     private OriginalDataRepository originalDataRepository;
 
-    @Autowired
-    private MongoOrignalDataHistoryRespository mongoOrignalDataHistoryRespository;
-
-    @Autowired
-    private MongoOrignalDataRealTimeRespository mongoOrignalDataRealTimeRespository;
-
     public static Group group;
 
     public static Item[] itemArr = null;
-
-    /**
-     * 实时数据缓存
-     */
-    private static Map<Integer,Map<String,MongoOrignalDataRealTime>> mongoOrignalCacheMap = new HashMap<Integer,Map<String,MongoOrignalDataRealTime>>();
 
     /**
      * 读取server下所有的ITEM
@@ -86,7 +70,6 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
                     break;
                 case DbRecord:
                     List<MesuringPoint> mesuringPointList = this.registerMesuringPoint(cid);
-                    mongoOrignalRealTimeDataCache(cid,mesuringPointList);
                     OpcRegisterFactory.registerConfigItems(cid, mesuringPointList);
                     break;
             }
@@ -107,7 +90,6 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
                     itemArr[item_flag] = item;
                     item_flag++;
                 }
-                readItemStateMongo(cid, group, itemArr);
             }
 
             readItemStateMysql(cid, group, itemArr);
@@ -192,101 +174,6 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
             originalDataList.add(originalData);
         }
         originalDataRepository.save(originalDataList);
-    }
-
-    /**
-     * group读取item的同步值 mongo
-     * @param group   opc group
-     * @param itemArr item数组
-     */
-    public void readItemStateMongo (int cid, Group group, Item[] itemArr) {
-        OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
-        Map<Item, ItemState> syncItems = null;
-        try {
-            syncItems = group.read(true, itemArr);
-        } catch (JIException e) {
-            log.error("Read item error.",e);
-        }
-        Long batchNum = originalDataRepository.gernateNextBatchNumber(Integer.parseInt(opcServerInfomation.getSysId()));
-        List<MongoOriginalDataHistory> originalDataHistoryList = new LinkedList<MongoOriginalDataHistory>();
-        List<MongoOrignalDataRealTime> originalDataRealTimeList = new LinkedList<MongoOrignalDataRealTime>();
-        for (Map.Entry<Item, ItemState> entry : syncItems.entrySet()) {
-            String itemValue = entry.getValue().getValue().toString();
-            if (itemValue.contains("org.jinterop.dcom.core.VariantBody$EMPTY")) {
-                continue;
-            }
-            MongoOriginalDataHistory originalData = new MongoOriginalDataHistory();
-            originalData.setItemCode(entry.getKey().getId());
-            originalData.setInstanceTime(DateUtil.formatCalendar(Calendar.getInstance(), DateUtil.DATE_FORMAT_DAFAULTYMDHMS));
-            originalData.setItemValue(Double.parseDouble(itemValue.substring(2, itemValue.length() - 2)));
-            originalData.setSysId(Integer.parseInt(opcServerInfomation.getSysId()));
-            originalData.setBatchNum(batchNum);
-            originalDataHistoryList.add(originalData);
-
-            MongoOrignalDataRealTime originalDataRealTime =
-                    mongoOrignalCacheMap.get(
-                            Integer.parseInt(
-                                    OpcRegisterFactory.fetchOpcInfo(cid).getSysId())).get(entry.getKey().getId());
-            originalDataRealTime.setItemCode(entry.getKey().getId());
-            originalDataRealTime.setInstanceTime(entry.getValue().toString());
-            originalDataRealTime.setItemValue(Double.parseDouble(itemValue.substring(2, itemValue.length() - 2)));
-            originalDataRealTime.setSysId(Integer.parseInt(opcServerInfomation.getSysId()));
-            originalDataRealTime.setBatchNum(batchNum);
-            originalDataRealTimeList.add(originalDataRealTime);
-        }
-        mongoOrignalDataHistoryRespository.save(originalDataHistoryList);
-        mongoOrignalDataRealTimeRespository.save(
-                mongoOrignalCacheMap.get(Integer.parseInt(OpcRegisterFactory.fetchOpcInfo(cid).getSysId())).values());
-    }
-
-    /**
-     * 缓存mongo中的实时数据
-     * @param mesuringPointList 系统测点列表
-     */
-    private void mongoOrignalRealTimeDataCache (int cid,List<MesuringPoint> mesuringPointList) {
-        List<MongoOrignalDataRealTime> mongoOrignalDataRealTimeList =
-                mongoOrignalDataRealTimeRespository.findBySysId(Integer.parseInt(OpcRegisterFactory.fetchOpcInfo(cid).getSysId()));
-
-        List<MongoOrignalDataRealTime> needAddRealTimeList = new LinkedList<MongoOrignalDataRealTime>();
-        List<MongoOrignalDataRealTime> needDeleteRealTimeList = new LinkedList<MongoOrignalDataRealTime>();
-        for (MesuringPoint mesuringPoint:mesuringPointList) {
-            for (MongoOrignalDataRealTime mongoOrignalDataRealTime:mongoOrignalDataRealTimeList) {
-                if(mesuringPoint.getSourceCode().equals(mongoOrignalDataRealTime.getItemCode())) {
-                    break;
-                }
-                needAddRealTimeList.add(point2realTimeData(cid,mesuringPoint));
-            }
-        }
-
-        for (MongoOrignalDataRealTime mongoOrignalDataRealTime:mongoOrignalDataRealTimeList) {
-            for (MesuringPoint mesuringPoint:mesuringPointList) {
-                if(mesuringPoint.getSourceCode().equals(mongoOrignalDataRealTime.getItemCode())) {
-                    break;
-                }
-                needDeleteRealTimeList.add(mongoOrignalDataRealTime);
-            }
-        }
-
-        mongoOrignalDataRealTimeList.addAll(needAddRealTimeList);
-        mongoOrignalDataRealTimeList.removeAll(needDeleteRealTimeList);
-        mongoOrignalDataRealTimeRespository.save(mongoOrignalDataRealTimeList);
-
-        Map<String,MongoOrignalDataRealTime> sysRealOrignalDataCacheMap =
-                mongoOrignalCacheMap.get(Integer.parseInt(OpcRegisterFactory.fetchOpcInfo(cid).getSysId()));
-        for (MongoOrignalDataRealTime mongoOrignalDataRealTime:mongoOrignalDataRealTimeList) {
-            sysRealOrignalDataCacheMap.put(mongoOrignalDataRealTime.getItemCode(),mongoOrignalDataRealTime);
-        }
-    }
-
-    /**
-     * 测点转换为实时数据
-     * @return 测点实时数据
-     */
-    public MongoOrignalDataRealTime point2realTimeData (int cid,MesuringPoint mesuringPoint) {
-        MongoOrignalDataRealTime mongoOrignalDataRealTime = new MongoOrignalDataRealTime();
-        mongoOrignalDataRealTime.setItemCode(mesuringPoint.getSourceCode());
-        mongoOrignalDataRealTime.setSysId(Integer.parseInt(OpcRegisterFactory.fetchOpcInfo(cid).getSysId()));
-        return mongoOrignalDataRealTime;
     }
 
     /**

@@ -349,25 +349,28 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
         deleteNeedReComputIndicator(computCal, associatedQuotaTempList);
 
         Collections.sort(sortQuotaTempList, new DimensionComparator());
-        try {
-            for (QuotaTemp quotaTemp:sortQuotaTempList) {
 
-                waitComputQuotaQueue.put(quotaTemp);
-
-                System.out.println("Sort quotaTemp: " + quotaTemp.getIndicatorCode() + ",CAL_FREQUENCY->" + quotaTemp.getCalFrequency()
-                        + ",FETCH_CYCLE->" + quotaTemp.getFetchCycle()
-                        + ",Semaphore->" + quotaTemp.getSemaphore());
-            }
-        } catch (InterruptedException e) {
-            log.error("waitComputQuotaQueue add quotaTemp ",e);
-        }
 
         List<Calendar> calendarList = DateUtil.dayListSinceCal(computCal);
 
-        for(Calendar computCalTemp:calendarList) {
-            System.out.println("sortQuotaTempList size: " + sortQuotaTempList.size());
-            System.out.println("Start send comput request computCal: " + DateUtil.formatCalendar(computCalTemp));
-            stepSendComputRequest(waitComputQuotaQueue, QuotaConsts.CAL_FREQUENCY_HOUR, QuotaConsts.FETCH_CYCLE_HOUR, computCalTemp);
+        try {
+            for(Calendar computCalTemp:calendarList) {
+                System.out.println("sortQuotaTempList size: " + sortQuotaTempList.size());
+                System.out.println("Start send comput request computCal: " + DateUtil.formatCalendar(computCalTemp));
+
+                    for (QuotaTemp quotaTemp:sortQuotaTempList) {
+
+                        waitComputQuotaQueue.put(quotaTemp);
+
+                        System.out.println("Sort quotaTemp: " + quotaTemp.getIndicatorCode() + ",CAL_FREQUENCY->" + quotaTemp.getCalFrequency()
+                                + ",FETCH_CYCLE->" + quotaTemp.getFetchCycle()
+                                + ",Semaphore->" + quotaTemp.getSemaphore());
+                    }
+
+                stepSendComputRequest(waitComputQuotaQueue, QuotaConsts.CAL_FREQUENCY_HOUR, QuotaConsts.FETCH_CYCLE_HOUR, computCalTemp);
+            }
+        } catch (InterruptedException e) {
+            log.error("waitComputQuotaQueue add quotaTemp ",e);
         }
     }
 }
