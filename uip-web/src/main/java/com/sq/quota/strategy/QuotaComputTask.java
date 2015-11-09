@@ -1,7 +1,6 @@
 package com.sq.quota.strategy;
 
-import com.sq.comput.domain.IndicatorConsts;
-import com.sq.quota.component.QuotaComputHelper;
+import com.sq.quota.domain.QuotaConsts;
 import com.sq.quota.domain.QuotaInstance;
 import com.sq.quota.domain.QuotaTemp;
 import com.sq.quota.service.QuotaComputInsService;
@@ -11,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Calendar;
-import java.util.concurrent.Callable;
 
 /**
  * 指标计算独立线程.
@@ -123,10 +121,10 @@ public class QuotaComputTask implements Runnable {
                 + " 计算结果为：-- " + (null != computResult ? computResult.toString() : "null"));
 
         if (computResult instanceof String) {
-            quotaInstance.setValueType(IndicatorConsts.VALUE_TYPE_STRING);
+            quotaInstance.setValueType(QuotaConsts.VALUE_TYPE_STRING);
             quotaInstance.setStringValue(computResult.toString());
         } else {
-            quotaInstance.setValueType(IndicatorConsts.VALUE_TYPE_DOUBLE);
+            quotaInstance.setValueType(QuotaConsts.VALUE_TYPE_DOUBLE);
             quotaInstance.setFloatValue(computResult != null ? Double.parseDouble(computResult.toString()):null);
         }
 

@@ -377,6 +377,26 @@ public class DateUtil {
     }
 
     /**
+     * 获取指定一天的开始和结束时间
+     * @param calendar
+     * @return
+     */
+    public static Calendar[] getPointDayFirstAndLast(Calendar calendar, int startHour, int endHour) {
+        Calendar[] dayCal = new Calendar[2];
+        Calendar startCal = (Calendar)calendar.clone();
+        startCal.set(Calendar.HOUR_OF_DAY,startHour);
+        startCal.set(Calendar.MINUTE,0);
+        startCal.set(Calendar.SECOND,0);
+        dayCal[0] = startCal;
+        Calendar endCal = (Calendar)calendar.clone();
+        endCal.set(Calendar.HOUR_OF_DAY,endHour);
+        endCal.set(Calendar.MINUTE,0);
+        endCal.set(Calendar.SECOND,0);
+        dayCal[1] = endCal;
+        return dayCal;
+    }
+
+    /**
      * 根据提供的日期，获取一天的开始和输入时间
      * @param calendar
      * @return
@@ -718,6 +738,21 @@ public class DateUtil {
     }
 
     /**
+     * 获取一天48个半小时
+     * @param calendar
+     * @return
+     */
+    public static List<Calendar> get48HalfHours (Calendar calendar) {
+        List<Calendar> calendarList = new ArrayList<Calendar>();
+        for (int i=0;i<48;i++) {
+            Calendar clone = (Calendar) calendar.clone();
+            clone.set(Calendar.MINUTE, i*30);
+            calendarList.add(clone);
+        }
+        return calendarList;
+    }
+
+    /**
      * 获取前一天的日期
      * @param calendar
      * @return
@@ -765,17 +800,26 @@ public class DateUtil {
     }
 
     public static void main(String[] args) {
-        Calendar cal = Calendar.getInstance();
-        /*cal.set(Calendar.DAY_OF_MONTH, 18);
+        /*Calendar cal = Calendar.getInstance();
+        *//*cal.set(Calendar.DAY_OF_MONTH, 18);instanceTime
         cal.set(Calendar.HOUR_OF_DAY,0);
-        cal.set(Calendar.MINUTE, 0);*/
+        cal.set(Calendar.MINUTE, 0);*//*
         Calendar cal1 = Calendar.getInstance();
         cal1.set(Calendar.DAY_OF_MONTH, 3);
         cal1.set(Calendar.HOUR_OF_DAY,0);
         cal1.set(Calendar.MINUTE, 0);
         System.out.println(DateUtil.dateMigrate("Day", -1, "20151022000000"));
-        /*for (Calendar calendar:calendarList) {
+        *//*for (Calendar calendar:calendarList) {
             System.out.println(formatCalendar(calendar,DATE_FORMAT_YMDH));
+        }*//*
+        List<Calendar> calendarList = get48HalfHours(cal1);
+        for (Calendar calendar:calendarList) {
+            System.out.println(formatCalendar(calendar,DATE_FORMAT_DAFAULTYMDHMS));
         }*/
+        Calendar[] calendars = getPointDayFirstAndLast(Calendar.getInstance(), 1, 25);
+        for (Calendar calendar:calendars) {
+            System.out.println(DateUtil.formatCalendar(calendar,DATE_FORMAT_DAFAULTYMDHMS));
+        }
+
     }
 }

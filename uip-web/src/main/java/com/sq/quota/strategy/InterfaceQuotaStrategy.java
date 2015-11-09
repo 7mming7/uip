@@ -7,6 +7,7 @@ import com.sq.protocol.opc.domain.OriginalData;
 import com.sq.protocol.opc.repository.MesuringPointRepository;
 import com.sq.protocol.opc.repository.OriginalDataRepository;
 import com.sq.quota.component.QuotaComputHelper;
+import com.sq.quota.domain.QuotaConsts;
 import com.sq.quota.domain.QuotaTemp;
 import com.sq.util.DateUtil;
 import com.sq.util.SpringUtils;
@@ -50,6 +51,7 @@ public class InterfaceQuotaStrategy extends IQuotaComputStrategy {
         List<String> variableList = QuotaComputHelper.getVariableList(calculateExp,evaluator);
         String checkPoint = variableList.get(0);
 
+        /** 查找接口指标的关联测点 */
         List<MesuringPoint> mesuringPointList = mesuringPointRepository.findAll(
                 Searchable.newSearchable().addSearchFilter("targetCode",MatchType.EQ,checkPoint)).getContent();
         if (mesuringPointList.isEmpty()) {
@@ -58,14 +60,19 @@ public class InterfaceQuotaStrategy extends IQuotaComputStrategy {
         }
         MesuringPoint mesuringPoint = mesuringPointList.get(0);
 
-        String sourceYMDate = DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_MONTH);
-        String sourceYMDDate = DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_DAFAULT);
-        String currentDate = DateUtil.formatCalendar(Calendar.getInstance(), DateUtil.DATE_FORMAT_DAFAULT);
-        String tableName = "t_originaldata";
-        if (!sourceYMDDate.equals(currentDate)) {
-            tableName = tableName + "_migration" + sourceYMDate;
-        }
-        List<OriginalData> originalDataList = originalDataRepository.listAnHourPreOriginalData(tableName, mesuringPoint.getTargetCode(), computCal);
+        /** 根据计算日期确定数据表 */
+        String tableName = assignTableName(computCal);
+
+        /** 计算该接口指标的数据汇聚维度 */
+        Long preMinutes = calPreMinutes(quotaTemp);
+
+        /** 获取该测点原始数据集合 */
+        List<OriginalData> originalDataList =
+                originalDataRepository.listAnHourPreOriginalData(
+                        tableName,
+                        mesuringPoint.getTargetCode(),
+                        preMinutes,
+                        computCal);
 
         StringBuilder variableBuilder = new StringBuilder();
         if (originalDataList.isEmpty()) {
@@ -90,5 +97,23 @@ public class InterfaceQuotaStrategy extends IQuotaComputStrategy {
         }
         Double calResult = Double.parseDouble(result);
         return calResult;
+    }
+
+    /**
+     * 指定表名
+     *    参数时间与当前时间在同一日 tableName = t_originaldata
+     *    否则 选取历史表
+     * @param computCal 计算时间
+     * @return 表名
+     */
+    public String assignTableName (Calendar computCal) {
+        String sourceYMDate = DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_MONTH);
+        String sourceYMDDate = DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_DAFAULT);
+        String currentDate = DateUtil.formatCalendar(Calendar.getInstance(), DateUtil.DATE_FORMAT_DAFAULT);
+        String tableName = "t_originaldata";
+        if (!sourceYMDDate.equals(currentDate)) {
+            tableName = tableName + "_migration" + sourceYMDate;
+        }
+        return tableName;
     }
 }

@@ -1,6 +1,5 @@
 package com.sq.quota.service;
 
-import com.sq.comput.domain.IndicatorConsts;
 import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
 import com.sq.entity.search.condition.OrCondition;
@@ -24,8 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.*;
@@ -77,7 +74,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
     public void cacheQuotaTemp () {
         List<QuotaTemp> quotaTempList = quotaTempRepository.findAll();
         for (QuotaTemp quotaTemp:quotaTempList) {
-            System.out.println("Cache quotaTemp code:" + quotaTemp.getIndicatorCode());
+            log.debug("Cache quotaTemp code:" + quotaTemp.getIndicatorCode());
             quotaTempMapCache.put(quotaTemp.getIndicatorCode(), quotaTemp);
         }
     }
@@ -138,7 +135,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
                 quota.setCalculateExpression(quota.getCalculateExpression().replace(needReplaceString, replaceString));
                 expStatusflag = false;
             }
-            System.out.println("quotaTemp code:" + quota.getIndicatorCode() + ",getSemaphore:" + quota.getSemaphore());
+            log.debug("quotaTemp code:" + quota.getIndicatorCode() + ",getSemaphore:" + quota.getSemaphore());
         }
 
         if (expStatusflag || quota.getCalculateExpression() == null) {
@@ -175,19 +172,18 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
     }*/
 
     /**
-     * 接口数据汇集到系统的最小维度小时级
+     * 接口数据汇集到系统的最小维度
      * @param computCal 计算时间
      */
     public void interfaceDataGather (Calendar computCal) {
 
         Searchable searchable = Searchable.newSearchable()
-                .addSearchFilter("dataSource", MatchType.EQ, QuotaConsts.DATASOURCE_INTERFACE)
-                .addSearchFilter("calFrequency", MatchType.EQ, QuotaConsts.CAL_FREQUENCY_HOUR);
+                .addSearchFilter("dataSource", MatchType.EQ, QuotaConsts.DATASOURCE_INTERFACE);
 
         List<QuotaTemp> quotaTempList = this.quotaTempRepository.findAll(searchable).getContent();
 
         for (QuotaTemp quotaTemp : quotaTempList) {
-            log.error(" QuotaTemp:->" + quotaTemp.getIndicatorName());
+            log.debug(" QuotaTemp:->" + quotaTemp.getIndicatorName());
             sendCalculateComm(quotaTemp, computCal, new InterfaceQuotaStrategy());
         }
     }
@@ -244,7 +240,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
         int initSemaphore = 0;
         while (!waitComputQuotaQueue.isEmpty()) {
             QuotaTemp quotaTemp = waitComputQuotaQueue.poll();
-            System.out.println("waitComputQuotaQueue poll || code->" + quotaTemp.getIndicatorCode()
+            log.debug("waitComputQuotaQueue poll || code->" + quotaTemp.getIndicatorCode()
                     + ",currCalFrequency->" + quotaTemp.getCalFrequency()
                     + ",currFetchCycle->" + quotaTemp.getFetchCycle()
                     + ",Semaphore->" + quotaTemp.getSemaphore());
@@ -257,7 +253,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
                 QuotaComputHelper._instance.shutdown();
 
                 while (true) {
-                    System.out.println("Wait for Computcal:" + DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULTYMDHMS)
+                    log.debug("Wait for Computcal:" + DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULTYMDHMS)
                             + ",Active count:" + QuotaComputHelper._instance.getActiveCount()
                             + ",currCalFrequency:" + currCalFrequency
                             + ",currFetchCycle:" + fetchCycle
@@ -265,7 +261,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
                             + ",isTerminating:" + QuotaComputHelper._instance.isTerminating()
                             + ",isTerminating:" + QuotaComputHelper._instance.isTerminated());
                     if (!QuotaComputHelper._instance.isTerminating() && QuotaComputHelper._instance.isTerminated()) {
-                        System.out.println("Instance thread pool!");
+                        log.debug("Instance thread pool!");
                         QuotaComputHelper.fetchThreadPooSingleInstance();
                         break;
                     }
@@ -276,7 +272,12 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
                     }
                 }
             }
-            if (quotaTemp.getCalFrequency() == QuotaConsts.CAL_FREQUENCY_HOUR) {
+            if (quotaTemp.getCalFrequency() == QuotaConsts.CAL_FREQUENCY_HALF_HOUR) {
+                List<Calendar> hourCalList = DateUtil.get48HalfHours(computCal);
+                for (Calendar hourCal:hourCalList) {
+                    sendCalculateComm(quotaTemp, hourCal, new PrimaryQuotaStrategy());
+                }
+            }else if (quotaTemp.getCalFrequency() == QuotaConsts.CAL_FREQUENCY_HOUR) {
                 List<Calendar> hourCalList = DateUtil.get24Hours(computCal);
                 for (Calendar hourCal:hourCalList) {
                     sendCalculateComm(quotaTemp, hourCal, new PrimaryQuotaStrategy());
@@ -333,11 +334,11 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
 
         List<String> calculateStringList = new ArrayList<String>();
         for (QuotaTemp quotaTemp:quotaTempList) {
-            if (quotaTemp.getDataSource() == IndicatorConsts.DATASOURCE_CALCULATE
-                    || quotaTemp.getDataSource() == IndicatorConsts.DATASOURCE_INTERFACE ) {
+            if (quotaTemp.getDataSource() == QuotaConsts.DATASOURCE_CALCULATE
+                    || quotaTemp.getDataSource() == QuotaConsts.DATASOURCE_INTERFACE ) {
                 calculateStringList.addAll(QuotaComputHelper.getVariableList(quotaTemp.getGernaterdNativeExpression(),
                         QuotaComputHelper.getEvaluatorInstance()));
-            } else if (quotaTemp.getDataSource() == IndicatorConsts.DATASOURCE_ENTRY) {
+            } else if (quotaTemp.getDataSource() == QuotaConsts.DATASOURCE_ENTRY) {
                 calculateStringList.add(quotaTemp.getIndicatorCode());
             }
         }
@@ -355,14 +356,14 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
 
         try {
             for(Calendar computCalTemp:calendarList) {
-                System.out.println("sortQuotaTempList size: " + sortQuotaTempList.size());
-                System.out.println("Start send comput request computCal: " + DateUtil.formatCalendar(computCalTemp));
+                log.debug("sortQuotaTempList size: " + sortQuotaTempList.size());
+                log.debug("Start send comput request computCal: " + DateUtil.formatCalendar(computCalTemp));
 
                     for (QuotaTemp quotaTemp:sortQuotaTempList) {
 
                         waitComputQuotaQueue.put(quotaTemp);
 
-                        System.out.println("Sort quotaTemp: " + quotaTemp.getIndicatorCode() + ",CAL_FREQUENCY->" + quotaTemp.getCalFrequency()
+                        log.debug("Sort quotaTemp: " + quotaTemp.getIndicatorCode() + ",CAL_FREQUENCY->" + quotaTemp.getCalFrequency()
                                 + ",FETCH_CYCLE->" + quotaTemp.getFetchCycle()
                                 + ",Semaphore->" + quotaTemp.getSemaphore());
                     }
@@ -370,7 +371,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
                 stepSendComputRequest(waitComputQuotaQueue, QuotaConsts.CAL_FREQUENCY_HOUR, QuotaConsts.FETCH_CYCLE_HOUR, computCalTemp);
             }
         } catch (InterruptedException e) {
-            log.error("waitComputQuotaQueue add quotaTemp ",e);
+            log.debug("waitComputQuotaQueue add quotaTemp ", e);
         }
     }
 }

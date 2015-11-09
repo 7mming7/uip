@@ -37,8 +37,6 @@ public class DateTimeFunction implements Function {
         return "dateTime";
     }
 
-    DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
-
     @Override
     public FunctionResult execute(Evaluator evaluator, String arguments)
             throws FunctionException {

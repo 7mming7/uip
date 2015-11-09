@@ -47,7 +47,10 @@ public class OriginalDataRepositoryImpl{
         em.close();
     }
 
-    public List<OriginalData> listAnHourPreOriginalData(final String tableName, final String indiCode, final Calendar computCal){
+    public List<OriginalData> listAnHourPreOriginalData(final String tableName,
+                                                        final String indiCode,
+                                                        final Long subMin,
+                                                        final Calendar computCal){
         StringBuilder nativeSql = new StringBuilder();
         nativeSql.append(" SELECT od.id, ")
                  .append("       icm.targetCode AS itemCode, ")
@@ -62,13 +65,14 @@ public class OriginalDataRepositoryImpl{
                  .append("  WHERE ")
                  .append("       icm.sourceCode = od.itemCode ")
                  .append("   AND icm.targetCode = ?1 ")
-                 .append("   AND od.instanceTime BETWEEN date_sub(?2, INTERVAL 1 HOUR) ")
-                 .append("              AND ?3 ")
+                 .append("   AND od.instanceTime BETWEEN date_sub(?2, INTERVAL ?3 MINUTE) ")
+                 .append("              AND ?4 ")
                  .append("  ORDER BY od.instanceTime ASC ");
         Query query = em.createNativeQuery(nativeSql.toString(),OriginalData.class);
         query.setParameter(1, indiCode);
         query.setParameter(2, computCal);
-        query.setParameter(3, computCal);
+        query.setParameter(3, subMin);
+        query.setParameter(4, computCal);
 
         List<OriginalData> originalDataList = query.getResultList();
 

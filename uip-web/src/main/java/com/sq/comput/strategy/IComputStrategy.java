@@ -4,6 +4,8 @@ import com.sq.comput.domain.IndicatorConsts;
 import com.sq.comput.domain.IndicatorTemp;
 import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
+import com.sq.quota.domain.QuotaConsts;
+import com.sq.quota.domain.QuotaTemp;
 import com.sq.util.DateUtil;
 import org.springframework.util.Assert;
 
@@ -56,5 +58,24 @@ public abstract class IComputStrategy {
         searchable.addSearchFilter("statDateNum", MatchType.GTE, dayArray[0]);
         searchable.addSearchFilter("statDateNum", MatchType.LTE, dayArray[1]);
         return searchable;
+    }
+
+    /**
+     * 计算前置的分钟数
+     */
+    public static Long calPreMinutes(IndicatorTemp indicatorTemp){
+        Long preMinute = null;
+        int switchCycle = indicatorTemp.getFetchCycle();
+        switch (switchCycle) {
+            case QuotaConsts.FETCH_CYCLE_HALF_HOUR:
+                preMinute = 30l;
+                break;
+            case QuotaConsts.FETCH_CYCLE_HOUR:
+                preMinute = 60l;
+                break;
+            default:
+                preMinute = 60l;
+        }
+        return preMinute;
     }
 }

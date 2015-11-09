@@ -30,6 +30,6 @@ public interface OriginalDataRepository extends BaseRepository<OriginalData, Lon
     @Query("select 1 + IFNULL(max(batchNum),0) from OriginalData where sysId = ?1")
     Long gernateNextBatchNumber(int sysId);
 
-    /** 查询指标测点一小时内的数据 */
-    List<OriginalData> listAnHourPreOriginalData(String tableName, String indiCode, Calendar computCal);
+    /** 查询指标测点指定时间内的数据 */
+    List<OriginalData> listAnHourPreOriginalData(String tableName, String indiCode, Long subMin, Calendar computCal);
 }

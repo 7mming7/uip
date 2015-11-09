@@ -1,14 +1,13 @@
 package com.sq.quota.strategy;
 
-import com.sq.comput.domain.IndicatorConsts;
 import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
-import com.sq.entity.search.condition.Condition;
+import com.sq.quota.component.QuotaBaseConfigure;
 import com.sq.quota.component.QuotaComputHelper;
+import com.sq.quota.domain.QuotaConsts;
 import com.sq.quota.domain.QuotaTemp;
 import com.sq.util.DateUtil;
 import net.sourceforge.jeval.Evaluator;
-import org.apache.poi.hssf.util.HSSFColor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -51,9 +50,10 @@ public abstract class IQuotaComputStrategy {
 
     /**
      * 根据指标的取数频率拼装查询条件
-     * @param searchable  查询条件
-     * @param fetchCycle  取数频率
-     * @param computCal   输入时间
+     * @param searchable      查询条件
+     * @param quotaTemp       参数指标
+     * @param computQuotaTemp 计算指标
+     * @param computCal       输入时间
      * @return 拼装的查询条件
      */
     public static Searchable fillSearchConditionByFetchType (Searchable searchable, QuotaTemp quotaTemp,
@@ -61,7 +61,7 @@ public abstract class IQuotaComputStrategy {
         Assert.notNull(searchable, "searchable can not be null!");
         int[] dayArray = new int[2];
         int switchParam = computQuotaTemp.getFetchCycle();
-        System.out.println("computQuotaTemp1:" + computQuotaTemp.getIndicatorCode()
+        log.debug("computQuotaTemp1:" + computQuotaTemp.getIndicatorCode()
                 + ",varQuotaTemp:" + quotaTemp.getIndicatorCode()
                 + ",comput fetchCycle:" + computQuotaTemp.getFetchCycle()
                 + ",quotaTemp fetchCycle:" + quotaTemp.getFetchCycle()
@@ -69,37 +69,71 @@ public abstract class IQuotaComputStrategy {
         if (computQuotaTemp.getFetchCycle() == quotaTemp.getFetchCycle()) {
             switchParam = computQuotaTemp.getCalFrequency();
         }
-        System.out.println("computQuotaTemp2:" + computQuotaTemp.getIndicatorCode()
+        log.debug("computQuotaTemp2:" + computQuotaTemp.getIndicatorCode()
                 + ",varQuotaTemp:" + quotaTemp.getIndicatorCode()
                 + ",comput fetchCycle:" + computQuotaTemp.getFetchCycle()
                 + ",quotaTemp fetchCycle:" + quotaTemp.getFetchCycle()
                 + ",switchParam:" + switchParam);
         switch (switchParam) {
-            case IndicatorConsts.FETCH_CYCLE_HOUR:
-                dayArray[0] = Integer.parseInt(DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_DAFAULT));
-                dayArray[1] = Integer.parseInt(DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_DAFAULT));
+            case QuotaConsts.FETCH_CYCLE_HALF_HOUR:
                 searchable.addSearchFilter("instanceTime", MatchType.EQ, computCal);
                 break;
-            case IndicatorConsts.FETCH_CYCLE_DAY:
-                dayArray = DateUtil.getDayFirstAndLastInt(computCal);
+            case QuotaConsts.FETCH_CYCLE_HOUR:
+                searchable.addSearchFilter("instanceTime", MatchType.EQ, computCal);
                 break;
-            case IndicatorConsts.FETCH_CYCLE_WEEK:
+            case QuotaConsts.FETCH_CYCLE_DAY:
+                Calendar[] dayCalArray = DateUtil.getPointDayFirstAndLast(
+                        computCal,
+                        QuotaBaseConfigure.startHour,
+                        QuotaBaseConfigure.endHour);
+                searchable.addSearchFilter("instanceTime", MatchType.GTE, dayCalArray[0]);
+                searchable.addSearchFilter("instanceTime", MatchType.LTE, dayCalArray[1]);
+                break;
+            case QuotaConsts.FETCH_CYCLE_WEEK:
                 dayArray = DateUtil.getWeekFirstAndInputInt(computCal);
+                searchable.addSearchFilter("statDateNum", MatchType.GTE, dayArray[0]);
+                searchable.addSearchFilter("statDateNum", MatchType.LTE, dayArray[1]);
                 break;
-            case IndicatorConsts.FETCH_CYCLE_Month:
+            case QuotaConsts.FETCH_CYCLE_Month:
                 dayArray = DateUtil.getMonthFirstAndInputInt(computCal);
+                searchable.addSearchFilter("statDateNum", MatchType.GTE, dayArray[0]);
+                searchable.addSearchFilter("statDateNum", MatchType.LTE, dayArray[1]);
                 break;
-            case IndicatorConsts.FETCH_CYCLE_Quarter:
+            case QuotaConsts.FETCH_CYCLE_Quarter:
                 dayArray = DateUtil.getQuarterFirstAndInputInt(computCal);
+                searchable.addSearchFilter("statDateNum", MatchType.GTE, dayArray[0]);
+                searchable.addSearchFilter("statDateNum", MatchType.LTE, dayArray[1]);
                 break;
-            case IndicatorConsts.FETCH_CYCLE_Year:
+            case QuotaConsts.FETCH_CYCLE_Year:
                 dayArray = DateUtil.getYearFirstAndInputInt(computCal);
+                searchable.addSearchFilter("statDateNum", MatchType.GTE, dayArray[0]);
+                searchable.addSearchFilter("statDateNum", MatchType.LTE, dayArray[1]);
                 break;
             default:
                 dayArray = DateUtil.getDayFirstAndLastInt(computCal);
+                searchable.addSearchFilter("statDateNum", MatchType.GTE, dayArray[0]);
+                searchable.addSearchFilter("statDateNum", MatchType.LTE, dayArray[1]);
         }
-        searchable.addSearchFilter("statDateNum", MatchType.GTE, dayArray[0]);
-        searchable.addSearchFilter("statDateNum", MatchType.LTE, dayArray[1]);
+
         return searchable;
+    }
+
+    /**
+     * 计算前置的分钟数
+     */
+    public static Long calPreMinutes(QuotaTemp quotaTemp){
+        Long preMinute = null;
+        int switchCycle = quotaTemp.getFetchCycle();
+        switch (switchCycle) {
+            case QuotaConsts.FETCH_CYCLE_HALF_HOUR:
+                preMinute = 30l;
+                break;
+            case QuotaConsts.FETCH_CYCLE_HOUR:
+                preMinute = 60l;
+                break;
+            default:
+                preMinute = 60l;
+        }
+        return preMinute;
     }
 }

@@ -11,6 +11,7 @@ import com.sq.protocol.opc.domain.MesuringPoint;
 import com.sq.protocol.opc.domain.OriginalData;
 import com.sq.protocol.opc.repository.MesuringPointRepository;
 import com.sq.protocol.opc.repository.OriginalDataRepository;
+import com.sq.quota.component.QuotaBaseConfigure;
 import com.sq.util.DateUtil;
 import com.sq.util.SpringUtils;
 import net.sourceforge.jeval.EvaluationConstants;
@@ -61,8 +62,6 @@ public class InterfaceStrategy extends IComputStrategy {
         }
         String checkPoint = variableList.get(0);
 
-        Calendar[] computDate = DateUtil.getDayFirstAndLastCal(computCal);
-
         MesuringPoint mesuringPoint = null;
         List<MesuringPoint> mesuringPointList = mesuringPointRepository.findAll(
                 Searchable.newSearchable().addSearchFilter("targetCode",MatchType.EQ,checkPoint)).getContent();
@@ -80,7 +79,9 @@ public class InterfaceStrategy extends IComputStrategy {
             tableName = tableName + "_migration" + sourceYMDate;
         }
         System.out.println("-----------" + DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_YMDHMS));
-        List<OriginalData> originalDataList = originalDataRepository.listAnHourPreOriginalData(tableName, mesuringPoint.getTargetCode(), computCal);
+        /** 计算该接口指标的数据汇聚维度 */
+        Long preMinutes = calPreMinutes(indicatorTemp);
+        List<OriginalData> originalDataList = originalDataRepository.listAnHourPreOriginalData(tableName, mesuringPoint.getTargetCode(),preMinutes, computCal);
 
         StringBuilder variableBuilder = new StringBuilder();
         if (originalDataList.isEmpty()) {
