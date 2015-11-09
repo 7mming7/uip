@@ -1,1 +1,7 @@
 uip.iml
+/uip-parent/.classpath
+/uip-web/.classpath
+/uip-core/.classpath
+/uip-core/uip-core.iml
+/uip-parent/uip-parent.iml
+/uip-web/uip-web.iml
