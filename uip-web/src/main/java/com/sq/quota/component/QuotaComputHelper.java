@@ -2,6 +2,7 @@ package com.sq.quota.component;
 
 
 import com.sq.quota.function.logical.DateTimeFunction;
+import com.sq.quota.function.logical.InstantFunction;
 import com.sq.quota.function.math.*;
 import net.sourceforge.jeval.EvaluationConstants;
 import net.sourceforge.jeval.EvaluationHelper;
@@ -103,6 +104,7 @@ public class QuotaComputHelper {
         evaluator.putFunction(new DivideFunction());
         evaluator.putFunction(new PstFunction());
         evaluator.putFunction(new DateTimeFunction());
+        evaluator.putFunction(new InstantFunction());
     }
 
     /**

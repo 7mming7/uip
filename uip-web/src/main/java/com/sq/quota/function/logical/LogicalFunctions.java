@@ -34,6 +34,7 @@ public class LogicalFunctions implements FunctionGroup {
      */
     public LogicalFunctions() {
         functions.add(new DateTimeFunction());
+        functions.add(new InstantFunction());
     }
 
     /**

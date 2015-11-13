@@ -32,4 +32,10 @@ public interface OriginalDataRepository extends BaseRepository<OriginalData, Lon
 
     /** 查询指标测点指定时间内的数据 */
     List<OriginalData> listAnHourPreOriginalData(String tableName, String indiCode, Long subMin, Calendar computCal);
+
+    /** 获取指定时间之前的最近的一条记录 */
+    OriginalData fetchFrontOriginalDataByCal(String itemCode, Calendar calendar);
+
+    /** 获取指定时间之后的最近的一条记录 */
+    OriginalData fetchBehindOriginalDataByCal(String itemCode, Calendar calendar);
 }

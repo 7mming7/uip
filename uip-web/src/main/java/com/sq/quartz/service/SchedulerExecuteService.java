@@ -5,6 +5,7 @@ import com.sq.loadometer.service.TradeDataService;
 import com.sq.protocol.opc.component.BaseConfiguration;
 import com.sq.protocol.opc.service.MesuringPointService;
 import com.sq.protocol.opc.service.OriginalDataService;
+import com.sq.protocol.opc.service.PushDataForYZTDService;
 import com.sq.protocol.opc.service.PushDataThirdService;
 import com.sq.util.DateUtil;
 import org.slf4j.Logger;
@@ -42,6 +43,9 @@ public class SchedulerExecuteService {
 
     @Autowired
     private PushDataThirdService pushDataThirdService;
+
+    @Autowired
+    private PushDataForYZTDService pushDataForYZTDService;
 
     @Autowired
     private TradeDataService tradeDataService;
@@ -90,12 +94,21 @@ public class SchedulerExecuteService {
     }
 
     /**
-     * 调用存储过程执行大屏数据更新
+     * 调用存储过程执行大屏数据更新(南京光大)
      */
     public void executeNjmbDataSync(){
-        log.error("----------- 大屏数据同步计算任务开始 -----------");
+        log.error("----------- （南京光大）大屏数据同步计算任务开始 -----------");
         pushDataThirdService.updateScreenDisplay();
-        log.error("----------- 大屏数据同步计算任务结束 -----------");
+        log.error("----------- （南京光大）大屏数据同步计算任务结束 -----------");
+    }
+
+    /**
+     * 调用存储过程执行大屏数据更新（扬州泰达）
+     */
+    public void executeYztdDataSync(){
+        log.error("----------- （扬州泰达）大屏数据同步计算任务开始 -----------");
+        pushDataForYZTDService.screenDataPush();
+        log.error("----------- （扬州泰达）大屏数据同步计算任务结束 -----------");
     }
 
     /**

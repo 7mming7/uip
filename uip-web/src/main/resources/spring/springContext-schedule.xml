@@ -8,12 +8,14 @@
     <bean name="startQuertz" lazy-init="false" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
-                <!--<ref bean="execLoadometerOrignalDataGatheringTrigger" />
-                <ref bean="opcSyncDataJobTrigger" />
+                <!--<ref bean="opcSyncDataJobTrigger" />
                 <ref bean="dcsDataMigrationJobTrigger" />
+                <ref bean="execInterfaceIndicatorDataGaterTrigger" />
                 <ref bean="indicatorReallTimeComputJobTrigger" />
+                <ref bean="yztdDataJobTrigger" />
+                <ref bean="execLoadometerOrignalDataGatheringTrigger" />
                 <ref bean="njmbDataJobTrigger" />
-                <ref bean="execInterfaceIndicatorDataGaterTrigger" />-->
+                -->
             </list>
         </property>
     </bean>
@@ -39,7 +41,7 @@
         </property>
     </bean>
 
-    <!-- 大屏烟气指标数据定时读取 -->
+    <!-- 南京光大大屏烟气指标数据定时读取 -->
     <bean id="njmbDataDetailJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <!-- 调用的类 -->
         <property name="targetObject" ref="schedulerExecuteService"/>
@@ -55,6 +57,25 @@
         </property>
         <property name="cronExpression">
             <value>*/5 * * * * ?</value>
+        </property>
+    </bean>
+
+    <!-- 扬州泰达大屏烟气指标数据定时读取 -->
+    <bean id="yztdDataDetailJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <!-- 调用的类 -->
+        <property name="targetObject" ref="schedulerExecuteService"/>
+        <!-- 调用类中的方法 -->
+        <property name="targetMethod" value="executeYztdDataSync" />
+        <!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <bean id="yztdDataJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="yztdDataDetailJob"/>
+        </property>
+        <property name="cronExpression">
+            <value>0 */1 * * * ?</value>
         </property>
     </bean>
 

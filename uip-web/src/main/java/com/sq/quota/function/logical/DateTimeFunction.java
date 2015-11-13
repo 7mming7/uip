@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sq.util.DateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 日期函数
@@ -31,6 +33,8 @@ import com.sq.util.DateUtil;
  */
 public class DateTimeFunction implements Function {
 
+    private static final Logger log = LoggerFactory.getLogger(DateTimeFunction.class);
+
     private QuotaInstanceRepository quotaInstanceRepository = SpringUtils.getBean(QuotaInstanceRepository.class);
 
     public String getName() {
@@ -43,28 +47,28 @@ public class DateTimeFunction implements Function {
         Double result = null;
         ArrayList<String> argList = FunctionHelper.getStrings(arguments,
                 EvaluationConstants.FUNCTION_ARGUMENT_SEPARATOR);
-        System.out.println("*******************************************");
+        log.debug("*********************DateTimeFunction**********************");
 
         String cycleStr = (String)argList.get(0);
         cycleStr = cycleStr.substring(1,cycleStr.length()-1);
-        System.out.println("cycleStr: " + cycleStr);
+        log.debug("cycleStr: " + cycleStr);
 
         Integer disDateInt = Double.valueOf(argList.get(1)).intValue();
-        System.out.println("disDateInt: " + disDateInt);
+        log.debug("disDateInt: " + disDateInt);
 
         String assQuotaCode = (String)argList.get(2);
         assQuotaCode = assQuotaCode.substring(1,assQuotaCode.length()-1);
-        System.out.println("assQuotaCode: " + assQuotaCode);
+        log.debug("assQuotaCode: " + assQuotaCode);
 
         BigDecimal bigDecimal = new BigDecimal((String)argList.get(3));
 
         String computCal = bigDecimal.toPlainString();
-        System.out.println("Start dateMigrate computCal: " + computCal);
+        log.debug("Start dateMigrate computCal: " + computCal);
 
         //计算指标的迁移之后的日期
         String assComputCal = DateUtil.dateMigrate(cycleStr, disDateInt, computCal);
 
-        System.out.println("End dateMigrate computCal: " + assComputCal);
+        log.debug("End dateMigrate computCal: " + assComputCal);
         Searchable searchable = Searchable.newSearchable()
                 .addSearchFilter("indicatorCode", MatchType.EQ, assQuotaCode)
                 .addSearchFilter("statDateNum", MatchType.EQ, Integer.parseInt(assComputCal));

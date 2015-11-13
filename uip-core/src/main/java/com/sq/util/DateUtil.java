@@ -32,6 +32,8 @@ public class DateUtil {
 
     public static final String DATE_FORMAT_DAFAULTYMDHMS = "yyyyMMddHHmmss";
 
+    public static final String DATE_FORMAT_YMDHM = "yyyyMMddHHmm";
+
     public static final String DATE_FORMAT_YYMM = "yyMM";
 
     public static final String DATE_FORMAT_YY_MM = "yy-MM";
@@ -750,6 +752,18 @@ public class DateUtil {
             calendarList.add(clone);
         }
         return calendarList;
+    }
+
+    /**
+     * 两个时间点之间的分钟数
+     * @param firstCal
+     * @param lastCal
+     * @return
+     */
+    public static int getMinutesBetTwoCal(Calendar firstCal,Calendar lastCal){
+        int firstCalInt = Integer.parseInt(formatCalendar(firstCal, DATE_FORMAT_YMDHM));
+        int lastCalInt = Integer.parseInt(formatCalendar(lastCal, DATE_FORMAT_YMDHM));
+        return lastCalInt - firstCalInt;
     }
 
     /**

@@ -78,4 +78,46 @@ public class OriginalDataRepositoryImpl{
 
         return originalDataList;
     }
+
+    public OriginalData fetchFrontOriginalDataByCal(final String itemCode,final Calendar calendar) {
+        StringBuilder nativeSql = new StringBuilder();
+        nativeSql.append(" SELECT             ")
+                .append("      *              ")
+                .append("  FROM               ")
+                .append("      t_originaldata ")
+                .append("  WHERE              ")
+                .append("      id = (         ")
+                .append("          SELECT     ")
+                .append("             max(id) ")
+                .append("          FROM       ")
+                .append("             t_originaldata o     ")
+                .append("          WHERE ")
+                .append("             o.instanceTime <= ?1 ")
+                .append("          AND o.itemcode = ?2 ")
+                .append("            )        ");
+        Query query = em.createNativeQuery(nativeSql.toString(),OriginalData.class);
+        OriginalData originalData = (OriginalData) query.getSingleResult();
+        return originalData;
+    }
+
+    public OriginalData fetchBehindOriginalDataByCal(final String itemCode,final Calendar calendar) {
+        StringBuilder nativeSql = new StringBuilder();
+        nativeSql.append(" SELECT             ")
+                .append("      *              ")
+                .append("  FROM               ")
+                .append("      t_originaldata ")
+                .append("  WHERE              ")
+                .append("      id = (         ")
+                .append("          SELECT     ")
+                .append("             max(id) ")
+                .append("          FROM       ")
+                .append("             t_originaldata o     ")
+                .append("          WHERE ")
+                .append("             o.instanceTime >= ?1 ")
+                .append("          AND o.itemcode = ?2 ")
+                .append("            )        ");
+        Query query = em.createNativeQuery(nativeSql.toString(),OriginalData.class);
+        OriginalData originalData = (OriginalData) query.getSingleResult();
+        return originalData;
+    }
 }
