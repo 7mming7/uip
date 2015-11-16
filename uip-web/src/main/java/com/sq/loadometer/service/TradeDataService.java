@@ -134,4 +134,13 @@ public class TradeDataService extends BaseService<Trade, Long> {
         }
         indicatorInstanceRepository.save(indicatorInstanceList);
     }
+
+    /**
+     * 根据指定的时间查询地磅的流水数据
+     * @param pointDay 指定的日期
+     * @return 地磅的交易流水
+     */
+    public List<Trade> fetchTradeDataByPointDay(String pointDay) {
+        return tradeDataRepository.fetchTradeDataByPointDay(pointDay);
+    }
 }

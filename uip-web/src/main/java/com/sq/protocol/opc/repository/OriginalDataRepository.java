@@ -1,5 +1,6 @@
 package com.sq.protocol.opc.repository;
 
+import com.sq.protocol.opc.domain.MesuringPoint;
 import com.sq.protocol.opc.domain.OriginalData;
 import com.sq.repository.BaseRepository;
 import org.springframework.context.annotation.Scope;
@@ -38,4 +39,7 @@ public interface OriginalDataRepository extends BaseRepository<OriginalData, Lon
 
     /** 获取指定时间之后的最近的一条记录 */
     OriginalData fetchBehindOriginalDataByCal(String itemCode, Calendar calendar);
+
+    /** 根据测点编码集合获取实时数据 */
+    List<OriginalData> fetchOriDataByCodeList(String codeCol);
 }

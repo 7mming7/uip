@@ -1,5 +1,6 @@
 package com.sq.protocol.opc.repository;
 
+import com.sq.protocol.opc.domain.MesuringPoint;
 import com.sq.protocol.opc.domain.OriginalData;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -119,5 +120,20 @@ public class OriginalDataRepositoryImpl{
         Query query = em.createNativeQuery(nativeSql.toString(),OriginalData.class);
         OriginalData originalData = (OriginalData) query.getSingleResult();
         return originalData;
+    }
+
+    public List<OriginalData> fetchOriDataByCodeList(final String codeCol) {
+        StringBuilder nativeSql = new StringBuilder();
+        nativeSql.append(" SELECT * FROM t_originaldata o  ")
+                .append("       WHERE o.id in ( ")
+                .append("           SELECT MAX(ID) lastId from t_originaldata t ")
+                .append("               where t.itemCode in (?1) ")
+                .append("                   group by t.itemCode)");
+
+        Query query = em.createNativeQuery(nativeSql.toString(),OriginalData.class);
+        query.setParameter(1, codeCol);
+
+        List<OriginalData> originalDataList = query.getResultList();
+        return originalDataList;
     }
 }

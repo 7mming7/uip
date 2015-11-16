@@ -24,6 +24,10 @@ public class Trade extends AbstractEntity<Long> implements Serializable {
 
     private static final long serialVersionUID = 2211368658057245960L;
 
+    public Trade(){
+
+    }
+
     public Trade(HashMap<String,Object> map) {
         this.ticketno1 = map.get("ticketno1") != null ? map.get("ticketno1").toString() : null;
         this.ticketno2 = map.get("ticketno2") != null ? map.get("ticketno2").toString() : null;

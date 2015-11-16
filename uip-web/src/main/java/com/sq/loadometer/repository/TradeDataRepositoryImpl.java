@@ -2,6 +2,8 @@ package com.sq.loadometer.repository;
 
 import com.sq.loadometer.domain.LoadometerConsts;
 import com.sq.loadometer.domain.LoadometerIndicatorDto;
+import com.sq.loadometer.domain.Trade;
+import com.sq.protocol.opc.domain.OriginalData;
 import com.sq.util.NativeQueryResultsMapper;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,5 +64,16 @@ public class TradeDataRepositoryImpl {
         Query query = em.createNativeQuery(nativeSql.toString());
         query.executeUpdate();
         em.getTransaction().commit();
+    }
+
+    public List<Trade> fetchTradeDataByPointDay (String pointDay) {
+        StringBuilder nativeSql = new StringBuilder();
+        EntityManager em = emf.createEntityManager();
+        nativeSql.append("select * from t_trade t where DATE_FORMAT(t.seconddatetime,'%Y%m%d') = ?1");
+        Query query = em.createNativeQuery(nativeSql.toString(),Trade.class);
+        query.setParameter(1, pointDay);
+
+        List<Trade> tradeList = query.getResultList();
+        return tradeList;
     }
 }

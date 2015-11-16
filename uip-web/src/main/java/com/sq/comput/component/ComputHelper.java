@@ -1,6 +1,8 @@
 package com.sq.comput.component;
 
 import com.sq.comput.function.*;
+import com.sq.quota.function.logical.DateTimeFunction;
+import com.sq.quota.function.logical.InstantFunction;
 import com.sq.quota.function.math.MinAllFunction;
 import net.sourceforge.jeval.EvaluationConstants;
 import net.sourceforge.jeval.EvaluationHelper;
@@ -93,6 +95,8 @@ public class ComputHelper {
         evaluator.putFunction(new MultiplyFunction());
         evaluator.putFunction(new DivideFunction());
         evaluator.putFunction(new PstFunction());
+        evaluator.putFunction(new DateTimeFunction());
+        evaluator.putFunction(new InstantFunction());
     }
 
     /**

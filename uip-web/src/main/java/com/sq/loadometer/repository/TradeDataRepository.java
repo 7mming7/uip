@@ -23,5 +23,8 @@ public interface TradeDataRepository extends BaseRepository<Trade, Long> {
 
     /** 根据二次称重的时间删除地磅流水同步表T_trade的数据 */
     void deleteDataBySecondTime(String secondTime);
+
+    /** 根据指定的日期查询地磅的交易流水数据 */
+    List<Trade> fetchTradeDataByPointDay(String pointDay);
 }
 
