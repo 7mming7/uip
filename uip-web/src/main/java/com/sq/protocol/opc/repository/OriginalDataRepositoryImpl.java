@@ -31,10 +31,10 @@ public class OriginalDataRepositoryImpl{
     @PersistenceUnit
     public void setEntityManagerFactory(EntityManagerFactory emf) {
         this.emf = emf;
-        this.em = emf.createEntityManager();
     }
 
     public void dcsDataMigration(final String calculateDay) {
+        EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         em.createNativeQuery("call data_migration_indicator(" + calculateDay + ") ").executeUpdate();
         em.getTransaction().commit();
@@ -42,6 +42,7 @@ public class OriginalDataRepositoryImpl{
     }
 
     public void njmbDataSync() {
+        EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         em.createNativeQuery("call njmb_every5min_flush() ").executeUpdate();
         em.getTransaction().commit();
@@ -52,6 +53,7 @@ public class OriginalDataRepositoryImpl{
                                                         final String indiCode,
                                                         final Long subMin,
                                                         final Calendar computCal){
+        EntityManager em = emf.createEntityManager();
         StringBuilder nativeSql = new StringBuilder();
         nativeSql.append(" SELECT od.id, ")
                  .append("       icm.targetCode AS itemCode, ")
@@ -81,6 +83,7 @@ public class OriginalDataRepositoryImpl{
     }
 
     public OriginalData fetchFrontOriginalDataByCal(final String itemCode,final Calendar calendar) {
+        EntityManager em = emf.createEntityManager();
         StringBuilder nativeSql = new StringBuilder();
         nativeSql.append(" SELECT             ")
                 .append("      *              ")
@@ -102,6 +105,7 @@ public class OriginalDataRepositoryImpl{
     }
 
     public OriginalData fetchBehindOriginalDataByCal(final String itemCode,final Calendar calendar) {
+        EntityManager em = emf.createEntityManager();
         StringBuilder nativeSql = new StringBuilder();
         nativeSql.append(" SELECT             ")
                 .append("      *              ")
@@ -122,18 +126,25 @@ public class OriginalDataRepositoryImpl{
         return originalData;
     }
 
-    public List<OriginalData> fetchOriDataByCodeList(final String codeCol) {
+    public List<OriginalData> fetchOriDataByCodeList(final List<String> itemCodeList) {
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
         StringBuilder nativeSql = new StringBuilder();
         nativeSql.append(" SELECT * FROM t_originaldata o  ")
                 .append("       WHERE o.id in ( ")
                 .append("           SELECT MAX(ID) lastId from t_originaldata t ")
-                .append("               where t.itemCode in (?1) ")
-                .append("                   group by t.itemCode)");
+                .append("               where t.sysid = 1 and t.itemCode in (");
+                for(String itemCode:itemCodeList) {
+                    nativeSql.append("'").append(itemCode).append("'").append(",");
+                }
+                nativeSql.deleteCharAt(nativeSql.lastIndexOf(","));
+                nativeSql.append(" ) group by t.itemCode)");
 
         Query query = em.createNativeQuery(nativeSql.toString(),OriginalData.class);
-        query.setParameter(1, codeCol);
 
         List<OriginalData> originalDataList = query.getResultList();
+        em.getTransaction().commit();
+        em.close();
         return originalDataList;
     }
 }

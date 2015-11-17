@@ -1,0 +1,15 @@
+10:33:41.134 [qtp1009218257-40] ERROR org.hibernate.engine.jdbc.spi.SqlExceptionHelper - connection holder is null
+10:33:41.140 [qtp1009218257-40] ERROR org.hibernate.engine.jdbc.spi.SqlExceptionHelper - connection holder is null
+10:35:59.222 [qtp1009218257-41] ERROR org.hibernate.engine.jdbc.spi.SqlExceptionHelper - connection holder is null
+10:35:59.225 [qtp1009218257-41] ERROR org.hibernate.engine.jdbc.spi.SqlExceptionHelper - connection holder is null
+10:36:09.869 [qtp1009218257-41] ERROR org.hibernate.engine.jdbc.spi.SqlExceptionHelper - connection holder is null
+10:36:09.870 [qtp1009218257-41] ERROR org.hibernate.engine.jdbc.spi.SqlExceptionHelper - connection holder is null
+10:36:10.019 [qtp1009218257-38] ERROR org.hibernate.engine.jdbc.spi.SqlExceptionHelper - connection holder is null
+10:36:10.020 [qtp1009218257-38] ERROR org.hibernate.engine.jdbc.spi.SqlExceptionHelper - connection holder is null
+10:41:05.073 [qtp1009218257-36] ERROR org.hibernate.engine.jdbc.spi.SqlExceptionHelper - connection holder is null
+10:41:05.079 [qtp1009218257-36] ERROR org.hibernate.engine.jdbc.spi.SqlExceptionHelper - connection holder is null
+10:41:05.124 [qtp1009218257-41] ERROR org.hibernate.engine.jdbc.spi.SqlExceptionHelper - connection holder is null
+10:41:05.125 [qtp1009218257-41] ERROR org.hibernate.engine.jdbc.spi.SqlExceptionHelper - connection holder is null
+10:48:46.151 [qtp1009218257-40] ERROR org.hibernate.engine.jdbc.spi.SqlExceptionHelper - connection holder is null
+10:48:46.156 [qtp1009218257-40] ERROR org.hibernate.engine.jdbc.spi.SqlExceptionHelper - connection holder is null
+11:28:13.748 [qtp1009218257-38] ERROR org.hibernate.engine.jdbc.spi.SqlExceptionHelper - You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '.DMCS006,Macsv5.Device3.Group3.DMCS2006    ) group by t.itemCode)' at line 1

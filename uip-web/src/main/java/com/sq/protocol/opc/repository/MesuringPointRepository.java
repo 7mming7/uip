@@ -17,6 +17,6 @@ import org.springframework.data.jpa.repository.Query;
 public interface MesuringPointRepository extends BaseRepository<MesuringPoint, Long> {
 
     /** 根据编码查询测点 */
-    @Query("select m from MesuringPoint m where targetCode = ?1")
+    @Query("select m from MesuringPoint m where sourceCode = ?1")
     MesuringPoint fetchMpByCode(String postCode);
 }

@@ -41,5 +41,5 @@ public interface OriginalDataRepository extends BaseRepository<OriginalData, Lon
     OriginalData fetchBehindOriginalDataByCal(String itemCode, Calendar calendar);
 
     /** 根据测点编码集合获取实时数据 */
-    List<OriginalData> fetchOriDataByCodeList(String codeCol);
+    List<OriginalData> fetchOriDataByCodeList(List<String> itemCodeList);
 }

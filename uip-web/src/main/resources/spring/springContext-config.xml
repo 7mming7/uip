@@ -100,7 +100,7 @@
                 <entry key="hibernate.cache.region.factory_class" value="${hibernate.cache.region.factory_class}"/>
                 <entry key="net.sf.ehcache.configurationResourceName" value="${net.sf.ehcache.configurationResourceName}"/>
                 <entry key="hibernate.cache.use_structured_entries" value="${hibernate.cache.use_structured_entries}"/>
-                <entry key="hibernate.connection.autocommit" value="true"/>
+                <entry key="hibernate.connection.autocommit" value="false"/>
                 <entry key="hibernate.current_session_context_class" value="thread"/>
                 <entry key="hibernate.hbm2ddl.auto" value="false"/>
             </map>

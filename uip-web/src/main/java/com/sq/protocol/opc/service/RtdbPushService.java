@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,19 +45,18 @@ public class RtdbPushService{
      * @param mesuringPointList 需要获取实时数据的编码的集合
      * @return 获取的实时数据
      */
+    @Transactional(propagation= Propagation.REQUIRED)
     public List<OriginalData> fetchOriDataList(List<MesuringPoint> mesuringPointList){
         if (mesuringPointList.isEmpty()) {
             return null;
         }
 
-        StringBuilder sb = new StringBuilder();
+        List<String> itemCodeList = new ArrayList<String>();
         for (MesuringPoint mesuringPoint:mesuringPointList) {
-            sb.append(mesuringPoint.getTargetCode()).append(",");
+            itemCodeList.add(mesuringPoint.getSourceCode());
         }
-        sb.deleteCharAt(sb.lastIndexOf(","));
-        String codeBuildString = sb.toString();
 
-        List<OriginalData> originalDataList = originalDataRepository.fetchOriDataByCodeList(codeBuildString);
+        List<OriginalData> originalDataList = originalDataRepository.fetchOriDataByCodeList(itemCodeList);
 
         return originalDataList;
     }
@@ -65,6 +66,7 @@ public class RtdbPushService{
      * @param postCode 传入的测点的编码
      * @return 测点
      */
+    @Transactional(propagation= Propagation.REQUIRED)
     public MesuringPoint fetchMpByPostCode(String postCode){
         return mesuringPointRepository.fetchMpByCode(postCode);
     }
