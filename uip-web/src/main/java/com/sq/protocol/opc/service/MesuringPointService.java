@@ -84,14 +84,14 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
         itemArr = new Item[leafs.size()];
         try {
 
-            log.error("开始添加测点.");
+            log.debug("开始添加测点.");
             int item_flag = 0;
             group = server.addGroup();
             group.setActive(true);
             for(Leaf leaf:leafs){
                 Item item = group.addItem(leaf.getItemId());
                 item.setActive(true);
-                log.error("ItemName:[" + item.getId()
+                log.debug("ItemName:[" + item.getId()
                         + "],value:" + item.read(true).getValue());
                 itemArr[item_flag] = item;
                 item_flag++;
@@ -146,7 +146,7 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
             String itemValue = entry.getValue().getValue().toString();
             String itemCode = entry.getKey().getId();
             try {
-                log.error("key= " + entry.getKey().getId()
+                log.debug("key= " + entry.getKey().getId()
                         + " and value= " + entry.getValue().getValue().toString()
                         + " and type= " + entry.getValue().getValue().getType());
                 JIVariant jiVariant = entry.getValue().getValue();
@@ -162,7 +162,7 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
                 } else {
                     itemValue = jiVariant.getObject().toString();
                 }
-                log.error("&&&&&type-> " + jiVariant.getType() + " ,value -->  " + itemValue);
+                log.debug("&&&&&type-> " + jiVariant.getType() + " ,value -->  " + itemValue);
             } catch (JIException e) {
                 log.error("获取JIVariant数据出错.",e);
             }

@@ -9,11 +9,13 @@ import com.sq.protocol.opc.repository.OriginalDataRepository;
 import com.sq.quota.component.QuotaComputHelper;
 import com.sq.quota.domain.QuotaConsts;
 import com.sq.quota.domain.QuotaTemp;
+import com.sq.quota.function.logical.LogicalFunctions;
 import com.sq.util.DateUtil;
 import com.sq.util.SpringUtils;
 import net.sourceforge.jeval.EvaluationConstants;
 import net.sourceforge.jeval.EvaluationException;
 import net.sourceforge.jeval.Evaluator;
+import net.sourceforge.jeval.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +42,8 @@ public class InterfaceQuotaStrategy extends IQuotaComputStrategy {
 
     private static MesuringPointRepository mesuringPointRepository = SpringUtils.getBean(MesuringPointRepository.class);
 
+    private LogicalFunctions logicalFunctions = SpringUtils.getBean(LogicalFunctions.class);
+
     @Override
     public Object execIndiComput(QuotaTemp quotaTemp, Calendar computCal) {
         Evaluator evaluator = QuotaComputHelper.getEvaluatorInstance();
@@ -48,8 +52,26 @@ public class InterfaceQuotaStrategy extends IQuotaComputStrategy {
         if (!checkQuotaExpression(evaluator,quotaTemp)) {
             return null;
         }
+
         List<String> variableList = QuotaComputHelper.getVariableList(calculateExp,evaluator);
         String checkPoint = variableList.get(0);
+
+        String result = "";
+        List<Function> functionList = logicalFunctions.getFunctions();
+        for(Function function:functionList) {
+            if (calculateExp.contains(function.getName())) {
+                String computExp = function.getName() + "('" + checkPoint + "','"
+                        + DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_YMDHM)
+                        + "')";
+                try {
+                    result = evaluator.evaluate(computExp);
+                } catch (EvaluationException e) {
+                    log.error("parseExpressionFront -> logicalFunctions 指标计算出现错误.calculateExp: " + computExp, e);
+                }
+                Double calResult = Double.parseDouble(result);
+                return calResult;
+            }
+        }
 
         /** 查找接口指标的关联测点 */
         List<MesuringPoint> mesuringPointList = mesuringPointRepository.findAll(
@@ -79,6 +101,9 @@ public class InterfaceQuotaStrategy extends IQuotaComputStrategy {
             log.error("指标" + quotaTemp.getIndicatorCode() + "关联测点->" + checkPoint + " 没有数据!");
             return null;
         }
+
+
+
         for (OriginalData originalData : originalDataList) {
             String itemValue = originalData.getItemValue();
             variableBuilder.append(itemValue).append(",");
@@ -88,8 +113,7 @@ public class InterfaceQuotaStrategy extends IQuotaComputStrategy {
         String replaceVariable = EvaluationConstants.OPEN_VARIABLE + checkPoint + EvaluationConstants.CLOSED_BRACE;
 
         calculateExp = calculateExp.replace(replaceVariable, variableBuilder.toString());
-        evaluator.putVariable(checkPoint, variableBuilder.toString());
-        String result = "";
+
         try {
             result = evaluator.evaluate(calculateExp);
         } catch (EvaluationException e) {

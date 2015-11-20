@@ -23,12 +23,12 @@ import java.util.List;
  */
 public class TestJeval extends TestCase {
 
-    /*@Test
+    @Test
     public void test () {
         Evaluator eva = new Evaluator();
         QuotaComputHelper.loadLocalFunctions(eva);
         try {
-            String calculateExpression = "dateTime('day',0,'T1YGDS_Dnum',20151022000000)";
+            String calculateExpression = "inst('AW7002/FC3002AI:FT024302A.RO01','201511201130')";
             System.out.println(calculateExpression);
             List<String> variableList = QuotaComputHelper.getVariableList(calculateExpression,eva);
             for (String var:variableList) {
@@ -38,13 +38,13 @@ public class TestJeval extends TestCase {
         } catch (EvaluationException e) {
             e.printStackTrace();
         }
-    }*/
+    }
 
     public static void main(String[] args) {
         Evaluator eva = new Evaluator();
         QuotaComputHelper.loadLocalFunctions(eva);
         try {
-            String calculateExpression = "dateTime(1,0,2,201)";
+            String calculateExpression = "inst(FC3002AI:FT024302A.RO01,2015111815)";
             System.out.println(calculateExpression);
             List<String> variableList = QuotaComputHelper.getVariableList(calculateExpression,eva);
             for (String var:variableList) {

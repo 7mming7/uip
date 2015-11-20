@@ -57,11 +57,6 @@ public class IndicatorTemp extends IndicatorBase {
     @NotFound(action= NotFoundAction.IGNORE)
     private IndicatorCategory indicatorCategory;
 
-    @OneToOne
-    @JoinColumn(name="parentIndiTempId")
-    @ForeignKey(name="fk_it_parentIndiTempId")
-    private IndicatorTemp parentIndiTemp;
-
     public Long getId() {
         return id;
     }

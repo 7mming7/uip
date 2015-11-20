@@ -2,6 +2,7 @@ package com.sq.protocol.opc.repository;
 
 import com.sq.protocol.opc.domain.MesuringPoint;
 import com.sq.protocol.opc.domain.OriginalData;
+import com.sq.util.DateUtil;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -100,6 +101,10 @@ public class OriginalDataRepositoryImpl{
                 .append("          AND o.itemcode = ?2 ")
                 .append("            )        ");
         Query query = em.createNativeQuery(nativeSql.toString(),OriginalData.class);
+        System.out.println(DateUtil.formatCalendar(calendar,DateUtil.DATE_FORMAT_DAFAULTYMDHMS));
+        query.setParameter(1, calendar);
+        query.setParameter(2, itemCode);
+
         OriginalData originalData = (OriginalData) query.getSingleResult();
         return originalData;
     }
@@ -114,7 +119,7 @@ public class OriginalDataRepositoryImpl{
                 .append("  WHERE              ")
                 .append("      id = (         ")
                 .append("          SELECT     ")
-                .append("             max(id) ")
+                .append("             min(id) ")
                 .append("          FROM       ")
                 .append("             t_originaldata o     ")
                 .append("          WHERE ")
@@ -122,6 +127,9 @@ public class OriginalDataRepositoryImpl{
                 .append("          AND o.itemcode = ?2 ")
                 .append("            )        ");
         Query query = em.createNativeQuery(nativeSql.toString(),OriginalData.class);
+        query.setParameter(1, calendar);
+        query.setParameter(2, itemCode);
+
         OriginalData originalData = (OriginalData) query.getSingleResult();
         return originalData;
     }

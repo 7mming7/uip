@@ -1,7 +1,6 @@
 package com.sq.loadometer.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.sq.entity.BaseSerialDto;
 import com.sq.inject.annotation.BaseComponent;
 import com.sq.loadometer.domain.Trade;
 import com.sq.loadometer.domain.TradeDataPushDto;

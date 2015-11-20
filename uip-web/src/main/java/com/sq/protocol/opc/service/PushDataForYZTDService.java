@@ -65,7 +65,7 @@ public class PushDataForYZTDService {
         try {
             group = server.addGroup();
             for(Leaf leaf:leafs){
-                log.error("code->" + leaf.getItemId());
+                log.debug("code->" + leaf.getItemId());
                 Item item = group.addItem(leaf.getItemId());
                 itemArr[item_flag] = item;
                 item_flag++;
@@ -74,7 +74,7 @@ public class PushDataForYZTDService {
             syncItems = group.read(false, itemArr);
             List<ScreenInfo> screenInfoList = screenInfoRepository.findAll();
             for (Map.Entry<Item, ItemState> entry : syncItems.entrySet()) {
-                log.error("key= " + entry.getKey().getId()
+                log.debug("key= " + entry.getKey().getId()
                         + " and value= " + entry.getValue().getValue().toString());
                 String itemValue = entry.getValue().getValue().toString();
                 for (ScreenPushData screenPushData:screenPushDataList) {
@@ -168,15 +168,12 @@ public class PushDataForYZTDService {
 
         for (ScreenPushData screenPushData:screenPushDataList) {
             if (screenPushData.getGroup().equals("ZQ")) {
-                log.error("#:group:" + screenPushData.getGroup() + ";code:" + screenPushData.getItemCode() + "value:" + Double.parseDouble(screenPushData.getItemValue()));
+                log.debug("#:group:" + screenPushData.getGroup() + ";code:" + screenPushData.getItemCode() + "value:" + Double.parseDouble(screenPushData.getItemValue()));
                 if (screenPushData.getSerialNo() == 1 &&  Double.parseDouble(screenPushData.getItemValue()) <= 20) {
-                    System.out.println("1---" + Double.parseDouble(screenPushData.getItemValue()));
                     flagGl1 = false;
                 } else if (screenPushData.getSerialNo() == 2 &&  Double.parseDouble(screenPushData.getItemValue()) <= 20) {
-                    System.out.println("2---" + Double.parseDouble(screenPushData.getItemValue()));
                     flagGl2 = false;
                 } else if (screenPushData.getSerialNo() == 3 &&  Double.parseDouble(screenPushData.getItemValue()) <= 20) {
-                    System.out.println("3---" + Double.parseDouble(screenPushData.getItemValue()));
                     flagGl3 = false;
                 }
             }

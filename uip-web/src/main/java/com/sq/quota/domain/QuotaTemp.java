@@ -52,11 +52,6 @@ public class QuotaTemp extends QuotaBase {
     private String gernaterdNativeExpression;
 
     /**
-     * 用于真实计算
-     */
-    private String mathExpression;
-
-    /**
      * 用于计算的信号量
      */
     private Integer semaphore;
@@ -71,11 +66,6 @@ public class QuotaTemp extends QuotaBase {
     @ForeignKey(name="fk_it_categoryId")
     @NotFound(action= NotFoundAction.IGNORE)
     private QuotaCategory quotaCategory;
-
-    @OneToOne
-    @JoinColumn(name="parentIndiTempId")
-    @ForeignKey(name="fk_it_parentIndiTempId")
-    private QuotaTemp parentIndiTemp;
 
     public Long getId() {
         return id;
@@ -123,22 +113,6 @@ public class QuotaTemp extends QuotaBase {
 
     public void setGernaterdNativeExpression(String gernaterdNativeExpression) {
         this.gernaterdNativeExpression = gernaterdNativeExpression;
-    }
-
-    public String getMathExpression() {
-        return mathExpression;
-    }
-
-    public void setMathExpression(String mathExpression) {
-        this.mathExpression = mathExpression;
-    }
-
-    public QuotaTemp getParentIndiTemp() {
-        return parentIndiTemp;
-    }
-
-    public void setParentIndiTemp(QuotaTemp parentIndiTemp) {
-        this.parentIndiTemp = parentIndiTemp;
     }
 
     public int getDoWithNull() {

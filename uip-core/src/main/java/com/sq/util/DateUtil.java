@@ -105,6 +105,17 @@ public class DateUtil {
         return ret;
     }
 
+    public static Calendar intDate2CalendarHour(int intDate) {
+        int year = intDate / 1000000;
+        int month = (intDate % 1000000) / 100;
+        int day = (intDate % 10000)/100;
+        int hour = intDate % 100;
+
+        Calendar ret = Calendar.getInstance();
+        ret.set(year, month - 1, day);
+        return ret;
+    }
+
     /**
      * 格式化Calendar,返回默认的日期格式字符串
      * 本方法不指定format，采用默认的format，DateUtil.DATE_FORMAT_DAFAULT；如果需要制定format，
@@ -760,9 +771,11 @@ public class DateUtil {
      * @param lastCal
      * @return
      */
-    public static int getMinutesBetTwoCal(Calendar firstCal,Calendar lastCal){
-        int firstCalInt = Integer.parseInt(formatCalendar(firstCal, DATE_FORMAT_YMDHM));
-        int lastCalInt = Integer.parseInt(formatCalendar(lastCal, DATE_FORMAT_YMDHM));
+    public static long getMinutesBetTwoCal(Calendar firstCal,Calendar lastCal){
+        System.out.println("formatCalendar(firstCal, DATE_FORMAT_YMDHM)===" + formatCalendar(firstCal, DATE_FORMAT_YMDHM));
+        System.out.println("formatCalendar(lastCal, DATE_FORMAT_YMDHM)===" + formatCalendar(lastCal, DATE_FORMAT_YMDHM));
+        long firstCalInt = Long.parseLong(formatCalendar(firstCal, DATE_FORMAT_YMDHM));
+        long lastCalInt = Long.parseLong(formatCalendar(lastCal, DATE_FORMAT_YMDHM));
         return lastCalInt - firstCalInt;
     }
 
@@ -830,9 +843,17 @@ public class DateUtil {
         for (Calendar calendar:calendarList) {
             System.out.println(formatCalendar(calendar,DATE_FORMAT_DAFAULTYMDHMS));
         }*/
-        Calendar[] calendars = getPointDayFirstAndLast(Calendar.getInstance(), 1, 25);
+        /*Calendar[] calendars = getPointDayFirstAndLast(Calendar.getInstance(), 1, 25);
         for (Calendar calendar:calendars) {
             System.out.println(DateUtil.formatCalendar(calendar,DATE_FORMAT_DAFAULTYMDHMS));
+        }*/
+        int cal = 2015112015;
+        Calendar calendar = intDate2CalendarHour(cal);
+        try {
+            Calendar calendar1 = stringToCalendar("2015112015", DateUtil.DATE_FORMAT_YMDH);
+            System.out.println(DateUtil.formatCalendar(calendar1,DATE_FORMAT_DAFAULTYMDHMS));
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
 
     }

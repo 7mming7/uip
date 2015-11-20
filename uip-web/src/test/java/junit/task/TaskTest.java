@@ -43,6 +43,6 @@ public class TaskTest extends TestCase{
 */
     /*@Test
     public void testProcedure () {
-        originalDataRepository.njmbDataSync();
+        schedulerExecuteService.execInterfaceDataGather();
     }*/
 }

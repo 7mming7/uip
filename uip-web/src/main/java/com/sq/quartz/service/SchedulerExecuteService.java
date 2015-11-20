@@ -7,6 +7,7 @@ import com.sq.protocol.opc.service.MesuringPointService;
 import com.sq.protocol.opc.service.OriginalDataService;
 import com.sq.protocol.opc.service.PushDataForYZTDService;
 import com.sq.protocol.opc.service.PushDataThirdService;
+import com.sq.quota.service.QuotaComputInsService;
 import com.sq.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +40,7 @@ public class SchedulerExecuteService {
     private OriginalDataService originalDataService;
 
     @Autowired
-    private IndiComputService indiComputService;
+    private QuotaComputInsService quotaComputInsService;
 
     @Autowired
     private PushDataThirdService pushDataThirdService;
@@ -78,7 +79,7 @@ public class SchedulerExecuteService {
     public void execInterfaceDataGather () {
         log.error("----------- 接口小时数据汇集任务开始 -----------");
         Calendar curr = Calendar.getInstance();
-        indiComputService.interfaceDataGather(curr);
+        quotaComputInsService.interfaceDataGather(curr);
         log.error("----------- 接口小时数据汇集任务结束 -----------");
     }
 
@@ -89,7 +90,7 @@ public class SchedulerExecuteService {
         log.error("----------- 接口日指标数据汇集任务开始 -----------");
         Calendar curr = Calendar.getInstance();
         curr.add(Calendar.DAY_OF_MONTH, -1);
-        indiComputService.interfaceIndicatorDataGater(curr);
+        quotaComputInsService.interfaceIndicatorDataGater(curr);
         log.error("----------- 接口日指标数据汇集任务结束 -----------");
     }
 
