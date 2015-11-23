@@ -46,7 +46,8 @@ public class InterfaceQuotaStrategy extends IQuotaComputStrategy {
 
     @Override
     public Object execIndiComput(QuotaTemp quotaTemp, Calendar computCal) {
-        Evaluator evaluator = QuotaComputHelper.getEvaluatorInstance();
+        Evaluator evaluator = new Evaluator();
+        QuotaComputHelper.loadLocalFunctions(evaluator);
         String calculateExp = quotaTemp.getCalculateExpression();
 
         if (!checkQuotaExpression(evaluator,quotaTemp)) {

@@ -96,7 +96,7 @@
             <ref bean="indicatorReallTimeComputDetailJob"/>
         </property>
         <property name="cronExpression">
-            <value>0 */30 * * * ?</value>
+            <value>0 */10 * * * ?</value>
         </property>
     </bean>
 
@@ -115,7 +115,7 @@
             <ref bean="dcsDataMigrationDetailJob"/>
         </property>
         <property name="cronExpression">
-            <value>0 30 * * * ?</value>
+            <value>0 35 0 * * ?</value>
         </property>
     </bean>
 

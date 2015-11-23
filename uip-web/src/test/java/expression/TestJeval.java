@@ -28,7 +28,7 @@ public class TestJeval extends TestCase {
         Evaluator eva = new Evaluator();
         QuotaComputHelper.loadLocalFunctions(eva);
         try {
-            String calculateExpression = "inst('AW7002/FC3002AI:FT024302A.RO01','201511201130')";
+            String calculateExpression = "inst('AW7002/FC3002AI:FT024302A.RO01','201511231030')";
             System.out.println(calculateExpression);
             List<String> variableList = QuotaComputHelper.getVariableList(calculateExpression,eva);
             for (String var:variableList) {

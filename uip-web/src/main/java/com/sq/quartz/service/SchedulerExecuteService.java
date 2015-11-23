@@ -79,6 +79,7 @@ public class SchedulerExecuteService {
     public void execInterfaceDataGather () {
         log.error("----------- 接口小时数据汇集任务开始 -----------");
         Calendar curr = Calendar.getInstance();
+        curr.add(Calendar.MINUTE,-5);
         quotaComputInsService.interfaceDataGather(curr);
         log.error("----------- 接口小时数据汇集任务结束 -----------");
     }
