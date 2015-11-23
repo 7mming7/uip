@@ -1,0 +1,171 @@
+08:56:42.110 [startQuertz_Worker-1] ERROR com.sq.quartz.service.SchedulerExecuteService - ----------- 接口小时数据汇集任务开始 -----------
+08:56:42.110 [main] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FC3002AI:FT024302A.RO01
+08:56:42.134 [main] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112011
+08:56:42.408 [pool-2-thread-1] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput B3ZQLL_Hnum ---- 2015112008 start comput comd.
+08:56:42.408 [pool-2-thread-2] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput T3YXFH_Hnum ---- 2015112008 start comput comd.
+08:56:42.409 [pool-2-thread-1] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FC3002AI:FT024302A.RO01
+08:56:42.409 [pool-2-thread-1] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112008
+08:56:42.411 [pool-2-thread-3] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput T3YXZQLL_Hnum ---- 2015112008 start comput comd.
+08:56:42.411 [pool-2-thread-2] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FCA009AI:AI094403.PNT
+08:56:42.411 [pool-2-thread-2] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112008
+08:56:42.412 [pool-2-thread-3] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FC3003AI:ST030704.PNT
+08:56:42.412 [pool-2-thread-3] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112008
+08:56:42.424 [startQuertz_Worker-1] ERROR com.sq.quartz.service.SchedulerExecuteService - ----------- 接口小时数据汇集任务结束 -----------
+08:56:43.150 [main] ERROR com.sq.quartz.service.SchedulerExecuteService - ----------- 接口小时数据汇集任务开始 -----------
+08:56:43.296 [pool-2-thread-7] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput B3ZQLL_Hnum ---- 2015112008 start comput comd.
+08:56:43.297 [pool-2-thread-7] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FC3002AI:FT024302A.RO01
+08:56:43.298 [pool-2-thread-7] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112008
+08:56:43.330 [pool-2-thread-8] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput T3YXFH_Hnum ---- 2015112008 start comput comd.
+08:56:43.331 [pool-2-thread-8] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FCA009AI:AI094403.PNT
+08:56:43.331 [pool-2-thread-8] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112008
+08:56:43.343 [pool-2-thread-9] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput T3YXZQLL_Hnum ---- 2015112008 start comput comd.
+08:56:43.347 [main] ERROR com.sq.quartz.service.SchedulerExecuteService - ----------- 接口小时数据汇集任务结束 -----------
+08:56:43.374 [pool-2-thread-9] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FC3003AI:ST030704.PNT
+08:56:43.374 [pool-2-thread-9] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112008
+09:05:55.819 [main] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FC3002AI:FT024302A.RO01
+09:05:55.820 [main] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112011
+09:05:57.834 [main] ERROR com.sq.quartz.service.SchedulerExecuteService - ----------- 接口小时数据汇集任务开始 -----------
+09:05:58.093 [pool-2-thread-1] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput B3ZQLL_Hnum ---- 2015112009 start comput comd.
+09:05:58.093 [pool-2-thread-2] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput T3YXFH_Hnum ---- 2015112009 start comput comd.
+09:05:58.094 [pool-2-thread-1] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FC3002AI:FT024302A.RO01
+09:05:58.095 [pool-2-thread-1] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112009
+09:05:58.095 [pool-2-thread-3] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput T3YXZQLL_Hnum ---- 2015112009 start comput comd.
+09:05:58.095 [pool-2-thread-2] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FCA009AI:AI094403.PNT
+09:05:58.095 [pool-2-thread-2] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112009
+09:05:58.095 [pool-2-thread-3] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FC3003AI:ST030704.PNT
+09:05:58.096 [pool-2-thread-3] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112009
+09:05:58.095 [main] ERROR com.sq.quartz.service.SchedulerExecuteService - ----------- 接口小时数据汇集任务结束 -----------
+09:05:58.113 [pool-2-thread-3] ERROR com.sq.quota.strategy.QuotaComputTask - T3YXZQLL_Hnum，2015112009 计算结果为：-- 1.5625
+09:05:58.117 [pool-2-thread-2] ERROR com.sq.quota.strategy.QuotaComputTask - T3YXFH_Hnum，2015112009 计算结果为：-- 0.0070312503
+09:05:58.119 [pool-2-thread-1] ERROR com.sq.quota.strategy.QuotaComputTask - B3ZQLL_Hnum，2015112009 计算结果为：-- 54.884758
+09:13:04.647 [startQuertz_Worker-1] ERROR com.sq.quartz.service.SchedulerExecuteService - ----------- 接口小时数据汇集任务开始 -----------
+09:13:04.658 [main] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FC3002AI:FT024302A.RO01
+09:13:04.659 [main] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112011
+09:13:05.000 [pool-2-thread-1] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput B3ZQLL_Hnum ---- 2015112009 start comput comd.
+09:13:05.000 [pool-2-thread-2] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput T3YXFH_Hnum ---- 2015112009 start comput comd.
+09:13:05.001 [pool-2-thread-2] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FCA009AI:AI094403.PNT
+09:13:05.002 [pool-2-thread-2] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112009
+09:13:05.002 [pool-2-thread-3] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput T3YXZQLL_Hnum ---- 2015112009 start comput comd.
+09:13:05.002 [pool-2-thread-1] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FC3002AI:FT024302A.RO01
+09:13:05.006 [pool-2-thread-3] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FC3003AI:ST030704.PNT
+09:13:05.006 [pool-2-thread-1] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112009
+09:13:05.006 [pool-2-thread-3] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112009
+09:13:05.002 [startQuertz_Worker-1] ERROR com.sq.quartz.service.SchedulerExecuteService - ----------- 接口小时数据汇集任务结束 -----------
+09:13:05.023 [pool-2-thread-1] ERROR com.sq.quota.strategy.QuotaComputTask - B3ZQLL_Hnum，2015112009 计算结果为：-- 54.884758
+09:13:05.046 [pool-2-thread-2] ERROR com.sq.quota.strategy.QuotaComputTask - T3YXFH_Hnum，2015112009 计算结果为：-- 0.0070312503
+09:13:05.050 [pool-2-thread-3] ERROR com.sq.quota.strategy.QuotaComputTask - T3YXZQLL_Hnum，2015112009 计算结果为：-- 1.5625
+09:13:06.882 [main] ERROR com.sq.quartz.service.SchedulerExecuteService - ----------- 接口小时数据汇集任务开始 -----------
+09:13:06.939 [pool-2-thread-4] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput B3ZQLL_Hnum ---- 2015112009 start comput comd.
+09:13:06.939 [pool-2-thread-5] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput T3YXFH_Hnum ---- 2015112009 start comput comd.
+09:13:06.939 [pool-2-thread-4] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FC3002AI:FT024302A.RO01
+09:13:06.940 [pool-2-thread-4] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112009
+09:13:06.940 [pool-2-thread-5] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FCA009AI:AI094403.PNT
+09:13:06.940 [pool-2-thread-5] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112009
+09:13:06.954 [main] ERROR com.sq.quartz.service.SchedulerExecuteService - ----------- 接口小时数据汇集任务结束 -----------
+09:13:06.955 [pool-2-thread-6] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput T3YXZQLL_Hnum ---- 2015112009 start comput comd.
+09:13:06.956 [pool-2-thread-6] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FC3003AI:ST030704.PNT
+09:13:06.957 [pool-2-thread-6] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112009
+09:13:07.077 [pool-2-thread-6] ERROR org.hibernate.engine.jdbc.spi.SqlExceptionHelper - null
+09:13:07.081 [pool-2-thread-6] ERROR org.hibernate.engine.jdbc.spi.SqlExceptionHelper - dataSource already closed at Fri Nov 20 09:13:07 CST 2015
+09:20:59.892 [main] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FC3002AI:FT024302A.RO01
+09:20:59.894 [main] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112011
+09:20:59.892 [startQuertz_Worker-1] ERROR com.sq.quartz.service.SchedulerExecuteService - ----------- 接口小时数据汇集任务开始 -----------
+09:21:00.261 [pool-2-thread-1] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput B3ZQLL_Hnum ---- 2015112009 start comput comd.
+09:21:00.262 [pool-2-thread-2] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput T3YXFH_Hnum ---- 2015112009 start comput comd.
+09:21:00.263 [pool-2-thread-2] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FCA009AI:AI094403.PNT
+09:21:00.263 [pool-2-thread-1] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FC3002AI:FT024302A.RO01
+09:21:00.263 [pool-2-thread-2] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112009
+09:21:00.263 [pool-2-thread-1] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112009
+09:21:00.264 [pool-2-thread-3] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput T3YXZQLL_Hnum ---- 2015112009 start comput comd.
+09:21:00.264 [pool-2-thread-3] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FC3003AI:ST030704.PNT
+09:21:00.264 [pool-2-thread-3] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112009
+09:21:00.265 [startQuertz_Worker-1] ERROR com.sq.quartz.service.SchedulerExecuteService - ----------- 接口小时数据汇集任务结束 -----------
+09:21:00.279 [pool-2-thread-1] ERROR com.sq.quota.strategy.QuotaComputTask - B3ZQLL_Hnum，2015112009 计算结果为：-- 54.884758
+09:21:00.283 [pool-2-thread-2] ERROR com.sq.quota.strategy.QuotaComputTask - T3YXFH_Hnum，2015112009 计算结果为：-- 0.0070312503
+09:21:00.283 [pool-2-thread-3] ERROR com.sq.quota.strategy.QuotaComputTask - T3YXZQLL_Hnum，2015112009 计算结果为：-- 1.5625
+09:21:01.675 [main] ERROR com.sq.quartz.service.SchedulerExecuteService - ----------- 接口小时数据汇集任务开始 -----------
+09:21:01.725 [pool-2-thread-4] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput B3ZQLL_Hnum ---- 2015112009 start comput comd.
+09:21:01.726 [pool-2-thread-4] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FC3002AI:FT024302A.RO01
+09:21:01.727 [pool-2-thread-4] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112009
+09:21:01.734 [pool-2-thread-5] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput T3YXFH_Hnum ---- 2015112009 start comput comd.
+09:21:01.734 [pool-2-thread-6] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput T3YXZQLL_Hnum ---- 2015112009 start comput comd.
+09:21:01.735 [pool-2-thread-5] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FCA009AI:AI094403.PNT
+09:21:01.735 [pool-2-thread-5] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112009
+09:21:01.735 [pool-2-thread-6] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FC3003AI:ST030704.PNT
+09:21:01.735 [pool-2-thread-6] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112009
+09:21:01.746 [pool-2-thread-4] ERROR com.sq.quota.strategy.QuotaComputTask - B3ZQLL_Hnum，2015112009 计算结果为：-- 54.884758
+09:21:01.737 [main] ERROR com.sq.quartz.service.SchedulerExecuteService - ----------- 接口小时数据汇集任务结束 -----------
+09:21:01.799 [pool-2-thread-6] ERROR com.sq.quota.strategy.QuotaComputTask - T3YXZQLL_Hnum，2015112009 计算结果为：-- 1.5625
+09:21:01.826 [pool-2-thread-5] ERROR org.hibernate.engine.jdbc.spi.SqlExceptionHelper - null
+09:21:01.828 [pool-2-thread-5] ERROR org.hibernate.engine.jdbc.spi.SqlExceptionHelper - dataSource already closed at Fri Nov 20 09:21:01 CST 2015
+09:24:24.511 [main] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FC3002AI:FT024302A.RO01
+09:24:24.513 [main] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112011
+09:24:24.527 [startQuertz_Worker-1] ERROR com.sq.quartz.service.SchedulerExecuteService - ----------- 接口小时数据汇集任务开始 -----------
+09:24:24.833 [pool-2-thread-1] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput B3ZQLL_Hnum ---- 2015112009 start comput comd.
+09:24:24.834 [pool-2-thread-1] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FC3002AI:FT024302A.RO01
+09:24:24.834 [pool-2-thread-1] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112009
+09:24:24.835 [pool-2-thread-2] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput T3YXFH_Hnum ---- 2015112009 start comput comd.
+09:24:24.836 [pool-2-thread-2] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FCA009AI:AI094403.PNT
+09:24:24.836 [pool-2-thread-2] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112009
+09:24:24.838 [pool-2-thread-3] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput T3YXZQLL_Hnum ---- 2015112009 start comput comd.
+09:24:24.839 [pool-2-thread-3] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FC3003AI:ST030704.PNT
+09:24:24.839 [pool-2-thread-3] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112009
+09:24:24.839 [startQuertz_Worker-1] ERROR com.sq.quartz.service.SchedulerExecuteService - ----------- 接口小时数据汇集任务结束 -----------
+09:24:24.848 [pool-2-thread-1] ERROR com.sq.quota.strategy.QuotaComputTask - B3ZQLL_Hnum，2015112009 计算结果为：-- 54.884758
+09:24:24.871 [pool-2-thread-3] ERROR com.sq.quota.strategy.QuotaComputTask - T3YXZQLL_Hnum，2015112009 计算结果为：-- 1.5625
+09:24:24.872 [pool-2-thread-2] ERROR com.sq.quota.strategy.QuotaComputTask - T3YXFH_Hnum，2015112009 计算结果为：-- 0.0070312503
+09:24:25.838 [main] ERROR com.sq.quartz.service.SchedulerExecuteService - ----------- 接口小时数据汇集任务开始 -----------
+09:24:25.866 [pool-2-thread-4] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput B3ZQLL_Hnum ---- 2015112009 start comput comd.
+09:24:25.866 [pool-2-thread-5] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput T3YXFH_Hnum ---- 2015112009 start comput comd.
+09:24:25.866 [pool-2-thread-4] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FC3002AI:FT024302A.RO01
+09:24:25.866 [pool-2-thread-4] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112009
+09:24:25.866 [pool-2-thread-5] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FCA009AI:AI094403.PNT
+09:24:25.866 [pool-2-thread-5] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112009
+09:24:25.869 [main] ERROR com.sq.quartz.service.SchedulerExecuteService - ----------- 接口小时数据汇集任务结束 -----------
+09:24:25.869 [pool-2-thread-6] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput T3YXZQLL_Hnum ---- 2015112009 start comput comd.
+09:24:25.870 [pool-2-thread-6] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FC3003AI:ST030704.PNT
+09:24:25.870 [pool-2-thread-6] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:2015112009
+09:24:25.880 [pool-2-thread-5] ERROR com.sq.quota.strategy.QuotaComputTask - T3YXFH_Hnum，2015112009 计算结果为：-- 0.0070312503
+09:24:25.910 [pool-2-thread-4] ERROR com.sq.quota.strategy.QuotaComputTask - B3ZQLL_Hnum，2015112009 计算结果为：-- 54.884758
+11:11:13.245 [main] ERROR com.sq.quota.function.logical.DateTimeFunction - quotaCode:AW7002/FC3002AI:FT024302A.RO01
+11:11:13.247 [main] ERROR com.sq.quota.function.logical.DateTimeFunction - computDateInt:201511201130
+11:11:14.622 [main] ERROR com.sq.quartz.service.SchedulerExecuteService - ----------- 接口小时数据汇集任务开始 -----------
+11:11:14.839 [pool-2-thread-1] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput B3ZQLL_Hnum ---- 2015112011 start comput comd.
+11:11:14.839 [pool-2-thread-2] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput T3YXFH_Hnum ---- 2015112011 start comput comd.
+11:11:14.839 [pool-2-thread-3] ERROR com.sq.quota.strategy.QuotaComputTask - Module Comput T3YXZQLL_Hnum ---- 2015112011 start comput comd.
+11:11:14.839 [main] ERROR com.sq.quartz.service.SchedulerExecuteService - ----------- 接口小时数据汇集任务结束 -----------
+11:11:14.849 [pool-2-thread-3] ERROR com.sq.quota.strategy.InterfaceQuotaStrategy - parseExpressionFront -> logicalFunctions 指标计算出现错误.calculateExp: inst('AW7002/FC3003AI:ST030704.PNT','201511201111')
+net.sourceforge.jeval.EvaluationException: Expression is invalid.
+	at net.sourceforge.jeval.Evaluator.getResult(Evaluator.java:1229) ~[jeval-0.9.4.jar:0.9.4]
+	at net.sourceforge.jeval.Evaluator.evaluate(Evaluator.java:615) ~[jeval-0.9.4.jar:0.9.4]
+	at net.sourceforge.jeval.Evaluator.evaluate(Evaluator.java:553) ~[jeval-0.9.4.jar:0.9.4]
+	at com.sq.quota.strategy.InterfaceQuotaStrategy.execIndiComput(InterfaceQuotaStrategy.java:67) ~[classes/:na]
+	at com.sq.quota.strategy.QuotaComputTask.run(QuotaComputTask.java:117) [classes/:na]
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142) [na:1.8.0_40]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617) [na:1.8.0_40]
+	at java.lang.Thread.run(Thread.java:745) [na:1.8.0_40]
+11:11:14.849 [pool-2-thread-1] ERROR com.sq.quota.strategy.InterfaceQuotaStrategy - parseExpressionFront -> logicalFunctions 指标计算出现错误.calculateExp: inst('AW7002/FC3002AI:FT024302A.RO01','201511201111')
+net.sourceforge.jeval.EvaluationException: net.sourceforge.jeval.ParsedFunction cannot be cast to net.sourceforge.jeval.ExpressionOperand
+	at net.sourceforge.jeval.Evaluator.parse(Evaluator.java:842) ~[jeval-0.9.4.jar:0.9.4]
+	at net.sourceforge.jeval.Evaluator.evaluate(Evaluator.java:613) ~[jeval-0.9.4.jar:0.9.4]
+	at net.sourceforge.jeval.Evaluator.evaluate(Evaluator.java:553) ~[jeval-0.9.4.jar:0.9.4]
+	at com.sq.quota.strategy.InterfaceQuotaStrategy.execIndiComput(InterfaceQuotaStrategy.java:67) ~[classes/:na]
+	at com.sq.quota.strategy.QuotaComputTask.run(QuotaComputTask.java:117) [classes/:na]
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142) [na:1.8.0_40]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617) [na:1.8.0_40]
+	at java.lang.Thread.run(Thread.java:745) [na:1.8.0_40]
+Caused by: java.lang.ClassCastException: net.sourceforge.jeval.ParsedFunction cannot be cast to net.sourceforge.jeval.ExpressionOperand
+	at net.sourceforge.jeval.Evaluator.processFunction(Evaluator.java:1131) ~[jeval-0.9.4.jar:0.9.4]
+	at net.sourceforge.jeval.Evaluator.processOperator(Evaluator.java:961) ~[jeval-0.9.4.jar:0.9.4]
+	at net.sourceforge.jeval.Evaluator.parse(Evaluator.java:820) ~[jeval-0.9.4.jar:0.9.4]
+	... 7 common frames omitted
+11:11:14.849 [pool-2-thread-2] ERROR com.sq.quota.strategy.InterfaceQuotaStrategy - parseExpressionFront -> logicalFunctions 指标计算出现错误.calculateExp: inst('AW7002/FCA009AI:AI094403.PNT','201511201111')
+net.sourceforge.jeval.EvaluationException: Expression is invalid.
+	at net.sourceforge.jeval.Evaluator.getResult(Evaluator.java:1229) ~[jeval-0.9.4.jar:0.9.4]
+	at net.sourceforge.jeval.Evaluator.evaluate(Evaluator.java:615) ~[jeval-0.9.4.jar:0.9.4]
+	at net.sourceforge.jeval.Evaluator.evaluate(Evaluator.java:553) ~[jeval-0.9.4.jar:0.9.4]
+	at com.sq.quota.strategy.InterfaceQuotaStrategy.execIndiComput(InterfaceQuotaStrategy.java:67) ~[classes/:na]
+	at com.sq.quota.strategy.QuotaComputTask.run(QuotaComputTask.java:117) [classes/:na]
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142) [na:1.8.0_40]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617) [na:1.8.0_40]
+	at java.lang.Thread.run(Thread.java:745) [na:1.8.0_40]

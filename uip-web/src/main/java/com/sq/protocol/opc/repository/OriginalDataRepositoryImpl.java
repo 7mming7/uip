@@ -85,6 +85,7 @@ public class OriginalDataRepositoryImpl{
 
     public OriginalData fetchFrontOriginalDataByCal(final String itemCode,final Calendar calendar) {
         EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
         StringBuilder nativeSql = new StringBuilder();
         nativeSql.append(" SELECT             ")
                 .append("      *              ")
@@ -101,16 +102,18 @@ public class OriginalDataRepositoryImpl{
                 .append("          AND o.itemcode = ?2 ")
                 .append("            )        ");
         Query query = em.createNativeQuery(nativeSql.toString(),OriginalData.class);
-        System.out.println(DateUtil.formatCalendar(calendar,DateUtil.DATE_FORMAT_DAFAULTYMDHMS));
         query.setParameter(1, calendar);
         query.setParameter(2, itemCode);
 
         OriginalData originalData = (OriginalData) query.getSingleResult();
+        em.getTransaction().commit();
+        em.close();
         return originalData;
     }
 
     public OriginalData fetchBehindOriginalDataByCal(final String itemCode,final Calendar calendar) {
         EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
         StringBuilder nativeSql = new StringBuilder();
         nativeSql.append(" SELECT             ")
                 .append("      *              ")
@@ -131,6 +134,8 @@ public class OriginalDataRepositoryImpl{
         query.setParameter(2, itemCode);
 
         OriginalData originalData = (OriginalData) query.getSingleResult();
+        em.getTransaction().commit();
+        em.close();
         return originalData;
     }
 

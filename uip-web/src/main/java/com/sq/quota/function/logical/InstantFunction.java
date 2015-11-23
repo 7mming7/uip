@@ -50,7 +50,6 @@ public class InstantFunction implements Function {
 
         String computDateInt = (String)argList.get(1);
         computDateInt = computDateInt.substring(1, computDateInt.length() - 1);
-        log.error("computDateInt:" + computDateInt);
 
         Calendar computCal = null;
         try {
@@ -58,7 +57,6 @@ public class InstantFunction implements Function {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        System.out.println(DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULTYMDHMS));
 
         OriginalData frontOriginalData = originalDataRepository.fetchFrontOriginalDataByCal(quotaCode,computCal);
         OriginalData behindOriginalData = originalDataRepository.fetchBehindOriginalDataByCal(quotaCode, computCal);

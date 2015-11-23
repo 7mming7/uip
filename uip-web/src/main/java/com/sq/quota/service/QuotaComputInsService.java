@@ -176,7 +176,6 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
      * @param computCal 计算时间
      */
     public void interfaceDataGather (Calendar computCal) {
-
         Searchable searchable = Searchable.newSearchable()
                 .addSearchFilter("dataSource", MatchType.EQ, QuotaConsts.DATASOURCE_INTERFACE);
 
