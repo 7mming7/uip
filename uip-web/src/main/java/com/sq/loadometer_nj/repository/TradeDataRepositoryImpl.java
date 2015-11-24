@@ -1,8 +1,8 @@
-package com.sq.loadometer.repository;
+package com.sq.loadometer_nj.repository;
 
-import com.sq.loadometer.domain.LoadometerConsts;
-import com.sq.loadometer.domain.LoadometerIndicatorDto;
-import com.sq.loadometer.domain.Trade;
+import com.sq.loadometer_nj.domain.LoadometerConsts;
+import com.sq.loadometer_nj.domain.LoadometerIndicatorDto;
+import com.sq.loadometer_nj.domain.Trade;
 import com.sq.util.NativeQueryResultsMapper;
 
 import javax.persistence.EntityManager;
@@ -12,10 +12,9 @@ import javax.persistence.Query;
 import java.util.List;
 
 /**
- * 地磅仓库IMPL
  * User: shuiqing
- * Date: 15/11/24
- * Time: 上午11:25
+ * Date: 2015/9/15
+ * Time: 15:59
  * Email: shuiqing301@gmail.com
  * GitHub: https://github.com/ShuiQing301
  * Blog: http://shuiqing301.github.io/
@@ -24,7 +23,6 @@ import java.util.List;
  * | o| (_
  */
 public class TradeDataRepositoryImpl {
-
     private EntityManagerFactory emf;
 
     @PersistenceUnit

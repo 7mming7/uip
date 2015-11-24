@@ -1,6 +1,4 @@
-package com.sq.loadometer.domain;
-
-import com.sq.protocol.opc.domain.OriginalData;
+package com.sq.loadometer_nj.domain;
 
 import java.io.Serializable;
 import java.util.List;

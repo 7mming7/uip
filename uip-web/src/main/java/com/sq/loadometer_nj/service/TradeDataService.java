@@ -1,4 +1,4 @@
-package com.sq.loadometer.service;
+package com.sq.loadometer_nj.service;
 
 import com.sq.comput.domain.IndicatorConsts;
 import com.sq.comput.domain.IndicatorInstance;
@@ -8,16 +8,15 @@ import com.sq.comput.repository.IndicatorTempRepository;
 import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
 import com.sq.inject.annotation.BaseComponent;
-import com.sq.loadometer.component.JdbcHelper;
-import com.sq.loadometer.domain.LoadometerIndicatorDto;
-import com.sq.loadometer.domain.Trade;
-import com.sq.loadometer.repository.TradeDataRepository;
+import com.sq.loadometer_nj.component.JdbcHelper;
+import com.sq.loadometer_nj.domain.LoadometerIndicatorDto;
+import com.sq.loadometer_nj.domain.Trade;
+import com.sq.loadometer_nj.repository.TradeDataRepository;
 import com.sq.service.BaseService;
 import com.sq.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +38,7 @@ import java.util.List;
  * |_)._ _
  * | o| (_
  */
-@Service
+/*@Service*/
 public class TradeDataService extends BaseService<Trade, Long> {
 
     private static final Logger log = LoggerFactory.getLogger(TradeDataService.class);
@@ -82,22 +81,7 @@ public class TradeDataService extends BaseService<Trade, Long> {
 
         StringBuilder insertTradeBuilder = new StringBuilder();
         insertTradeBuilder
-                .append(" select ")
-                .append("       t.lsh AS lsh,  ")
-                .append("       t.ch AS carNo, ")
-                .append("       t.hm AS proCode, ")
-                .append("       t.dwdw AS sourceArea, ")
-                .append("       t.cmrs AS firstWeightTime, ")
-                .append("       t.cprs AS secondWeightTime, ")
-                .append("       t.mz AS gross, ")
-                .append("       t.pz AS tare, ")
-                .append("       t.jz AS net, ")
-                .append("       t.czy AS operator, ")
-                .append("       CONVERT (VARCHAR(12), t.cprs, 112) AS statDateNum ")
-                .append("    FROM   ")
-                .append("       czb t ")
-                .append("    WHERE   ")
-                .append("       CONVERT (VARCHAR(12), t.cprs, 112) =  ")
+                .append(" select * from Trade where productNet is not null and datastatus = 1 and CONVERT(varchar(12) , seconddatetime, 112 ) = ")
                 .append(fillTradeData);
         try {
             List<HashMap<String,String>> resultList = JdbcHelper.query(insertTradeBuilder.toString());
@@ -147,5 +131,14 @@ public class TradeDataService extends BaseService<Trade, Long> {
             indicatorInstanceList.add(indicatorInstance);
         }
         indicatorInstanceRepository.save(indicatorInstanceList);
+    }
+
+    /**
+     * 根据指定的时间查询地磅的流水数据
+     * @param pointDay 指定的日期
+     * @return 地磅的交易流水
+     */
+    public List<Trade> fetchTradeDataByPointDay(String pointDay) {
+        return tradeDataRepository.fetchTradeDataByPointDay(pointDay);
     }
 }

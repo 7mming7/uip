@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class TestJeval extends TestCase {
 
-    @Test
+    /*@Test
     public void test () {
         Evaluator eva = new Evaluator();
         QuotaComputHelper.loadLocalFunctions(eva);
@@ -62,6 +62,6 @@ public class TestJeval extends TestCase {
         } catch (EvaluationException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
 }

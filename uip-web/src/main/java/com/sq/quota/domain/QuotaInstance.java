@@ -49,7 +49,7 @@ public class QuotaInstance extends QuotaBase {
     private Date instanceTime;
 
     /** 创建时间 */
-    private Calendar createTime = Calendar.getInstance();
+    private Calendar createTime;
 
     /**
      * 所属指标分类

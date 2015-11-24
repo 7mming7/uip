@@ -1,7 +1,6 @@
 package com.sq.quartz.service;
 
-import com.sq.comput.service.IndiComputService;
-import com.sq.loadometer.service.TradeDataService;
+import com.sq.loadometer_nj.service.TradeDataService;
 import com.sq.protocol.opc.component.BaseConfiguration;
 import com.sq.protocol.opc.service.MesuringPointService;
 import com.sq.protocol.opc.service.OriginalDataService;
@@ -79,7 +78,7 @@ public class SchedulerExecuteService {
     public void execInterfaceDataGather () {
         log.error("----------- 接口小时数据汇集任务开始 -----------");
         Calendar curr = Calendar.getInstance();
-        curr.add(Calendar.MINUTE,-5);
+        curr.add(Calendar.MINUTE,-30);
         quotaComputInsService.interfaceDataGather(curr);
         log.error("----------- 接口小时数据汇集任务结束 -----------");
     }

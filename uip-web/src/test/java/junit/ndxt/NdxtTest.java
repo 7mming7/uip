@@ -21,9 +21,9 @@ public class NdxtTest extends TestCase {
     @Autowired
     private RtdbPushController rtdbPushController;
 
-    @Test
+    /*@Test
     public void testNdxt(){
         String str = rtdbPushController.ndxtRtdbPush("Macsv5.Device3.Group3.B1_DUTYZSJ");
         System.out.println(str);
-    }
+    }*/
 }

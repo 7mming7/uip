@@ -1,10 +1,10 @@
-package com.sq.loadometer.controller;
+package com.sq.loadometer_nj.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.sq.inject.annotation.BaseComponent;
-import com.sq.loadometer.domain.Trade;
-import com.sq.loadometer.domain.TradeDataPushDto;
-import com.sq.loadometer.service.TradeDataService;
+import com.sq.loadometer_nj.domain.Trade;
+import com.sq.loadometer_nj.domain.TradeDataPushDto;
+import com.sq.loadometer_nj.service.TradeDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ import java.util.List;
  * |_)._ _
  * | o| (_
  */
-@Controller
+/*@Controller*/
 public class LoadmeterMainController {
 
     private static final Logger log = LoggerFactory.getLogger(LoadmeterMainController.class);

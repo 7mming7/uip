@@ -1,4 +1,4 @@
-package com.sq.loadometer.domain;
+package com.sq.loadometer_nj.domain;
 
 import com.sq.annotation.NativeQueryResultColumn;
 import com.sq.annotation.NativeQueryResultEntity;
