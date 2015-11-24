@@ -38,13 +38,13 @@ public class TradeDataRepositoryImpl {
         nativeSql.append(" SELECT ")
                 .append("      MP.sourceCode as sourceCode, ")
                 .append("      MP.targetCode as indicatorCode, ")
-                .append("      IFNULL(SUM(T.productnet)/1000,0) as totalAmount ")
+                .append("      IFNULL(SUM(T.net)/1000,0) as totalAmount ")
                 .append("  FROM ")
                 .append("      t_indicatortemp IT LEFT JOIN ")
                 .append("      t_mesuringpoint MP on IT.indicatorCode = MP.targetCode LEFT JOIN ")
                 .append("      t_trade T ")
-                .append("   ON MP.sourceCode = T.productcode  ")
-                .append("      AND DATE_FORMAT(T.seconddatetime, '%Y%m%d') = ").append(queryDate)
+                .append("   ON MP.sourceCode = T.proCode  ")
+                .append("      AND DATE_FORMAT(T.secondWeightTime, '%Y%m%d') = ").append(queryDate)
                 .append("   WHERE MP.sysId =  ").append(LoadometerConsts.SYS_ODBC_LOADOMETER)
                 .append("    GROUP BY MP.sourceCode ");
         Query query = em.createNativeQuery(nativeSql.toString());
@@ -59,7 +59,7 @@ public class TradeDataRepositoryImpl {
         StringBuilder nativeSql = new StringBuilder();
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
-        nativeSql.append("delete from t_trade where DATE_FORMAT(seconddatetime,'%Y%m%d') = ").append(secondTime);
+        nativeSql.append("delete from t_trade where DATE_FORMAT(secondWeightTime,'%Y%m%d') = ").append(secondTime);
         Query query = em.createNativeQuery(nativeSql.toString());
         query.executeUpdate();
         em.getTransaction().commit();

@@ -1,7 +1,6 @@
 package junit.loadometer;
 
 import com.sq.loadometer.service.TradeDataService;
-import com.sq.loadometer_nj.controller.LoadmeterMainController;
 import com.sq.util.DateUtil;
 import junit.base.TestCase;
 import org.junit.Test;
@@ -25,16 +24,8 @@ public class LoadometerTest extends TestCase {
     @Autowired
     private TradeDataService tradeDataService;
 
-    @Autowired
-    private LoadmeterMainController loadmeterMainController;
-
-    /*@Test
+    @Test
     public void syncLoadometerTrade(){
         tradeDataService.syncLoadometerTrade("20150901");
     }
-
-    @Test
-    public void testLoadDataPush () {
-        System.out.println(loadmeterMainController.tradeDataAllDay("20150816"));
-    }*/
 }

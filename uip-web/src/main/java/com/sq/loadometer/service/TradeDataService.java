@@ -126,11 +126,13 @@ public class TradeDataService extends BaseService<Trade, Long> {
             loadometerCodeList.add(loadometerIndicatorDto.getIndicatorCode());
         }
 
-        //删除已经存在的当日的地磅指标数据
-        Searchable removeLoadometerCodeSearchable = Searchable.newSearchable()
-                .addSearchFilter("indicatorCode", MatchType.IN, loadometerCodeList)
-                .addSearchFilter("statDateNum", MatchType.EQ, generateDate);
-        indicatorInstanceRepository.deleteInBatch(indicatorInstanceRepository.findAll(removeLoadometerCodeSearchable));
+        if (!loadometerCodeList.isEmpty()) {
+            //删除已经存在的当日的地磅指标数据
+            Searchable removeLoadometerCodeSearchable = Searchable.newSearchable()
+                    .addSearchFilter("indicatorCode", MatchType.IN, loadometerCodeList)
+                    .addSearchFilter("statDateNum", MatchType.EQ, generateDate);
+            indicatorInstanceRepository.deleteInBatch(indicatorInstanceRepository.findAll(removeLoadometerCodeSearchable));
+        }
 
         //保存查询到的当日地磅指标数据
         for(LoadometerIndicatorDto loadometerIndicatorDto:loadometerIndicatorDtoList) {

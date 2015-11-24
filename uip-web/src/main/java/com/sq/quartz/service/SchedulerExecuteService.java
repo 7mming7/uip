@@ -1,6 +1,6 @@
 package com.sq.quartz.service;
 
-import com.sq.loadometer_nj.service.TradeDataService;
+import com.sq.loadometer.service.TradeDataService;
 import com.sq.protocol.opc.component.BaseConfiguration;
 import com.sq.protocol.opc.service.MesuringPointService;
 import com.sq.protocol.opc.service.OriginalDataService;
