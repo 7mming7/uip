@@ -4,7 +4,9 @@ import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
 import com.sq.quota.domain.QuotaConsts;
 import com.sq.quota.domain.QuotaInstance;
+import com.sq.quota.domain.QuotaResetRecord;
 import com.sq.quota.repository.QuotaInstanceRepository;
+import com.sq.quota.service.QuotaComputInsService;
 import com.sq.util.SpringUtils;
 import net.sourceforge.jeval.EvaluationConstants;
 import net.sourceforge.jeval.Evaluator;
@@ -12,10 +14,13 @@ import net.sourceforge.jeval.function.*;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import com.sq.util.DateUtil;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,6 +73,13 @@ public class DateTimeFunction implements Function {
         //计算指标的迁移之后的日期
         String assComputCal = DateUtil.dateMigrate(cycleStr, disDateInt, computCal);
 
+
+        result = checkQuotaReset(assQuotaCode,assComputCal);
+        if (null != result) {
+            return new FunctionResult(result.toString(),
+                    FunctionConstants.FUNCTION_RESULT_TYPE_STRING);
+        }
+
         log.debug("End dateMigrate computCal: " + assComputCal);
         Searchable searchable = Searchable.newSearchable()
                 .addSearchFilter("indicatorCode", MatchType.EQ, assQuotaCode)
@@ -88,5 +100,30 @@ public class DateTimeFunction implements Function {
         }
         return new FunctionResult(result.toString(),
                 FunctionConstants.FUNCTION_RESULT_TYPE_STRING);
+    }
+
+    /**
+     * 检查指标重置记录
+     * @param assQuotaCode  关联的指标编码
+     * @param assComputCal
+     * @return
+     */
+    public Double checkQuotaReset(String assQuotaCode, String assComputCal){
+        QuotaResetRecord quotaResetRecord = QuotaComputInsService.quotaResetRecordMap.get(assQuotaCode);
+        if(null == quotaResetRecord) {
+            return null;
+        }
+        Calendar resetCal = quotaResetRecord.getResetDate();
+        Calendar assCal = null;
+        try {
+            assCal = DateUtil.stringToCalendar(assComputCal,DateUtil.DATE_FORMAT_DAFAULT);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (DateUtils.isSameDay(resetCal,assCal)) {
+            return quotaResetRecord.getResetValue();
+        }
+
+        return null;
     }
 }

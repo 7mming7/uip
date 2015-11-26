@@ -109,33 +109,33 @@ public class PushDataForYZTDService {
         List<ScreenPushData> screenPushDataList = new ArrayList<ScreenPushData>();
 
         //DUTY
-        screenPushDataList.add(generateScreenPushData("DUTY->1->AW7002/FC1001AI:AI010706.PNT"));
-        screenPushDataList.add(generateScreenPushData("DUTY->2->AW7002/FC2001AI:AI010706.PNT"));
+        screenPushDataList.add(generateScreenPushData("DUTY->1->AW7002/FC2001AI:AI010706.PNT"));
+        screenPushDataList.add(generateScreenPushData("DUTY->2->AW7002/FC1001AI:AI010706.PNT"));
         screenPushDataList.add(generateScreenPushData("DUTY->3->AW7002/FC3001AI:AI018803.PNT"));
 
         //HCL
-        screenPushDataList.add(generateScreenPushData("HCL->1->AW7002/FC1001AI:AI010604.PNT"));
-        screenPushDataList.add(generateScreenPushData("HCL->2->AW7002/FC2001AI:AI010604.PNT"));
+        screenPushDataList.add(generateScreenPushData("HCL->1->AW7002/FC2001AI:AI010604.PNT"));
+        screenPushDataList.add(generateScreenPushData("HCL->2->AW7002/FC1001AI:AI010604.PNT"));
         screenPushDataList.add(generateScreenPushData("HCL->3->AW7002/FC3001AI:AI018702.PNT"));
 
         //CO
-        screenPushDataList.add(generateScreenPushData("CO->1->AW7002/FC3001AI:AI018702.PNT"));
-        screenPushDataList.add(generateScreenPushData("CO->2->AW7002/FC2001AI:AI010605.PNT"));
+        screenPushDataList.add(generateScreenPushData("CO->1->AW7002/FC2001AI:AI010605.PNT"));
+        screenPushDataList.add(generateScreenPushData("CO->2->AW7002/FC3001AI:AI018702.PNT"));
         screenPushDataList.add(generateScreenPushData("CO->3->AW7002/FC3001AI:AI018703.PNT"));
 
         //SO2
-        screenPushDataList.add(generateScreenPushData("SO2->1->AW7002/FC1001AI:AI010607.PNT"));
-        screenPushDataList.add(generateScreenPushData("SO2->2->AW7002/FC2001AI:AI010607.PNT"));
+        screenPushDataList.add(generateScreenPushData("SO2->1->AW7002/FC2001AI:AI010607.PNT"));
+        screenPushDataList.add(generateScreenPushData("SO2->2->AW7002/FC1001AI:AI010607.PNT"));
         screenPushDataList.add(generateScreenPushData("SO2->3->AW7002/FC3001AI:AI018705.PNT"));
 
         //NOX
-        screenPushDataList.add(generateScreenPushData("NOX->1->AW7002/FC1001AI:AI010606.PNT"));
-        screenPushDataList.add(generateScreenPushData("NOX->2->AW7002/FC2001AI:AI010606.PNT"));
+        screenPushDataList.add(generateScreenPushData("NOX->1->AW7002/FC2001AI:AI010606.PNT"));
+        screenPushDataList.add(generateScreenPushData("NOX->2->AW7002/FC1001AI:AI010606.PNT"));
         screenPushDataList.add(generateScreenPushData("NOX->3->AW7002/FC3001AI:AI018704.PNT"));
 
         //主蒸汽流量
-        screenPushDataList.add(generateScreenPushData("O2->1->AW7002/FC1001AI:AI010705.PNT"));
-        screenPushDataList.add(generateScreenPushData("O2->2->AW7002/FC2001AI:AI010705.PNT"));
+        screenPushDataList.add(generateScreenPushData("O2->1->AW7002/FC2001AI:AI010705.PNT"));
+        screenPushDataList.add(generateScreenPushData("O2->2->AW7002/FC1001AI:AI010705.PNT"));
         screenPushDataList.add(generateScreenPushData("O2->3->AW7002/FC3001AI:AI018802.PNT"));
 
         return screenPushDataList;

@@ -24,8 +24,8 @@ public class LoadometerTest extends TestCase {
     @Autowired
     private TradeDataService tradeDataService;
 
-    @Test
+    /*@Test
     public void syncLoadometerTrade(){
         tradeDataService.syncLoadometerTrade("20150901");
-    }
+    }*/
 }

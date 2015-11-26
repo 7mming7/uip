@@ -9,8 +9,10 @@ import com.sq.quota.component.DimensionComparator;
 import com.sq.quota.component.QuotaComputHelper;
 import com.sq.quota.domain.QuotaConsts;
 import com.sq.quota.domain.QuotaInstance;
+import com.sq.quota.domain.QuotaResetRecord;
 import com.sq.quota.domain.QuotaTemp;
 import com.sq.quota.repository.QuotaInstanceRepository;
+import com.sq.quota.repository.QuotaResetRecordRepository;
 import com.sq.quota.repository.QuotaTempRepository;
 import com.sq.quota.strategy.IQuotaComputStrategy;
 import com.sq.quota.strategy.InterfaceQuotaStrategy;
@@ -52,20 +54,38 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
     @Autowired
     private QuotaTempRepository quotaTempRepository;
 
+    @Autowired
+    private QuotaResetRecordRepository quotaResetRecordRepository;
+
     /** 单个计算轮回中的超时时限 */
     public static Long computWaitTimeOutValue = 10l;
 
     /** 指标模板缓存 */
     public static Map<String,QuotaTemp> quotaTempMapCache = new HashMap<String,QuotaTemp>();
 
+    /** 重置指标记录缓存 */
+    public static Map<String,QuotaResetRecord> quotaResetRecordMap = new HashMap<String,QuotaResetRecord>();
+
     /**
      * 初始化操作
      *     1、缓存指标模板
      *     2、更新指标模板的指标模板基础表达式
      */
-    public void reloadQuotaCalculateExp() {
+    public void init() {
+        cacheQuotaResetRecord();
         cacheQuotaTemp();
         updateQuotaExp();
+    }
+
+    /**
+     * 缓存指标重置记录
+     */
+    public void cacheQuotaResetRecord() {
+        List<QuotaResetRecord> quotaResetRecordList = quotaResetRecordRepository.findAll();
+        for (QuotaResetRecord quotaResetRecord:quotaResetRecordList) {
+            log.debug("Cache quotaResetRecord code:" + quotaResetRecord.getQuotaTemp().getIndicatorCode());
+            quotaResetRecordMap.put(quotaResetRecord.getQuotaTemp().getIndicatorCode(), quotaResetRecord);
+        }
     }
 
     /**
