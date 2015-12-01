@@ -1,7 +1,9 @@
 package com.sq.protocol.opc.service;
 
 import com.sq.inject.annotation.BaseComponent;
+import com.sq.protocol.opc.component.OpcRegisterFactory;
 import com.sq.protocol.opc.component.UtgardOpcHelper;
+import com.sq.protocol.opc.domain.OpcServerInfomation;
 import com.sq.protocol.opc.domain.ScreenInfo;
 import com.sq.protocol.opc.repository.ScreenInfoRepository;
 import org.jinterop.dcom.common.JIException;
@@ -48,30 +50,61 @@ public class PushDataForYZTDService {
 
     private static final int DATA_LENGTH = 1024*100;
 
+    private static Server server;
+
+    private static Group group;
+
+    private static Item[] itemArr;
+
+    private static List<ScreenPushData> screenPushDataList= new ArrayList<ScreenPushData>();
+
     /**
-     * 大屏数据推送
+     * 初始化item数组
      */
-    public void screenDataPush () {
-        Server server = UtgardOpcHelper.connect(DCS_CID);
+    private void initItemArr() {
+        server = UtgardOpcHelper.connect(DCS_CID);
         Collection<Leaf> leafs = new LinkedList<Leaf>();
-        List<ScreenPushData> screenPushDataList = fillCodeList();
+        screenPushDataList = fillCodeList();
         for (ScreenPushData screenPushData:screenPushDataList) {
             Leaf leaf = new Leaf(null, screenPushData.getItemCode(), screenPushData.getItemCode());
             leafs.add(leaf);
         }
-        Group group = null;
-        final Item[] itemArr = new Item[leafs.size()];
+        itemArr = new Item[leafs.size()];
         int item_flag = 0;
         try {
             group = server.addGroup();
-            for(Leaf leaf:leafs){
+            for (Leaf leaf : leafs) {
                 log.debug("code->" + leaf.getItemId());
                 Item item = group.addItem(leaf.getItemId());
                 itemArr[item_flag] = item;
                 item_flag++;
             }
+        }  catch (UnknownHostException e) {
+            log.error("Host unknow error.", e);
+        } catch (NotConnectedException e) {
+            log.error("Connnect to opc error.", e);
+        } catch (JIException e) {
+            log.error("Opc server connect error.", e);
+        } catch (DuplicateGroupException e) {
+            log.error("Group duplicate error.", e);
+        } catch (AddFailedException e) {
+            log.error("Group add error.", e);
+        }
+    }
+
+    /**
+     * 大屏数据推送
+     */
+    public void screenDataPush () {
+        try {
+            if (itemArr == null) {
+                initItemArr();
+            }
+            if(group == null) {
+                log.error("group is null!");
+            }
             Map<Item, ItemState> syncItems = null;
-            syncItems = group.read(false, itemArr);
+            syncItems = group.read(true, itemArr);
             List<ScreenInfo> screenInfoList = screenInfoRepository.findAll();
             for (Map.Entry<Item, ItemState> entry : syncItems.entrySet()) {
                 log.debug("key= " + entry.getKey().getId()
@@ -87,17 +120,8 @@ public class PushDataForYZTDService {
 
             pushScreenDataSync(screenInfoList,screenPushDataList);
             screenInfoRepository.save(screenInfoList);
-            server.dispose();
-        } catch (UnknownHostException e) {
-            log.error("Host unknow error.",e);
-        } catch (NotConnectedException e) {
-            log.error("Connnect to opc error.", e);
         } catch (JIException e) {
             log.error("Opc server connect error.", e);
-        } catch (DuplicateGroupException e) {
-            log.error("Group duplicate error.", e);
-        } catch (AddFailedException e) {
-            log.error("Group add error.", e);
         }
     }
 

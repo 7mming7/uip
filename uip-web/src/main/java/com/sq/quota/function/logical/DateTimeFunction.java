@@ -6,6 +6,7 @@ import com.sq.quota.domain.QuotaConsts;
 import com.sq.quota.domain.QuotaInstance;
 import com.sq.quota.domain.QuotaResetRecord;
 import com.sq.quota.repository.QuotaInstanceRepository;
+import com.sq.quota.repository.QuotaResetRecordRepository;
 import com.sq.quota.service.QuotaComputInsService;
 import com.sq.util.SpringUtils;
 import net.sourceforge.jeval.EvaluationConstants;
@@ -42,6 +43,8 @@ public class DateTimeFunction implements Function {
 
     private QuotaInstanceRepository quotaInstanceRepository = SpringUtils.getBean(QuotaInstanceRepository.class);
 
+    private QuotaResetRecordRepository quotaResetRecordRepository = SpringUtils.getBean(QuotaResetRecordRepository.class);
+
     public String getName() {
         return "dateTime";
     }
@@ -61,6 +64,7 @@ public class DateTimeFunction implements Function {
         Integer disDateInt = Double.valueOf(argList.get(1)).intValue();
         log.debug("disDateInt: " + disDateInt);
 
+
         String assQuotaCode = (String)argList.get(2);
         assQuotaCode = assQuotaCode.substring(1,assQuotaCode.length()-1);
         log.debug("assQuotaCode: " + assQuotaCode);
@@ -74,7 +78,7 @@ public class DateTimeFunction implements Function {
         String assComputCal = DateUtil.dateMigrate(cycleStr, disDateInt, computCal);
 
 
-        result = checkQuotaReset(assQuotaCode,assComputCal);
+        result = checkQuotaReset(assQuotaCode,assComputCal,computCal);
         if (null != result) {
             return new FunctionResult(result.toString(),
                     FunctionConstants.FUNCTION_RESULT_TYPE_STRING);
@@ -108,8 +112,11 @@ public class DateTimeFunction implements Function {
      * @param assComputCal
      * @return
      */
-    public Double checkQuotaReset(String assQuotaCode, String assComputCal){
-        QuotaResetRecord quotaResetRecord = QuotaComputInsService.quotaResetRecordMap.get(assQuotaCode);
+    public Double checkQuotaReset(String assQuotaCode, String assComputCal, String currComputCal){
+        List<QuotaResetRecord> quotaResetRecordList = quotaResetRecordRepository.fetchResetRecord(assQuotaCode,currComputCal);
+        if (quotaResetRecordList.isEmpty()) return null;
+
+        QuotaResetRecord quotaResetRecord = quotaResetRecordList.get(0);
         if(null == quotaResetRecord) {
             return null;
         }
@@ -118,9 +125,10 @@ public class DateTimeFunction implements Function {
         try {
             assCal = DateUtil.stringToCalendar(assComputCal,DateUtil.DATE_FORMAT_DAFAULT);
         } catch (ParseException e) {
-            e.printStackTrace();
+            log.error("assQuotaCode:" + assQuotaCode + ",assComputCal:" + assComputCal + "stringToCalendar error!");
         }
-        if (DateUtils.isSameDay(resetCal,assCal)) {
+        resetCal.add(Calendar.DAY_OF_MONTH, -1);
+        if (DateUtils.isSameDay(resetCal, assCal)) {
             return quotaResetRecord.getResetValue();
         }
 

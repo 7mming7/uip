@@ -103,8 +103,6 @@ public class InterfaceQuotaStrategy extends IQuotaComputStrategy {
             return null;
         }
 
-
-
         for (OriginalData originalData : originalDataList) {
             String itemValue = originalData.getItemValue();
             variableBuilder.append(itemValue).append(",");

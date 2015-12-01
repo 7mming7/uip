@@ -72,21 +72,20 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
      *     2、更新指标模板的指标模板基础表达式
      */
     public void init() {
-        cacheQuotaResetRecord();
-        cacheQuotaTemp();
-        updateQuotaExp();
+        /*cacheQuotaTemp();
+        updateQuotaExp();*/
     }
 
     /**
      * 缓存指标重置记录
      */
-    public void cacheQuotaResetRecord() {
+    /*public void cacheQuotaResetRecord() {
         List<QuotaResetRecord> quotaResetRecordList = quotaResetRecordRepository.findAll();
         for (QuotaResetRecord quotaResetRecord:quotaResetRecordList) {
             log.debug("Cache quotaResetRecord code:" + quotaResetRecord.getQuotaTemp().getIndicatorCode());
             quotaResetRecordMap.put(quotaResetRecord.getQuotaTemp().getIndicatorCode(), quotaResetRecord);
-        }
-    }
+        }¡
+    }*/
 
     /**
      * 缓存指标模板
@@ -369,7 +368,6 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
         deleteNeedReComputIndicator(computCal, associatedQuotaTempList);
 
         Collections.sort(sortQuotaTempList, new DimensionComparator());
-
 
         List<Calendar> calendarList = DateUtil.dayListSinceCal(computCal);
 

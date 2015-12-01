@@ -3,6 +3,8 @@ package com.sq.quota.repository;
 import com.sq.quota.domain.QuotaResetRecord;
 import com.sq.repository.BaseRepository;
 
+import java.util.List;
+
 /**
  * User: shuiqing
  * Date: 15/11/26
@@ -16,4 +18,5 @@ import com.sq.repository.BaseRepository;
  */
 public interface QuotaResetRecordRepository  extends BaseRepository<QuotaResetRecord, Long> {
 
+    List<QuotaResetRecord> fetchResetRecord(String assQuotaCode, String assComputCal);
 }

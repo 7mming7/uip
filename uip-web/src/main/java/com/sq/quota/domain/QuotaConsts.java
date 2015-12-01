@@ -73,19 +73,19 @@ public interface QuotaConsts {
      *      6、季度
      *      7、年
      */
-    public static final int CAL_FREQUENCY_HALF_HOUR = 1;
+    public static final int CAL_FREQUENCY_HALF_HOUR = 7;
 
-    public static final int CAL_FREQUENCY_HOUR = 2;
+    public static final int CAL_FREQUENCY_HOUR = 1;
 
-    public static final int CAL_FREQUENCY_DAY = 3;
+    public static final int CAL_FREQUENCY_DAY = 2;
 
-    public static final int CAL_FREQUENCY_WEEK = 4;
+    public static final int CAL_FREQUENCY_WEEK = 3;
 
-    public static final int CAL_FREQUENCY_Month = 5;
+    public static final int CAL_FREQUENCY_Month = 4;
 
-    public static final int CAL_FREQUENCY_Quarter = 6;
+    public static final int CAL_FREQUENCY_Quarter = 5;
 
-    public static final int CAL_FREQUENCY_Year = 7;
+    public static final int CAL_FREQUENCY_Year = 6;
 
 
     /** ======================

@@ -63,10 +63,9 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
      * @param cid
      */
     public void fetchReadSyncItems (final int cid) {
-        boolean flag = true;
+        boolean flag = false;
         OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
         if (opcServerInfomation.getLeafs() == null || !opcServerInfomation.isConn_status()) {
-            flag = false;
             opcServerInfomation.setLeafs(null);
             switch (BaseConfiguration.CONFIG_INIT_ITEM) {
                 case AutoGenerate:
@@ -77,27 +76,42 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
                     OpcRegisterFactory.registerConfigItems(cid, mesuringPointList);
                     break;
             }
+            flag = true;
         }
         Collection<Leaf> leafs = opcServerInfomation.getLeafs();
         Server server = opcServerInfomation.getServer();
         server.setDefaultUpdateRate(6000);
-        itemArr = new Item[leafs.size()];
         try {
-
-            log.debug("开始添加测点.");
-            int item_flag = 0;
-            group = server.addGroup();
-            group.setActive(true);
-            for(Leaf leaf:leafs){
-                Item item = group.addItem(leaf.getItemId());
-                item.setActive(true);
-                log.debug("ItemName:[" + item.getId()
-                        + "],value:" + item.read(true).getValue());
-                itemArr[item_flag] = item;
-                item_flag++;
+            if (flag) {
+                log.debug("开始添加测点.");
+                int item_flag = 0;
+                group = server.addGroup();
+                group.setActive(true);
+                itemArr = new Item[leafs.size()];
+                for(Leaf leaf:leafs){
+                    Item item = null;
+                    try {
+                        item = group.addItem(leaf.getItemId());
+                    } catch (AddFailedException e) {
+                        log.error("Group add error.itemCode：" + leaf.getItemId(),e);
+                    }
+                    item.setActive(true);
+                    log.debug("ItemName:[" + item.getId()
+                            + "],value:" + item.read(true).getValue());
+                    itemArr[item_flag] = item;
+                    item_flag++;
+                }
             }
 
-            readItemStateMysql(cid, group, itemArr);
+            Map<Item, ItemState> syncItems = null;
+            try {
+                /** arg1 false 读取缓存数据 OPCDATASOURCE.OPC_DS_CACHE  */
+                syncItems = group.read(true, itemArr);
+            } catch (JIException e) {
+                log.error("Read item error.",e);
+            }
+
+            readItemStateMysql(cid, syncItems);
             /*final Group finalGroup = group;
             new Thread("mysql_opc_sync_thread"){
                 @Override
@@ -121,25 +135,15 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
             log.error("Opc server connect error.",e);
         } catch (DuplicateGroupException e) {
             log.error("Group duplicate error.",e);
-        } catch (AddFailedException e) {
-            log.error("Group add error.",e);
         }
     }
 
     /**
      * group读取item的同步值 mysql
-     * @param group   opc group
-     * @param itemArr item数组
      */
-    public void readItemStateMysql (int cid, Group group, Item[] itemArr) {
+    public void readItemStateMysql (int cid, Map<Item, ItemState> syncItems) {
         OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
-        Map<Item, ItemState> syncItems = null;
-        try {
-            /** arg1 false 读取缓存数据 OPCDATASOURCE.OPC_DS_CACHE  */
-            syncItems = group.read(true, itemArr);
-        } catch (JIException e) {
-            log.error("Read item error.",e);
-        }
+
         Long batchNum = originalDataRepository.gernateNextBatchNumber(Integer.parseInt(opcServerInfomation.getSysId()));
         List<OriginalData> originalDataList = new LinkedList<OriginalData>();
         for (Map.Entry<Item, ItemState> entry : syncItems.entrySet()) {
