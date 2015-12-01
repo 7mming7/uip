@@ -202,7 +202,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
 
         for (QuotaTemp quotaTemp : quotaTempList) {
             log.debug(" QuotaTemp:->" + quotaTemp.getIndicatorName());
-            sendCalculateComm1(quotaTemp, computCal, new InterfaceQuotaStrategy());
+            sendCalculateCommForInter(quotaTemp, computCal, new InterfaceQuotaStrategy());
         }
     }
 
@@ -220,10 +220,9 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
         quotaComputTask.setiQuotaComputStrategy(iComputStrategy);
         quotaComputTask.setQuotaTemp(quotaTemp);
         QuotaComputHelper._instance.execute(quotaComputTask);
-        /*QuotaComputHelper.fetchThreadPooSingleInstance().submit(quotaComputTask);*/
     }
 
-    public synchronized void sendCalculateComm1 (QuotaTemp quotaTemp,
+    public synchronized void sendCalculateCommForInter (QuotaTemp quotaTemp,
                                                 Calendar computCal, IQuotaComputStrategy iComputStrategy) {
         QuotaComputTask quotaComputTask = new QuotaComputTask();
         quotaComputTask.setComputCal(computCal);
@@ -231,7 +230,6 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
         quotaComputTask.setiQuotaComputStrategy(iComputStrategy);
         quotaComputTask.setQuotaTemp(quotaTemp);
         quotaComputTask.run();
-        /*QuotaComputHelper.fetchThreadPooSingleInstance().submit(quotaComputTask);*/
     }
 
 
