@@ -117,7 +117,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <db.name>dev_mis_jz_20151130</db.name>
+                <db.name>zlm_mis_yz_20151118</db.name>
                 <connection.driver_class>com.mysql.jdbc.Driver</connection.driver_class>
                 <connection.admin.url>
                     <![CDATA[ jdbc:mysql://192.168.1.239:3306?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull ]]>

@@ -16,6 +16,7 @@ import net.sourceforge.jeval.EvaluationConstants;
 import net.sourceforge.jeval.EvaluationException;
 import net.sourceforge.jeval.Evaluator;
 import net.sourceforge.jeval.function.Function;
+import net.sourceforge.jeval.function.FunctionResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +43,7 @@ public class InterfaceQuotaStrategy extends IQuotaComputStrategy {
 
     private static MesuringPointRepository mesuringPointRepository = SpringUtils.getBean(MesuringPointRepository.class);
 
-    private LogicalFunctions logicalFunctions = SpringUtils.getBean(LogicalFunctions.class);
+    private static LogicalFunctions logicalFunctions = SpringUtils.getBean(LogicalFunctions.class);
 
     @Override
     public Object execIndiComput(QuotaTemp quotaTemp, Calendar computCal) {
@@ -57,7 +58,7 @@ public class InterfaceQuotaStrategy extends IQuotaComputStrategy {
         List<String> variableList = QuotaComputHelper.getVariableList(calculateExp,evaluator);
         String checkPoint = variableList.get(0);
 
-        String result = "";
+        String result = null;
         List<Function> functionList = logicalFunctions.getFunctions();
         for(Function function:functionList) {
             if (calculateExp.contains(function.getName())) {
@@ -65,10 +66,16 @@ public class InterfaceQuotaStrategy extends IQuotaComputStrategy {
                         + DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_YMDHM)
                         + "')";
                 try {
+                    log.error("execIndiComput  computExp --  " + computExp);
+                    log.error("evaluator ---- " + (null == evaluator));
                     result = evaluator.evaluate(computExp);
                 } catch (EvaluationException e) {
                     log.error("parseExpressionFront -> logicalFunctions 指标计算出现错误.calculateExp: " + computExp, e);
+                } catch (Exception e) {
+                    log.error("computExp ------" + computExp  + ", evaluator ----- " + (evaluator == null), e);
                 }
+                log.error("result ---- " + result);
+                if (result.equals("'null'")) return null;
                 Double calResult = Double.parseDouble(result);
                 return calResult;
             }

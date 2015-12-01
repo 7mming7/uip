@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * 瞬时值函数
@@ -49,6 +50,7 @@ public class InstantFunction implements Function {
         log.error("quotaCode:" + quotaCode);
 
         String computDateInt = (String)argList.get(1);
+        log.error("computDateInt:" + computDateInt);
         computDateInt = computDateInt.substring(1, computDateInt.length() - 1);
 
         Calendar computCal = null;
@@ -58,22 +60,29 @@ public class InstantFunction implements Function {
             e.printStackTrace();
         }
 
-        OriginalData frontOriginalData = originalDataRepository.fetchFrontOriginalDataByCal(quotaCode,computCal);
-        OriginalData behindOriginalData = originalDataRepository.fetchBehindOriginalDataByCal(quotaCode, computCal);
-        if (frontOriginalData == null && behindOriginalData == null) {
-            return null;
-        } else if (frontOriginalData == null && behindOriginalData != null) {
-            result = Double.parseDouble(behindOriginalData.getItemValue());
-        } else if (frontOriginalData != null && behindOriginalData == null) {
-            result = Double.parseDouble(frontOriginalData.getItemValue());
+        List<OriginalData> frontOriginalDataList = originalDataRepository.fetchFrontOriginalDataByCal(quotaCode,computCal);
+        List<OriginalData> behindOriginalDataList = originalDataRepository.fetchBehindOriginalDataByCal(quotaCode, computCal);
+        if (frontOriginalDataList.isEmpty() && behindOriginalDataList.isEmpty()) {
+            return new FunctionResult(null,
+                    FunctionConstants.FUNCTION_RESULT_TYPE_STRING);
+        } else if (!frontOriginalDataList.isEmpty() && behindOriginalDataList.isEmpty()) {
+            result = Double.parseDouble(frontOriginalDataList.get(0).getItemValue());
+        } else if (frontOriginalDataList.isEmpty() && !behindOriginalDataList.isEmpty()) {
+            result = Double.parseDouble(behindOriginalDataList.get(0).getItemValue());
         } else {
-            Double frontValue = Double.parseDouble(frontOriginalData.getItemValue());
-            Double behindValue = Double.parseDouble(behindOriginalData.getItemValue());
-            long betMinutesTwoInput = DateUtil.getMinutesBetTwoCal(frontOriginalData.getInstanceTime(), behindOriginalData.getInstanceTime());
-            long betMinutesComputCal = DateUtil.getMinutesBetTwoCal(frontOriginalData.getInstanceTime(), computCal);
-            System.out.println("betMinutesTwoInput--------- " + betMinutesTwoInput);
-            System.out.println("betMinutesComputCal-------- " + betMinutesComputCal);
-            result = frontValue + betMinutesComputCal*((behindValue - frontValue)/betMinutesTwoInput);
+            Double frontValue = Double.parseDouble(frontOriginalDataList.get(0).getItemValue());
+            Double behindValue = Double.parseDouble(behindOriginalDataList.get(0).getItemValue());
+            long betMinutesTwoInput = DateUtil.getMinutesBetTwoCal(frontOriginalDataList.get(0).getInstanceTime(), behindOriginalDataList.get(0).getInstanceTime());
+            long betMinutesComputCal = DateUtil.getMinutesBetTwoCal(frontOriginalDataList.get(0).getInstanceTime(), computCal);
+            log.error("betMinutesTwoInput--------- " + betMinutesTwoInput);
+            log.error("betMinutesComputCal-------- " + betMinutesComputCal);
+            log.error("frontValue------- " + frontValue);
+            log.error("behindValue-------- " + behindValue);
+            if (frontValue.equals(behindValue)) {
+                result = frontValue;
+            } else {
+                result = frontValue + betMinutesComputCal*((behindValue - frontValue)/betMinutesTwoInput);
+            }
         }
 
         return new FunctionResult(result.toString(),

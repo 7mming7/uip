@@ -9,7 +9,6 @@
         <property name="triggers">
             <list>
                 <ref bean="indicatorReallTimeComputJobTrigger" />
-                <ref bean="dcsDataMigrationJobTrigger" />
                 <!--<ref bean="opcSyncDataJobTrigger" />
                 <ref bean="dcsDataMigrationJobTrigger" />
                 <ref bean="execInterfaceIndicatorDataGaterTrigger" />
@@ -96,7 +95,7 @@
             <ref bean="indicatorReallTimeComputDetailJob"/>
         </property>
         <property name="cronExpression">
-            <value>0 */30 * * * ?</value>
+            <value>0 */2 * * * ?</value>
         </property>
     </bean>
 

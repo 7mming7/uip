@@ -59,7 +59,7 @@
     <!-- 日志输出级别 -->
     <root level="ERROR">
         <appender-ref ref="STDOUT" />
-        <appender-ref ref="ERROR" />
+        <appender-ref ref="DEBUG" />
     </root>
 
     <!--错误日志-->

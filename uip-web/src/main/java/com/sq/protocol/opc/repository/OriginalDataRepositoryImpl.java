@@ -83,9 +83,8 @@ public class OriginalDataRepositoryImpl{
         return originalDataList;
     }
 
-    public OriginalData fetchFrontOriginalDataByCal(final String itemCode,final Calendar calendar) {
+    public List<OriginalData> fetchFrontOriginalDataByCal(final String itemCode,final Calendar calendar) {
         EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
         StringBuilder nativeSql = new StringBuilder();
         nativeSql.append(" SELECT             ")
                 .append("      *              ")
@@ -105,15 +104,12 @@ public class OriginalDataRepositoryImpl{
         query.setParameter(1, calendar);
         query.setParameter(2, itemCode);
 
-        OriginalData originalData = (OriginalData) query.getSingleResult();
-        em.getTransaction().commit();
-        em.close();
-        return originalData;
+        List<OriginalData> originalDataList = query.getResultList();
+        return originalDataList;
     }
 
-    public OriginalData fetchBehindOriginalDataByCal(final String itemCode,final Calendar calendar) {
+    public List<OriginalData> fetchBehindOriginalDataByCal(final String itemCode,final Calendar calendar) {
         EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
         StringBuilder nativeSql = new StringBuilder();
         nativeSql.append(" SELECT             ")
                 .append("      *              ")
@@ -133,10 +129,8 @@ public class OriginalDataRepositoryImpl{
         query.setParameter(1, calendar);
         query.setParameter(2, itemCode);
 
-        OriginalData originalData = (OriginalData) query.getSingleResult();
-        em.getTransaction().commit();
-        em.close();
-        return originalData;
+        List<OriginalData> originalDataList = query.getResultList();
+        return originalDataList;
     }
 
     public List<OriginalData> fetchOriDataByCodeList(final List<String> itemCodeList) {

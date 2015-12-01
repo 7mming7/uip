@@ -35,10 +35,10 @@ public interface OriginalDataRepository extends BaseRepository<OriginalData, Lon
     List<OriginalData> listAnHourPreOriginalData(String tableName, String indiCode, Long subMin, Calendar computCal);
 
     /** 获取指定时间之前的最近的一条记录 */
-    OriginalData fetchFrontOriginalDataByCal(String itemCode, Calendar calendar);
+    List<OriginalData> fetchFrontOriginalDataByCal(String itemCode, Calendar calendar);
 
     /** 获取指定时间之后的最近的一条记录 */
-    OriginalData fetchBehindOriginalDataByCal(String itemCode, Calendar calendar);
+    List<OriginalData> fetchBehindOriginalDataByCal(String itemCode, Calendar calendar);
 
     /** 根据测点编码集合获取实时数据 */
     List<OriginalData> fetchOriDataByCodeList(List<String> itemCodeList);
