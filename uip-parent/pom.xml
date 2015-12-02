@@ -17,6 +17,7 @@
     <modules>
         <module>../uip-core</module>
         <module>../uip-web</module>
+        <module>../uip-annuus</module>
     </modules>
 
     <!-- 第三方jar的版本号参数变量 -->
