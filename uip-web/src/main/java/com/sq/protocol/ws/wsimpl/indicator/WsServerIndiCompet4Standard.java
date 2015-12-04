@@ -60,6 +60,7 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 		try {
 			log.error("receiveReComputIndicatorInfo开始接收指标重新计算请求报文！开始时间："+new Date());
 			log.error("请求收到同步时间---" + DateUtil.formatCalendar(Calendar.getInstance()));
+			log.error("收到的报文--- " + xmlStr);
 
 			MrpElementRequest<IndicatorReqElement> requestBean = WsProtocalParser.xmlToBean(xmlStr, new MrpElementRequest<IndicatorReqElement>(), IndicatorReqElement.class);
 

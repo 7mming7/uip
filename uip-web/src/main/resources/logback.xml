@@ -49,6 +49,7 @@
     <root level="ERROR">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="ERROR" />
+        <appender-ref ref="quotaAppender" />
     </root>
 
     <!--错误日志-->
@@ -56,7 +57,7 @@
         <appender-ref ref="ERROR"/>
     </logger>
 
-    <logger name="com.sq.quota" additivity="false" level="ERROR">
+    <logger name="com.sq.quota" additivity="true" level="ERROR">
         <appender-ref ref="quotaAppender"/>
     </logger>
 </configuration>

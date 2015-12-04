@@ -134,7 +134,7 @@ public class QuotaComputTask implements Runnable {
             /*tempComputCal.add(Calendar.HOUR_OF_DAY, -1);*/
         }
         quotaInstance.setInstanceTime(tempComputCal.getTime());
-        quotaInstance.setCreateTime(tempComputCal);
+        quotaInstance.setCreateTime(Calendar.getInstance());
         quotaInstance.setStatDateNum(Integer.parseInt(DateUtil.formatCalendar(tempComputCal, DateUtil.DATE_FORMAT_DAFAULT)));
         quotaComputService.save(quotaInstance);
     }

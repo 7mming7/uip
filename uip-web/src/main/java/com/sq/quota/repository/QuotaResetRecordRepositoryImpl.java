@@ -23,7 +23,6 @@ import java.util.List;
 public class QuotaResetRecordRepositoryImpl {
 
     private EntityManagerFactory emf;
-    private EntityManager em;
     @PersistenceUnit
     public void setEntityManagerFactory(EntityManagerFactory emf) {
         this.emf = emf;
@@ -31,6 +30,7 @@ public class QuotaResetRecordRepositoryImpl {
 
     public List<QuotaResetRecord> fetchResetRecord(final String assQuotaCode, final String assComputCal){
         EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
         StringBuilder nativeSql = new StringBuilder();
         nativeSql.append(" select * from t_indicatorresetdata ir,t_indicatortemp it " +
                 "where ir.indicatorTempId = it.id and it.indicatorCode = ?1 " +
@@ -40,6 +40,8 @@ public class QuotaResetRecordRepositoryImpl {
         query.setParameter(2, assComputCal);
 
         List<QuotaResetRecord> quotaResetRecordList = query.getResultList();
+        em.getTransaction().commit();
+        em.close();
 
         return quotaResetRecordList;
     }

@@ -131,10 +131,10 @@
     <tx:advice id="txAdvice" transaction-manager="transactionManager">
         <tx:attributes>
             <!--hibernate4必须配置为开启事务 否则 getCurrentSession()获取不到-->
-            <tx:method name="query*" propagation="REQUIRED" read-only="true"/>
-            <tx:method name="count*" propagation="REQUIRED" read-only="true"/>
-            <tx:method name="find*" propagation="REQUIRED" read-only="true"/>
-            <tx:method name="list*" propagation="REQUIRED" read-only="true"/>
+            <tx:method name="query*" propagation="NOT_SUPPORTED" read-only="true"/>
+            <tx:method name="count*" propagation="NOT_SUPPORTED" read-only="true"/>
+            <tx:method name="find*" propagation="NOT_SUPPORTED" read-only="true"/>
+            <tx:method name="list*" propagation="NOT_SUPPORTED" read-only="true"/>
             <tx:method name="*" propagation="NOT_SUPPORTED"/>
         </tx:attributes>
     </tx:advice>

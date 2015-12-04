@@ -72,8 +72,8 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
      *     2、更新指标模板的指标模板基础表达式
      */
     public void init() {
-        /*cacheQuotaTemp();
-        updateQuotaExp();*/
+        /*cacheQuotaTemp();*/
+        updateQuotaExp();
     }
 
     /**
