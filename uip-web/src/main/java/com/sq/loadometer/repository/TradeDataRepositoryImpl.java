@@ -38,7 +38,7 @@ public class TradeDataRepositoryImpl {
         nativeSql.append(" SELECT ")
                 .append("      MP.sourceCode as sourceCode, ")
                 .append("      MP.targetCode as indicatorCode, ")
-                .append("      IFNULL(SUM(T.net)/1000,0) as totalAmount ")
+                .append("      IFNULL(SUM(T.net),0) as totalAmount ")
                 .append("  FROM ")
                 .append("      t_indicatortemp IT LEFT JOIN ")
                 .append("      t_mesuringpoint MP on IT.indicatorCode = MP.targetCode LEFT JOIN ")

@@ -72,7 +72,8 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
      *     2、更新指标模板的指标模板基础表达式
      */
     public void init() {
-        /*cacheQuotaTemp();*/
+        System.out.println("-------------------------------------");
+        cacheQuotaTemp();
         updateQuotaExp();
     }
 
@@ -154,7 +155,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
                 quota.setCalculateExpression(quota.getCalculateExpression().replace(needReplaceString, replaceString));
                 expStatusflag = false;
             }
-            log.debug("quotaTemp code:" + quota.getIndicatorCode() + ",getSemaphore:" + quota.getSemaphore());
+            log.error("quotaTemp code:" + quota.getIndicatorCode() + ",getSemaphore:" + quota.getSemaphore());
         }
 
         if (expStatusflag || quota.getCalculateExpression() == null) {

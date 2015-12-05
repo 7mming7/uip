@@ -34,6 +34,11 @@ public class DblinkConnecter {
 
     private static String ODBC_CONFIG_PASSWORD = "odbc_password";
 
+    private static String ODBC_CONFIG_RATIO = "odbc_ratio";
+
+    /** 地磅数据转换倍率 */
+    public static int load_ratio;
+
     /** 配置文件路径 */
     private final static String CONFIG_FILE_NAME = "/conf/odbc-jdbc-config.properties";
 
@@ -59,6 +64,7 @@ public class DblinkConnecter {
         prop = new Properties();
         try {
             prop.load(DblinkConnecter.class.getResourceAsStream(CONFIG_FILE_NAME));
+            load_ratio = Integer.parseInt(getEntryValue(ODBC_CONFIG_RATIO));
         } catch (IOException e){
             log.error("ODBC-JDBC 加载" + CONFIG_FILE_NAME + "配置文件出错.", e);
         }

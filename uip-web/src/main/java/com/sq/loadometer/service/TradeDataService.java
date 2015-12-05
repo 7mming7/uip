@@ -8,6 +8,7 @@ import com.sq.comput.repository.IndicatorTempRepository;
 import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
 import com.sq.inject.annotation.BaseComponent;
+import com.sq.loadometer.component.DblinkConnecter;
 import com.sq.loadometer.component.JdbcHelper;
 import com.sq.loadometer.domain.LoadometerIndicatorDto;
 import com.sq.loadometer.domain.Trade;
@@ -103,6 +104,14 @@ public class TradeDataService extends BaseService<Trade, Long> {
             List<HashMap<String,String>> resultList = JdbcHelper.query(insertTradeBuilder.toString());
             for (HashMap tradeMap:resultList) {
                 Trade trade = new Trade(tradeMap);
+                Double gross = Double.parseDouble(trade.getGross())/DblinkConnecter.load_ratio;
+                trade.setGross(gross.toString());
+
+                Double tare = Double.parseDouble(trade.getTare())/DblinkConnecter.load_ratio;
+                trade.setTare(tare.toString());
+
+                Double net = Double.parseDouble(trade.getNet())/DblinkConnecter.load_ratio;
+                trade.setNet(net.toString());
                 tradeList.add(trade);
             }
         } catch (SQLException e) {
