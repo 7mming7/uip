@@ -246,7 +246,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
                 .addSearchFilter("dataSource", MatchType.EQ, QuotaConsts.DATASOURCE_INTERFACE)
                 .addSearchFilter("calFrequency", MatchType.GTE, QuotaConsts.CAL_FREQUENCY_DAY);
         List<QuotaTemp> quotaTempList = quotaTempRepository.findAll(searchable).getContent();
-        Collections.sort(quotaTempList, new DimensionComparator());
+        /*Collections.sort(quotaTempList, new DimensionComparator());*/
 
         for (QuotaTemp quotaTemp:quotaTempList) {
             waitComputQuotaQueue.add(quotaTemp);

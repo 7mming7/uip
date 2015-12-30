@@ -97,12 +97,12 @@ public class OriginalDataRepositoryImpl{
                 .append("  WHERE              ")
                 .append("      id = (         ")
                 .append("          SELECT     ")
-                .append("             max(id) ")
+                .append("             max(o.id) ")
                 .append("          FROM       ")
-                .append("             t_originaldata o     ")
+                .append("             t_originaldata o, t_mesuringpoint p     ")
                 .append("          WHERE ")
-                .append("             o.instanceTime <= ?1 ")
-                .append("          AND o.itemcode = ?2 ")
+                .append("            o.itemCode = p.sourceCode and o.instanceTime <= ?1 ")
+                .append("          AND p.targetCode = ?2 ")
                 .append("            )        ");
         Query query = em.createNativeQuery(nativeSql.toString(),OriginalData.class);
         query.setParameter(1, calendar);
@@ -125,12 +125,12 @@ public class OriginalDataRepositoryImpl{
                 .append("  WHERE              ")
                 .append("      id = (         ")
                 .append("          SELECT     ")
-                .append("             min(id) ")
+                .append("             min(o.id) ")
                 .append("          FROM       ")
-                .append("             t_originaldata o     ")
+                .append("             t_originaldata o, t_mesuringpoint p     ")
                 .append("          WHERE ")
-                .append("             o.instanceTime >= ?1 ")
-                .append("          AND o.itemcode = ?2 ")
+                .append("            o.itemCode = p.sourceCode and o.instanceTime <= ?1 ")
+                .append("          AND p.targetCode = ?2 ")
                 .append("            )        ");
         Query query = em.createNativeQuery(nativeSql.toString(),OriginalData.class);
         query.setParameter(1, calendar);
