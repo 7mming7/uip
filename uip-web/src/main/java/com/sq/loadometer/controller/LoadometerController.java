@@ -1,9 +1,8 @@
 package com.sq.loadometer.controller;
 
-import com.sq.loadometer.domain.Trade;
 import com.sq.loadometer.service.TradeDataService;
+import com.sq.util.DateUtil;
 import com.sq.util.StringUtils;
-import com.sq.web.controller.BaseController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 /**
  * 地磅controller
@@ -52,10 +53,12 @@ public class LoadometerController{
             betTwoDayArr[1] = betTwoDay;
         }
 
-        for (Integer i=Integer.parseInt(betTwoDayArr[0]);i<=Integer.parseInt(betTwoDayArr[1]);i++) {
-            System.out.println(i);
-            tradeDataService.removeCurrDayTradeData(i.toString());
-            tradeDataService.insertCurrDayTradeData(i.toString());
+        List<String> dayList = DateUtil.dayListBetweenDate(Integer.parseInt(betTwoDayArr[0]),Integer.parseInt(betTwoDayArr[1]));
+
+        for (String syncDay:dayList) {
+            System.out.println(syncDay);
+            tradeDataService.removeCurrDayTradeData(syncDay);
+            tradeDataService.insertCurrDayTradeData(syncDay);
         }
 
         return null;

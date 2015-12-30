@@ -40,7 +40,7 @@ public abstract class IQuotaComputStrategy {
      */
     public static boolean checkQuotaExpression (Evaluator evaluator, QuotaTemp quotaTemp) {
         List<String> variableList = QuotaComputHelper.getVariableList(quotaTemp.getCalculateExpression(), evaluator);
-        if (variableList.isEmpty()) {
+        if (null == variableList || variableList.isEmpty()) {
             log.error("指标：" + quotaTemp.getIndicatorCode() + "-的表达式没有动态参数!");
             return false;
         }
@@ -61,7 +61,7 @@ public abstract class IQuotaComputStrategy {
         Assert.notNull(searchable, "searchable can not be null!");
         int[] dayArray = new int[2];
         int switchParam = computQuotaTemp.getFetchCycle();
-        log.debug("computQuotaTemp1:" + computQuotaTemp.getIndicatorCode()
+        log.error("computQuotaTemp1:" + computQuotaTemp.getIndicatorCode()
                 + ",varQuotaTemp:" + quotaTemp.getIndicatorCode()
                 + ",comput fetchCycle:" + computQuotaTemp.getFetchCycle()
                 + ",quotaTemp fetchCycle:" + quotaTemp.getFetchCycle()
@@ -69,7 +69,7 @@ public abstract class IQuotaComputStrategy {
         if (computQuotaTemp.getFetchCycle() == quotaTemp.getFetchCycle()) {
             switchParam = computQuotaTemp.getCalFrequency();
         }
-        log.debug("computQuotaTemp2:" + computQuotaTemp.getIndicatorCode()
+        log.error("computQuotaTemp2:" + computQuotaTemp.getIndicatorCode()
                 + ",varQuotaTemp:" + quotaTemp.getIndicatorCode()
                 + ",comput fetchCycle:" + computQuotaTemp.getFetchCycle()
                 + ",quotaTemp fetchCycle:" + quotaTemp.getFetchCycle()
@@ -114,7 +114,7 @@ public abstract class IQuotaComputStrategy {
                 searchable.addSearchFilter("statDateNum", MatchType.GTE, dayArray[0]);
                 searchable.addSearchFilter("statDateNum", MatchType.LTE, dayArray[1]);
         }
-
+        System.out.println(computQuotaTemp.getIndicatorCode() + " --- searchable--" + searchable.toString());
         return searchable;
     }
 

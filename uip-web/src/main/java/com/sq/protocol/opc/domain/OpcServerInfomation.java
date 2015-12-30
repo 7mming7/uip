@@ -1,6 +1,8 @@
 package com.sq.protocol.opc.domain;
 
 import org.openscada.opc.lib.common.ConnectionInformation;
+import org.openscada.opc.lib.da.Group;
+import org.openscada.opc.lib.da.Item;
 import org.openscada.opc.lib.da.Server;
 import org.openscada.opc.lib.da.browser.Leaf;
 
@@ -27,6 +29,10 @@ public class OpcServerInfomation {
     private String sysId;
 
     private Server server;
+
+    private Group group;
+
+    private Item[] itemArr;
 
     /** 连接信息 */
     private ConnectionInformation connectionInformation;
@@ -80,5 +86,33 @@ public class OpcServerInfomation {
 
     public void setConn_status(boolean conn_status) {
         this.conn_status = conn_status;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+    public Item[] getItemArr() {
+        return itemArr;
+    }
+
+    public void setItemArr(Item[] itemArr) {
+        this.itemArr = itemArr;
+    }
+
+    @Override
+    public String toString() {
+        return "OpcServerInfomation{" +
+                "c_id=" + c_id +
+                ", conn_status=" + conn_status +
+                ", sysId='" + sysId + '\'' +
+                ", server=" + server +
+                ", connectionInformation=" + connectionInformation.toString() +
+                ", leafs=" + ((leafs == null)?0:leafs.size()) +
+                '}';
     }
 }

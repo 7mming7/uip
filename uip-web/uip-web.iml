@@ -39,7 +39,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="uip-core" />
-    <orderEntry type="library" name="Maven: mysql:mysql-connector-java:5.1.9" level="project" />
+    <orderEntry type="library" name="Maven: mysql:mysql-connector-java:5.1.31" level="project" />
     <orderEntry type="library" name="Maven: com.yahoo.platform.yui:yuicompressor:2.4.2" level="project" />
     <orderEntry type="library" name="Maven: rhino:js:1.6R7" level="project" />
     <orderEntry type="library" name="Maven: org.apache.poi:poi:3.9" level="project" />

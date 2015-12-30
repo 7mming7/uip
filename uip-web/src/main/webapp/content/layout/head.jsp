@@ -13,7 +13,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title></title>
+    <title>Ocean</title>
 </head>
 <body>
 <!-- Navigation -->
@@ -25,7 +25,7 @@
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
     </button>
-    <a class="navbar-brand" href="${ctx}/">Mtime --- P.nc_shuiqing</a>
+    <a class="navbar-brand" href="${ctx}/">Ocean --- P.nc_shuiqing</a>
   </div>
   <!-- /.navbar-header -->
 
@@ -57,7 +57,12 @@
           <a href="${ctx}/dashbord/toDashBord.do"><i class="fa fa-dashboard fa-fw"></i> 控制面板</a>
         </li>
         <li>
-          <a href="toTables.do"><i class="fa fa-bar-chart-o fa-fw"></i> 接口监视</a>
+          <a href="toTables.do"><i class="fa fa-bar-chart-o fa-fw"></i> 接口监视<span class="fa arrow"></span></a>
+          <ul class="nav nav-second-level">
+            <li>
+              <a class="${currentHeader == 'interface-config' ? 'active' : ''}" href="${ctx}/content/protocal/monitor/opc-realtime-disp.jsp">实时数据</a>
+            </li>
+          </ul>
         </li>
         <li>
           <a href="../account/tables.html"><i class="fa fa-bar-chart-o fa-fw"></i> 接口配置<span class="fa arrow"></span></a>
@@ -68,10 +73,13 @@
           </ul>
         </li>
         <li>
-          <a href="../account/tables.html"><i class="fa fa-bar-chart-o fa-fw"></i>  数据汇集<span class="fa arrow"></span></a>
+          <a href="../account/tables.html"><i class="fa fa-bar-chart-o fa-fw"></i>  通信协议<span class="fa arrow"></span></a>
           <ul class="nav nav-second-level">
             <li>
-              <a class="${currentHeader == 'interface-config' ? 'active' : ''}" href="${ctx}/content/comput/reInterfaceComput.jsp">接口重计算</a>
+              <a class="${currentHeader == 'interface-config' ? 'active' : ''}" href="${ctx}/content/protocal/opc/opc-client-add.jsp">OPC通信新增</a>
+            </li>
+            <li>
+              <a class="${currentHeader == 'interface-config' ? 'active' : ''}" href="${ctx} /opc/listOpcConnection.do">OPC通信列表</a>
             </li>
           </ul>
         </li>

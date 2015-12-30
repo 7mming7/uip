@@ -8,7 +8,6 @@ import com.sq.comput.repository.IndicatorTempRepository;
 import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
 import com.sq.inject.annotation.BaseComponent;
-import com.sq.loadometer.component.DblinkConnecter;
 import com.sq.loadometer.component.JdbcHelper;
 import com.sq.loadometer.domain.LoadometerIndicatorDto;
 import com.sq.loadometer.domain.Trade;
@@ -25,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -83,35 +83,12 @@ public class TradeDataService extends BaseService<Trade, Long> {
 
         StringBuilder insertTradeBuilder = new StringBuilder();
         insertTradeBuilder
-                .append(" select ")
-                .append("       t.lsh AS lsh,  ")
-                .append("       t.ch AS carNo, ")
-                .append("       t.hm AS proCode, ")
-                .append("       t.dwdw AS sourceArea, ")
-                .append("       t.cmrs AS firstWeightTime, ")
-                .append("       t.cprs AS secondWeightTime, ")
-                .append("       t.mz AS gross, ")
-                .append("       t.pz AS tare, ")
-                .append("       t.jz AS net, ")
-                .append("       t.czy AS operator, ")
-                .append("       CONVERT (VARCHAR(12), t.cprs, 112) AS statDateNum ")
-                .append("    FROM   ")
-                .append("       czb t ")
-                .append("    WHERE   ")
-                .append("       CONVERT (VARCHAR(12), t.cprs, 112) =  ")
+                .append(" select * from Trade where productNet is not null and datastatus = 1 and CONVERT(varchar(12) , seconddatetime, 112 ) = ")
                 .append(fillTradeData);
         try {
             List<HashMap<String,String>> resultList = JdbcHelper.query(insertTradeBuilder.toString());
             for (HashMap tradeMap:resultList) {
                 Trade trade = new Trade(tradeMap);
-                Double gross = Double.parseDouble(trade.getGross())/DblinkConnecter.load_ratio;
-                trade.setGross(gross.toString());
-
-                Double tare = Double.parseDouble(trade.getTare())/DblinkConnecter.load_ratio;
-                trade.setTare(tare.toString());
-
-                Double net = Double.parseDouble(trade.getNet())/DblinkConnecter.load_ratio;
-                trade.setNet(net.toString());
                 tradeList.add(trade);
             }
         } catch (SQLException e) {
@@ -135,13 +112,11 @@ public class TradeDataService extends BaseService<Trade, Long> {
             loadometerCodeList.add(loadometerIndicatorDto.getIndicatorCode());
         }
 
-        if (!loadometerCodeList.isEmpty()) {
-            //删除已经存在的当日的地磅指标数据
-            Searchable removeLoadometerCodeSearchable = Searchable.newSearchable()
-                    .addSearchFilter("indicatorCode", MatchType.IN, loadometerCodeList)
-                    .addSearchFilter("statDateNum", MatchType.EQ, generateDate);
-            indicatorInstanceRepository.deleteInBatch(indicatorInstanceRepository.findAll(removeLoadometerCodeSearchable));
-        }
+        //删除已经存在的当日的地磅指标数据
+        Searchable removeLoadometerCodeSearchable = Searchable.newSearchable()
+                .addSearchFilter("indicatorCode", MatchType.IN, loadometerCodeList)
+                .addSearchFilter("statDateNum", MatchType.EQ, generateDate);
+        indicatorInstanceRepository.deleteInBatch(indicatorInstanceRepository.findAll(removeLoadometerCodeSearchable));
 
         //保存查询到的当日地磅指标数据
         for(LoadometerIndicatorDto loadometerIndicatorDto:loadometerIndicatorDtoList) {

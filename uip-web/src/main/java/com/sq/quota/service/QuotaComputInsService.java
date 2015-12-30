@@ -109,7 +109,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
                 continue;
             }
             QuotaTemp quotaTemp = entry.getValue();
-            System.out.println(quotaTemp.getIndicatorCode() + "-----" + quotaTemp.getCalculateExpression());
+            log.error(quotaTemp.getIndicatorCode() + "-----" + quotaTemp.getCalculateExpression());
             String calExp = new String(quotaTemp.getCalculateExpression());
             quotaTemp.setSemaphore(0);
             String nativeExpression = generateNativeExpression(quotaTemp);
@@ -202,7 +202,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
         List<QuotaTemp> quotaTempList = this.quotaTempRepository.findAll(searchable).getContent();
 
         for (QuotaTemp quotaTemp : quotaTempList) {
-            log.debug(" QuotaTemp:->" + quotaTemp.getIndicatorName());
+            log.error(" QuotaTemp:->" + quotaTemp.getIndicatorName());
             sendCalculateCommForInter(quotaTemp, computCal, new InterfaceQuotaStrategy());
         }
     }

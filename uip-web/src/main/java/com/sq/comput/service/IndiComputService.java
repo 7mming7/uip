@@ -70,7 +70,7 @@ public class IndiComputService extends BaseService<IndicatorInstance,Long>{
 
         List<IndicatorInstance> indicatorInstanceList = new LinkedList<IndicatorInstance>();
         for (IndicatorTemp indicatorTemp:indicatorTempList) {
-            log.info("indicatorTemp:->" + indicatorTemp.getIndicatorName());
+            log.error("indicatorTemp:->" + indicatorTemp.getIndicatorName());
             sendCalculateCommInterface(indicatorTemp, computCal, new InterfaceStrategy());
         }
 

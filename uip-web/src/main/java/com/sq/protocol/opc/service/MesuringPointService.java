@@ -54,9 +54,9 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
     @Autowired
     private OriginalDataRepository originalDataRepository;
 
-    public static Group group;
+    /*public static Group group;
 
-    public static Item[] itemArr = null;
+    public static Item[] itemArr = null;*/
 
     /**
      * 读取server下所有的ITEM
@@ -65,6 +65,7 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
     public void fetchReadSyncItems (final int cid) {
         boolean flag = false;
         OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
+        log.debug(opcServerInfomation.toString());
         if (opcServerInfomation.getLeafs() == null || !opcServerInfomation.isConn_status()) {
             opcServerInfomation.setLeafs(null);
             switch (BaseConfiguration.CONFIG_INIT_ITEM) {
@@ -85,9 +86,9 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
             if (flag) {
                 log.debug("开始添加测点.");
                 int item_flag = 0;
-                group = server.addGroup();
+                Group group = server.addGroup();
                 group.setActive(true);
-                itemArr = new Item[leafs.size()];
+                Item[] itemArr = new Item[leafs.size()];
                 for(Leaf leaf:leafs){
                     Item item = null;
                     try {
@@ -101,12 +102,14 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
                     itemArr[item_flag] = item;
                     item_flag++;
                 }
+                opcServerInfomation.setGroup(group);
+                opcServerInfomation.setItemArr(itemArr);
             }
 
             Map<Item, ItemState> syncItems = null;
             try {
                 /** arg1 false 读取缓存数据 OPCDATASOURCE.OPC_DS_CACHE  */
-                syncItems = group.read(true, itemArr);
+                syncItems = opcServerInfomation.getGroup().read(true, opcServerInfomation.getItemArr());
             } catch (JIException e) {
                 log.error("Read item error.",e);
             }
@@ -143,7 +146,8 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
      */
     public void readItemStateMysql (int cid, Map<Item, ItemState> syncItems) {
         OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
-
+        log.debug(opcServerInfomation.toString());
+        log.debug("syncItems size:" + syncItems.size());
         Long batchNum = originalDataRepository.gernateNextBatchNumber(Integer.parseInt(opcServerInfomation.getSysId()));
         List<OriginalData> originalDataList = new LinkedList<OriginalData>();
         for (Map.Entry<Item, ItemState> entry : syncItems.entrySet()) {

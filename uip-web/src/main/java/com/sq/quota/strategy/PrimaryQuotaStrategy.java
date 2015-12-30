@@ -130,7 +130,7 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
             searchable = fillSearchConditionByFetchType(searchable,quotaTemp,computQuotaTemp,computCal);
             List<QuotaInstance> quotaInstances = quotaInstanceRepository.findAll(searchable).getContent();
             for (SearchFilter searchFilter:searchable.getSearchFilters()) {
-                log.debug("SearchFilter:quotaTemp->" + quotaTemp.getIndicatorCode() + "," + searchFilter.toString());
+                log.error("SearchFilter:quotaTemp->" + quotaTemp.getIndicatorCode() + "," + searchFilter.toString());
             }
 
             StringBuilder variableBuilder = new StringBuilder();
@@ -210,7 +210,7 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
                     } catch (EvaluationException e) {
                         log.error("parseExpressionFront -> logicalFunctions 指标计算出现错误.calculateExp: " + calculateExp, e);
                     }
-                    log.debug("ParseExpressionFront result: " + result);
+                    log.error("ParseExpressionFront result: " + result);
                     if (result.equals("'null'")) return null;
                     result = result.substring(1,result.length() - 1);
                     String replaceVariable = EvaluationConstants.OPEN_VARIABLE + variableTemp + EvaluationConstants.CLOSED_BRACE;

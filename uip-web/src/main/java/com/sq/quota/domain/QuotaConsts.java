@@ -49,19 +49,19 @@ public interface QuotaConsts {
      *      6、季度
      *      7、年
      */
-    public static final int FETCH_CYCLE_HALF_HOUR = 1;
+    public static final int FETCH_CYCLE_HALF_HOUR = 7;
 
-    public static final int FETCH_CYCLE_HOUR = 2;
+    public static final int FETCH_CYCLE_HOUR = 1;
 
-    public static final int FETCH_CYCLE_DAY = 3;
+    public static final int FETCH_CYCLE_DAY = 2;
 
-    public static final int FETCH_CYCLE_WEEK = 4;
+    public static final int FETCH_CYCLE_WEEK = 3;
 
-    public static final int FETCH_CYCLE_Month = 5;
+    public static final int FETCH_CYCLE_Month = 4;
 
-    public static final int FETCH_CYCLE_Quarter = 6;
+    public static final int FETCH_CYCLE_Quarter = 5;
 
-    public static final int FETCH_CYCLE_Year = 7;
+    public static final int FETCH_CYCLE_Year = 6;
 
     /** ======================
      *    频率

@@ -109,7 +109,7 @@ public class IndiComputTask implements Callable<IndicatorInstance> {
 
     @Override
     public IndicatorInstance call() throws Exception {
-        log.info("Module Comput " + indicatorTemp.getIndicatorCode() + ":发送计算请求.");
+        log.error("Module Comput " + indicatorTemp.getIndicatorCode() + ":发送计算请求.");
         IndicatorInstance indicatorInstance = new IndicatorInstance(indicatorTemp);
 
         Calendar tempCal = (Calendar) computCal.clone();

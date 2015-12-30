@@ -2,8 +2,9 @@ package com.sq.loadometer.repository;
 
 import com.sq.loadometer.domain.LoadometerConsts;
 import com.sq.loadometer.domain.LoadometerIndicatorDto;
-import com.sq.loadometer.domain.Trade;
 import com.sq.util.NativeQueryResultsMapper;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -12,10 +13,9 @@ import javax.persistence.Query;
 import java.util.List;
 
 /**
- * 地磅仓库IMPL
  * User: shuiqing
- * Date: 15/11/24
- * Time: 上午11:25
+ * Date: 2015/9/15
+ * Time: 15:59
  * Email: shuiqing301@gmail.com
  * GitHub: https://github.com/ShuiQing301
  * Blog: http://shuiqing301.github.io/
@@ -24,7 +24,6 @@ import java.util.List;
  * | o| (_
  */
 public class TradeDataRepositoryImpl {
-
     private EntityManagerFactory emf;
 
     @PersistenceUnit
@@ -38,13 +37,13 @@ public class TradeDataRepositoryImpl {
         nativeSql.append(" SELECT ")
                 .append("      MP.sourceCode as sourceCode, ")
                 .append("      MP.targetCode as indicatorCode, ")
-                .append("      IFNULL(SUM(T.net),0) as totalAmount ")
+                .append("      IFNULL(SUM(T.productnet)/1000,0) as totalAmount ")
                 .append("  FROM ")
                 .append("      t_indicatortemp IT LEFT JOIN ")
                 .append("      t_mesuringpoint MP on IT.indicatorCode = MP.targetCode LEFT JOIN ")
                 .append("      t_trade T ")
-                .append("   ON MP.sourceCode = T.proCode  ")
-                .append("      AND DATE_FORMAT(T.secondWeightTime, '%Y%m%d') = ").append(queryDate)
+                .append("   ON MP.sourceCode = T.productcode  ")
+                .append("      AND DATE_FORMAT(T.seconddatetime, '%Y%m%d') = ").append(queryDate)
                 .append("   WHERE MP.sysId =  ").append(LoadometerConsts.SYS_ODBC_LOADOMETER)
                 .append("    GROUP BY MP.sourceCode ");
         Query query = em.createNativeQuery(nativeSql.toString());
@@ -59,20 +58,9 @@ public class TradeDataRepositoryImpl {
         StringBuilder nativeSql = new StringBuilder();
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
-        nativeSql.append("delete from t_trade where DATE_FORMAT(secondWeightTime,'%Y%m%d') = ").append(secondTime);
+        nativeSql.append("delete from t_trade where DATE_FORMAT(seconddatetime,'%Y%m%d') = ").append(secondTime);
         Query query = em.createNativeQuery(nativeSql.toString());
         query.executeUpdate();
         em.getTransaction().commit();
-    }
-
-    public List<Trade> fetchTradeDataByPointDay (String pointDay) {
-        StringBuilder nativeSql = new StringBuilder();
-        EntityManager em = emf.createEntityManager();
-        nativeSql.append("select * from t_trade t where DATE_FORMAT(t.seconddatetime,'%Y%m%d') = ?1");
-        Query query = em.createNativeQuery(nativeSql.toString(),Trade.class);
-        query.setParameter(1, pointDay);
-
-        List<Trade> tradeList = query.getResultList();
-        return tradeList;
     }
 }

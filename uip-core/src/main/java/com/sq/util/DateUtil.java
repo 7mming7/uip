@@ -510,6 +510,18 @@ public class DateUtil {
         return calArray;
     }
 
+    public static Calendar[] getMonthFirstAndInputCal(Calendar calendar) {
+        Calendar[] calArray = new Calendar[2];
+        try {
+            Calendar cal = (Calendar) calendar.clone();
+            calArray[0] = getMonthFirstCal(cal);
+            calArray[1] = calendar;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return calArray;
+    }
+
     /**
      * 获取月的第一天
      * @param calendar
@@ -571,6 +583,17 @@ public class DateUtil {
         return calArray;
     }
 
+    public static Calendar[] getQuarterFirstAndInputCal(Calendar calendar) {
+        Calendar[] calArray = new Calendar[2];
+        try {
+            calArray[0] = getQuarterFirstCal(calendar);
+            calArray[1] = calendar;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return calArray;
+    }
+
     /**
      * 根据提供的日期，获取一季度的开始和结束时间
      * @return
@@ -589,7 +612,7 @@ public class DateUtil {
      * @return
      */
     public static int[] getQuarterFirstAndInputInt(Calendar calendar) {
-        Calendar[] calendarArray = getQuarterFirstAndLastCal(calendar);
+        Calendar[] calendarArray = getQuarterFirstAndInputCal(calendar);
         int[] dayArray = new int[2];
         dayArray[0] = Integer.parseInt(formatCalendar(calendarArray[0], DateUtil.DATE_FORMAT_DAFAULT));
         dayArray[1] = Integer.parseInt(formatCalendar(calendar, DateUtil.DATE_FORMAT_DAFAULT));
@@ -671,6 +694,17 @@ public class DateUtil {
         return calArray;
     }
 
+    public static Calendar[] getYearFirstAndInputCal(Calendar calendar) {
+        Calendar[] calArray = new Calendar[2];
+        try {
+            calArray[0] = getYearFirstCal(calendar);
+            calArray[1] = calendar;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return calArray;
+    }
+
     /**
      * 根据提供的日期，获取一年的开始和结束时间
      * @return
@@ -689,7 +723,7 @@ public class DateUtil {
      * @return
      */
     public static int[] getYearFirstAndInputInt(Calendar calendar) {
-        Calendar[] calendarArray = getYearFirstAndLastCal(calendar);
+        Calendar[] calendarArray = getYearFirstAndInputCal(calendar);
         int[] dayArray = new int[2];
         dayArray[0] = Integer.parseInt(formatCalendar(calendarArray[0], DateUtil.DATE_FORMAT_DAFAULT));
         dayArray[1] = Integer.parseInt(formatCalendar(calendar, DateUtil.DATE_FORMAT_DAFAULT));
@@ -847,13 +881,17 @@ public class DateUtil {
         for (Calendar calendar:calendars) {
             System.out.println(DateUtil.formatCalendar(calendar,DATE_FORMAT_DAFAULTYMDHMS));
         }*/
-        int cal = 2015112015;
+        /*int cal = 2015112015;
         Calendar calendar = intDate2CalendarHour(cal);
         try {
             Calendar calendar1 = stringToCalendar("2015112015", DateUtil.DATE_FORMAT_YMDH);
             System.out.println(DateUtil.formatCalendar(calendar1,DATE_FORMAT_DAFAULTYMDHMS));
         } catch (ParseException e) {
             e.printStackTrace();
+        }*/
+        Calendar[] calendars = getMonthFirstAndInputCal(Calendar.getInstance());
+        for (Calendar cal:calendars) {
+            System.out.println(DateUtil.formatCalendar(cal,DATE_FORMAT_DAFAULTYMDHMS));
         }
 
     }
