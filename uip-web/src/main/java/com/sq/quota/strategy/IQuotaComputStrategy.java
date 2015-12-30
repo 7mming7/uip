@@ -40,7 +40,7 @@ public abstract class IQuotaComputStrategy {
      */
     public static boolean checkQuotaExpression (Evaluator evaluator, QuotaTemp quotaTemp) {
         List<String> variableList = QuotaComputHelper.getVariableList(quotaTemp.getCalculateExpression(), evaluator);
-        if (null == variableList || variableList.isEmpty()) {
+        if (variableList.size() == 0 || variableList.isEmpty()) {
             log.error("指标：" + quotaTemp.getIndicatorCode() + "-的表达式没有动态参数!");
             return false;
         }

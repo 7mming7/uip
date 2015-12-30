@@ -56,6 +56,8 @@ public class InterfaceQuotaStrategy extends IQuotaComputStrategy {
         }
 
         List<String> variableList = QuotaComputHelper.getVariableList(calculateExp,evaluator);
+        if (variableList.isEmpty() || variableList.size() == 0)
+            return null;
         String checkPoint = variableList.get(0);
 
         String result = null;

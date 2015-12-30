@@ -54,7 +54,7 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
 
         String calculateExp = quotaTemp.getCalculateExpression();
         List<String> variableList = QuotaComputHelper.getVariableList(calculateExp,evaluator);
-        if (variableList.isEmpty()) {
+        if (variableList.isEmpty() || variableList.size() == 0) {
             log.error("表达式：" + calculateExp + " 没有动态参数!");
             return null;
         }

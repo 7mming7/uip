@@ -20,6 +20,7 @@ import com.sq.quota.strategy.PrimaryQuotaStrategy;
 import com.sq.quota.strategy.QuotaComputTask;
 import com.sq.service.BaseService;
 import com.sq.util.DateUtil;
+import com.sq.util.StringUtils;
 import net.sourceforge.jeval.EvaluationConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -364,6 +365,8 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
         for (QuotaTemp quotaTemp:quotaTempList) {
             if (quotaTemp.getDataSource() == QuotaConsts.DATASOURCE_CALCULATE
                     || quotaTemp.getDataSource() == QuotaConsts.DATASOURCE_INTERFACE ) {
+                if (StringUtils.isBlank(quotaTemp.getGernaterdNativeExpression()))
+                    continue;
                 calculateStringList.addAll(QuotaComputHelper.getVariableList(quotaTemp.getGernaterdNativeExpression(),
                         QuotaComputHelper.getEvaluatorInstance()));
             } else if (quotaTemp.getDataSource() == QuotaConsts.DATASOURCE_ENTRY) {

@@ -116,7 +116,7 @@ public class QuotaComputHelper {
      */
     public static List<String> getVariableList (String expression,Evaluator evaluator) {
         List<String> variableList = new ArrayList<String>();
-        if(null == expression) return null;
+        if(null == expression) return variableList;
         int openIndex = expression.indexOf(EvaluationConstants.OPEN_VARIABLE);
 
         if (openIndex < 0) {
