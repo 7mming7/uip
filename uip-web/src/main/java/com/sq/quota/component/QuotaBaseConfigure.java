@@ -38,6 +38,10 @@ public class QuotaBaseConfigure {
     //结束的小时数
     public static int endHour;
 
+    static {
+        loadConfigProperties();
+    }
+
     /**
      * 加载指标计算服务的配置文件
      * @return

@@ -86,6 +86,7 @@ public abstract class IQuotaComputStrategy {
                         computCal,
                         QuotaBaseConfigure.startHour,
                         QuotaBaseConfigure.endHour);
+                System.out.println(DateUtil.formatCalendar(dayCalArray[0],DateUtil.DATE_FORMAT_DAFAULTYMDHMS) + "%%%%%%%%%%%" + DateUtil.formatCalendar(dayCalArray[1],DateUtil.DATE_FORMAT_DAFAULTYMDHMS));
                 searchable.addSearchFilter("instanceTime", MatchType.GTE, dayCalArray[0]);
                 searchable.addSearchFilter("instanceTime", MatchType.LTE, dayCalArray[1]);
                 break;

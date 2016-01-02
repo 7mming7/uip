@@ -402,10 +402,11 @@ public class DateUtil {
         startCal.set(Calendar.SECOND,0);
         dayCal[0] = startCal;
         Calendar endCal = (Calendar)calendar.clone();
-        endCal.set(Calendar.HOUR_OF_DAY,endHour);
-        endCal.set(Calendar.MINUTE,0);
-        endCal.set(Calendar.SECOND,0);
+        endCal.set(Calendar.HOUR_OF_DAY,endHour-1);
+        endCal.set(Calendar.MINUTE,59);
+        endCal.set(Calendar.SECOND,59);
         dayCal[1] = endCal;
+
         return dayCal;
     }
 
@@ -889,7 +890,7 @@ public class DateUtil {
         } catch (ParseException e) {
             e.printStackTrace();
         }*/
-        Calendar[] calendars = getMonthFirstAndInputCal(Calendar.getInstance());
+        Calendar[] calendars = getPointDayFirstAndLast(Calendar.getInstance(),0,24);
         for (Calendar cal:calendars) {
             System.out.println(DateUtil.formatCalendar(cal,DATE_FORMAT_DAFAULTYMDHMS));
         }
