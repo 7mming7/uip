@@ -47,7 +47,7 @@ public abstract class QuotaBase extends AbstractEntity<Long> implements Cloneabl
     private int fetchCycle;
 
     /** 计算频率 */
-    private int calFrequency;
+    private Integer calFrequency;
 
     /**
      * 数据聚合方式
@@ -111,11 +111,11 @@ public abstract class QuotaBase extends AbstractEntity<Long> implements Cloneabl
         this.operCalType = operCalType;
     }
 
-    public int getCalFrequency() {
+    public Integer getCalFrequency() {
         return calFrequency;
     }
 
-    public void setCalFrequency(int calFrequency) {
+    public void setCalFrequency(Integer calFrequency) {
         this.calFrequency = calFrequency;
     }
 }

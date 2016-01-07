@@ -55,42 +55,36 @@ public class DateTimeFunction implements Function {
         Double result = null;
         ArrayList<String> argList = FunctionHelper.getStrings(arguments,
                 EvaluationConstants.FUNCTION_ARGUMENT_SEPARATOR);
-        log.debug("*********************DateTimeFunction**********************");
+        log.error("*********************DateTimeFunction**********************");
 
-        String cycleStr = (String)argList.get(0);
+        String cycleStr = (String)argList.get(0).trim();
         cycleStr = cycleStr.substring(1,cycleStr.length()-1);
-        log.debug("cycleStr: " + cycleStr);
 
         Integer disDateInt = Double.valueOf(argList.get(1)).intValue();
-        log.debug("disDateInt: " + disDateInt);
 
-
-        String assQuotaCode = (String)argList.get(2);
+        String assQuotaCode = (String)argList.get(2).trim();
         assQuotaCode = assQuotaCode.substring(1,assQuotaCode.length()-1);
-        log.debug("assQuotaCode: " + assQuotaCode);
 
-        BigDecimal bigDecimal = new BigDecimal((String)argList.get(3));
-
+        BigDecimal bigDecimal = new BigDecimal((String)argList.get(3).trim());
         String computCal = bigDecimal.toPlainString();
-        log.debug("Start dateMigrate computCal: " + computCal);
 
         //计算指标的迁移之后的日期
         String assComputCal = DateUtil.dateMigrate(cycleStr, disDateInt, computCal);
 
+        log.error("CycleStr:" + cycleStr
+                + ",disDateInt: " + disDateInt
+                + ",assQuotaCode: " + assQuotaCode
+                + ",Start dateMigrate computCal: " + computCal
+                + ",End dateMigrate computCal: " + assComputCal);
 
+        //检查指标是否需要重置
         result = checkQuotaReset(assQuotaCode,assComputCal,computCal);
         if (null != result) {
             return new FunctionResult(result.toString(),
                     FunctionConstants.FUNCTION_RESULT_TYPE_STRING);
         }
 
-        log.debug("End dateMigrate computCal: " + assComputCal);
-        Searchable searchable = Searchable.newSearchable()
-                .addSearchFilter("indicatorCode", MatchType.EQ, assQuotaCode)
-                .addSearchFilter("statDateNum", MatchType.EQ, Integer.parseInt(assComputCal));
-
-
-        List<QuotaInstance> quotaInstanceList = quotaInstanceRepository.findAll(searchable).getContent();
+        List<QuotaInstance> quotaInstanceList = quotaInstanceRepository.listQuotaInstanceInstTime(assQuotaCode,assComputCal);
         if (quotaInstanceList.isEmpty())
             return new FunctionResult(null,
                 FunctionConstants.FUNCTION_RESULT_TYPE_STRING);
@@ -102,6 +96,7 @@ public class DateTimeFunction implements Function {
         } else if (quotaInstance.getValueType() == QuotaConsts.VALUE_TYPE_DOUBLE){
             result = quotaInstance.getFloatValue();
         }
+        log.error("assQuotaCode->" + assQuotaCode + ",dateMigrate->" + assComputCal + ",result->" + result);
         return new FunctionResult(result.toString(),
                 FunctionConstants.FUNCTION_RESULT_TYPE_STRING);
     }

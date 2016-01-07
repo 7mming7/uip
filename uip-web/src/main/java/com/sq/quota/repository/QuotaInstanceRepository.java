@@ -6,6 +6,8 @@ import com.sq.repository.BaseRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 /**
  * 指标计算结果实例仓库.
  * User: shuiqing
@@ -20,4 +22,6 @@ import org.slf4j.LoggerFactory;
         */
 public interface QuotaInstanceRepository extends BaseRepository<QuotaInstance, Long> {
 
+    //根据某个时间点去查询指标实例数据
+    List<QuotaInstance> listQuotaInstanceInstTime(String assQuotaCode, String assComputCal);
 }

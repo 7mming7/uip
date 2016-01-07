@@ -82,13 +82,19 @@ public abstract class IQuotaComputStrategy {
                 searchable.addSearchFilter("instanceTime", MatchType.EQ, computCal);
                 break;
             case QuotaConsts.FETCH_CYCLE_DAY:
-                Calendar[] dayCalArray = DateUtil.getPointDayFirstAndLast(
-                        computCal,
-                        QuotaBaseConfigure.startHour,
-                        QuotaBaseConfigure.endHour);
-                System.out.println(DateUtil.formatCalendar(dayCalArray[0],DateUtil.DATE_FORMAT_DAFAULTYMDHMS) + "%%%%%%%%%%%" + DateUtil.formatCalendar(dayCalArray[1],DateUtil.DATE_FORMAT_DAFAULTYMDHMS));
-                searchable.addSearchFilter("instanceTime", MatchType.GTE, dayCalArray[0]);
-                searchable.addSearchFilter("instanceTime", MatchType.LTE, dayCalArray[1]);
+                if (quotaTemp.getDataSource() == QuotaConsts.DATASOURCE_INTERFACE) {
+                    Calendar[] dayCalArray = DateUtil.getPointDayFirstAndLast(
+                            computCal,
+                            QuotaBaseConfigure.startHour,
+                            QuotaBaseConfigure.endHour);
+                    searchable.addSearchFilter("instanceTime", MatchType.GTE, dayCalArray[0]);
+                    searchable.addSearchFilter("instanceTime", MatchType.LTE, dayCalArray[1]);
+                } else if (quotaTemp.getDataSource() == QuotaConsts.DATASOURCE_CALCULATE
+                        || quotaTemp.getDataSource() == QuotaConsts.DATASOURCE_ENTRY ) {
+                    dayArray = DateUtil.getDayFirstAndLastInt(computCal);
+                    searchable.addSearchFilter("statDateNum", MatchType.GTE, dayArray[0]);
+                    searchable.addSearchFilter("statDateNum", MatchType.LTE, dayArray[1]);
+                }
                 break;
             case QuotaConsts.FETCH_CYCLE_WEEK:
                 dayArray = DateUtil.getWeekFirstAndInputInt(computCal);

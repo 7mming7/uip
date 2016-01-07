@@ -12,6 +12,11 @@ import com.sq.loadometer.component.JdbcHelper;
 import com.sq.loadometer.domain.LoadometerIndicatorDto;
 import com.sq.loadometer.domain.Trade;
 import com.sq.loadometer.repository.TradeDataRepository;
+import com.sq.quota.domain.QuotaInstance;
+import com.sq.quota.domain.QuotaTemp;
+import com.sq.quota.repository.QuotaInstanceRepository;
+import com.sq.quota.repository.QuotaTempRepository;
+import com.sq.quota.service.QuotaComputInsService;
 import com.sq.service.BaseService;
 import com.sq.util.DateUtil;
 import org.slf4j.Logger;
@@ -50,10 +55,13 @@ public class TradeDataService extends BaseService<Trade, Long> {
     private TradeDataRepository tradeDataRepository;
 
     @Autowired
-    private IndicatorTempRepository indicatorTempRepository;
+    private QuotaTempRepository quotaTempRepository;
 
     @Autowired
-    private IndicatorInstanceRepository indicatorInstanceRepository;
+    private QuotaInstanceRepository quotaInstanceRepository;
+
+    @Autowired
+    private QuotaComputInsService quotaComputInsService;
 
     /**
      * 地磅流水数据同步
@@ -103,7 +111,7 @@ public class TradeDataService extends BaseService<Trade, Long> {
      */
     @Transactional(propagation = Propagation.REQUIRED)
     public void generateLoadometerIndicator (String generateDate) {
-        List<IndicatorInstance> indicatorInstanceList = new ArrayList<IndicatorInstance>();
+        List<QuotaInstance> quotaInstanceList = new ArrayList<QuotaInstance>();
 
         //查询地磅指标数据
         List<LoadometerIndicatorDto> loadometerIndicatorDtoList = tradeDataRepository.queryForLoadometerIndicator(generateDate);
@@ -116,22 +124,48 @@ public class TradeDataService extends BaseService<Trade, Long> {
         Searchable removeLoadometerCodeSearchable = Searchable.newSearchable()
                 .addSearchFilter("indicatorCode", MatchType.IN, loadometerCodeList)
                 .addSearchFilter("statDateNum", MatchType.EQ, generateDate);
-        indicatorInstanceRepository.deleteInBatch(indicatorInstanceRepository.findAll(removeLoadometerCodeSearchable));
+        quotaInstanceRepository.deleteInBatch(quotaInstanceRepository.findAll(removeLoadometerCodeSearchable));
 
+        log.error("----生成地磅原始指标开始----");
         //保存查询到的当日地磅指标数据
         for(LoadometerIndicatorDto loadometerIndicatorDto:loadometerIndicatorDtoList) {
-            IndicatorTemp indicatorTemp = indicatorTempRepository.findByIndicatorCode(loadometerIndicatorDto.getIndicatorCode());
-            IndicatorInstance indicatorInstance = new IndicatorInstance(indicatorTemp);
+            QuotaTemp quotaTemp = quotaTempRepository.findByIndicatorCode(loadometerIndicatorDto.getIndicatorCode());
+            QuotaInstance quotaInstance = new QuotaInstance(quotaTemp);
             try {
-                indicatorInstance.setFloatValue(Double.parseDouble(loadometerIndicatorDto.getTotalAmount()));
-                indicatorInstance.setValueType(IndicatorConsts.VALUE_TYPE_DOUBLE);
-                indicatorInstance.setStatDateNum(Integer.parseInt(generateDate));
-                indicatorInstance.setInstanceTime(DateUtil.stringToCalendar(generateDate,DateUtil.DATE_FORMAT_DAFAULT));
+                quotaInstance.setFloatValue(Double.parseDouble(loadometerIndicatorDto.getTotalAmount()));
+                quotaInstance.setValueType(IndicatorConsts.VALUE_TYPE_DOUBLE);
+                quotaInstance.setStatDateNum(Integer.parseInt(generateDate));
+                quotaInstance.setInstanceTime(DateUtil.stringToDate(generateDate, DateUtil.DATE_FORMAT_DAFAULT));
+                quotaInstance.setCreateTime(Calendar.getInstance());
             } catch (ParseException e) {
                 log.error("stringToCalendar error:", e);
             }
-            indicatorInstanceList.add(indicatorInstance);
+            quotaInstanceList.add(quotaInstance);
         }
-        indicatorInstanceRepository.save(indicatorInstanceList);
+        log.error("----生成地磅原始指标结束----");
+        quotaInstanceRepository.save(quotaInstanceList);
+
+        log.error("----生成地磅扩展指标开始----");
+        computExtendLoadoQuota(loadometerCodeList, generateDate);
+        log.error("----生成地磅扩展指标结束----");
+    }
+
+    /**
+     * 计算地磅的扩展指标
+     * @param loadometerCodeList 原始地磅指标
+     * @param generateDate 生成日期
+     */
+    public void computExtendLoadoQuota(List<String> loadometerCodeList, String generateDate) {
+        Calendar computCal = null;
+        try {
+            computCal = DateUtil.stringToCalendar(generateDate, DateUtil.DATE_FORMAT_DAFAULT);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Searchable searchable = Searchable.newSearchable()
+                .addSearchFilter("indicatorCode", MatchType.IN, loadometerCodeList);
+        List<QuotaTemp> quotaTempList = quotaTempRepository.findAll(searchable).getContent();
+        quotaComputInsService.reComputQuota(computCal,quotaTempList);
     }
 }

@@ -41,8 +41,8 @@ public class TaskTest extends TestCase{
         schedulerExecuteService.execLoadometerOrignalDataGathering();
     }
 */
-    @Test
+    /*@Test
     public void testProcedure () {
         schedulerExecuteService.execInterfaceDataGather();
-    }
+    }*/
 }

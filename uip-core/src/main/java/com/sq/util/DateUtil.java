@@ -845,7 +845,12 @@ public class DateUtil {
     public static String dateMigrate (String cycleType, int disDateNum, String computCal) {
         try {
             Calendar computCalendar = stringToCalendar(computCal, DATE_FORMAT_DAFAULTYMDHMS);
-            if (cycleType.equalsIgnoreCase("Hour")) {
+            computCalendar.set(Calendar.HOUR_OF_DAY,0);
+            computCalendar.set(Calendar.MINUTE, 0);
+            computCalendar.set(Calendar.SECOND, 0);
+            if (cycleType.equalsIgnoreCase("Minute")) {
+                computCalendar.add(Calendar.MINUTE, disDateNum);
+            } else if (cycleType.equalsIgnoreCase("Hour")) {
                 computCalendar.add(Calendar.HOUR_OF_DAY, disDateNum);
             } else if (cycleType.equalsIgnoreCase("Day")) {
                 computCalendar.add(Calendar.DAY_OF_YEAR, disDateNum);
@@ -854,7 +859,7 @@ public class DateUtil {
             } else if (cycleType.equalsIgnoreCase("Month")) {
                 computCalendar.add(Calendar.MONTH, disDateNum);
             }
-            computCal = formatCalendar(computCalendar, DATE_FORMAT_DAFAULT);
+            computCal = formatCalendar(computCalendar, DATE_FORMAT_YMDHM);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -890,10 +895,10 @@ public class DateUtil {
         } catch (ParseException e) {
             e.printStackTrace();
         }*/
-        Calendar[] calendars = getPointDayFirstAndLast(Calendar.getInstance(),0,24);
+        Calendar[] calendars = getPointDayFirstAndLast(Calendar.getInstance(), 0, 23);
         for (Calendar cal:calendars) {
             System.out.println(DateUtil.formatCalendar(cal,DATE_FORMAT_DAFAULTYMDHMS));
         }
-
+        System.out.println(DateUtil.dateMigrate("minute", 510, "20160105090000"));
     }
 }
