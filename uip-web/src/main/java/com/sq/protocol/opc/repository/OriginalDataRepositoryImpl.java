@@ -52,7 +52,7 @@ public class OriginalDataRepositoryImpl{
 
     public List<OriginalData> listAnHourPreOriginalData(final String tableName,
                                                         final String indiCode,
-                                                        final Long subMin,
+                                                        final Integer subMin,
                                                         final Calendar computCal){
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();

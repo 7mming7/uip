@@ -32,7 +32,7 @@ public interface OriginalDataRepository extends BaseRepository<OriginalData, Lon
     Long gernateNextBatchNumber(int sysId);
 
     /** 查询指标测点指定时间内的数据 */
-    List<OriginalData> listAnHourPreOriginalData(String tableName, String indiCode, Long subMin, Calendar computCal);
+    List<OriginalData> listAnHourPreOriginalData(String tableName, String indiCode, Integer subMin, Calendar computCal);
 
     /** 获取指定时间之前的最近的一条记录 */
     List<OriginalData> fetchFrontOriginalDataByCal(String itemCode, Calendar calendar);

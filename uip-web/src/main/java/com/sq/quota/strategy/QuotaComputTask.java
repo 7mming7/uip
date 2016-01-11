@@ -131,7 +131,6 @@ public class QuotaComputTask implements Runnable {
         Calendar tempComputCal = (Calendar) computCal.clone();
         if(iQuotaComputStrategy instanceof InterfaceQuotaStrategy) {
             if (null == computResult) return;
-            tempComputCal.add(Calendar.HOUR_OF_DAY, -1);
         }
         quotaInstance.setInstanceTime(tempComputCal.getTime());
         quotaInstance.setCreateTime(Calendar.getInstance());

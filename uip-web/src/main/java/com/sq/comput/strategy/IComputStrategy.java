@@ -63,18 +63,18 @@ public abstract class IComputStrategy {
     /**
      * 计算前置的分钟数
      */
-    public static Long calPreMinutes(IndicatorTemp indicatorTemp){
-        Long preMinute = null;
+    public static Integer calPreMinutes(IndicatorTemp indicatorTemp){
+        Integer preMinute = null;
         int switchCycle = indicatorTemp.getFetchCycle();
         switch (switchCycle) {
             case QuotaConsts.FETCH_CYCLE_HALF_HOUR:
-                preMinute = 30l;
+                preMinute = 30;
                 break;
             case QuotaConsts.FETCH_CYCLE_HOUR:
-                preMinute = 60l;
+                preMinute = 60;
                 break;
             default:
-                preMinute = 60l;
+                preMinute = 60;
         }
         return preMinute;
     }

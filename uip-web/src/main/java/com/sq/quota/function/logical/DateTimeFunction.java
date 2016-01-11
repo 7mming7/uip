@@ -126,7 +126,6 @@ public class DateTimeFunction implements Function {
         if (DateUtils.isSameDay(resetCal, assCal)) {
             return quotaResetRecord.getResetValue();
         }
-
         return null;
     }
 }

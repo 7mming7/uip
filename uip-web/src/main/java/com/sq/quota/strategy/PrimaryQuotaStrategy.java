@@ -210,7 +210,7 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
                     } catch (EvaluationException e) {
                         log.error("parseExpressionFront -> logicalFunctions 指标计算出现错误.calculateExp: " + calculateExp, e);
                     }
-                    log.error("ParseExpressionFront result: " + result);
+                    log.error("calculateExp : " + calculateExp + ", ParseExpressionFront result: " + result);
                     if (result.equals("'null'")) return null;
                     result = result.substring(1,result.length() - 1);
                     String replaceVariable = EvaluationConstants.OPEN_VARIABLE + variableTemp + EvaluationConstants.CLOSED_BRACE;

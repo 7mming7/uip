@@ -96,7 +96,7 @@ public class InterfaceQuotaStrategy extends IQuotaComputStrategy {
         String tableName = assignTableName(computCal);
 
         /** 计算该接口指标的数据汇聚维度 */
-        Long preMinutes = calPreMinutes(quotaTemp);
+        Integer preMinutes = calPreMinutes(quotaTemp);
 
         /** 获取该测点原始数据集合 */
         List<OriginalData> originalDataList =
@@ -105,6 +105,7 @@ public class InterfaceQuotaStrategy extends IQuotaComputStrategy {
                         mesuringPoint.getTargetCode(),
                         preMinutes,
                         computCal);
+        computCal.add(Calendar.MINUTE, 0 - preMinutes);
 
         StringBuilder variableBuilder = new StringBuilder();
         if (originalDataList.isEmpty()) {

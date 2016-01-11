@@ -121,25 +121,24 @@ public abstract class IQuotaComputStrategy {
                 searchable.addSearchFilter("statDateNum", MatchType.GTE, dayArray[0]);
                 searchable.addSearchFilter("statDateNum", MatchType.LTE, dayArray[1]);
         }
-        System.out.println(computQuotaTemp.getIndicatorCode() + " --- searchable--" + searchable.toString());
         return searchable;
     }
 
     /**
      * 计算前置的分钟数
      */
-    public static Long calPreMinutes(QuotaTemp quotaTemp){
-        Long preMinute = null;
+    public static Integer calPreMinutes(QuotaTemp quotaTemp){
+        Integer preMinute = null;
         int switchCycle = quotaTemp.getFetchCycle();
         switch (switchCycle) {
             case QuotaConsts.FETCH_CYCLE_HALF_HOUR:
-                preMinute = 30l;
+                preMinute = 30;
                 break;
             case QuotaConsts.FETCH_CYCLE_HOUR:
-                preMinute = 60l;
+                preMinute = 60;
                 break;
             default:
-                preMinute = 60l;
+                preMinute = 60;
         }
         return preMinute;
     }

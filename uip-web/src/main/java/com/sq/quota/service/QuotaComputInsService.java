@@ -106,7 +106,8 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
     public void updateQuotaExp () {
         List<QuotaTemp> quotaTempList = new LinkedList<QuotaTemp>();
         for (Map.Entry<String, QuotaTemp> entry : quotaTempMapCache.entrySet()) {
-            if (entry.getValue().getDataSource() != QuotaConsts.DATASOURCE_CALCULATE) {
+            if (entry.getValue().getDataSource() == QuotaConsts.DATASOURCE_ENTRY
+                    || null == entry.getValue().getCalculateExpression()) {
                 continue;
             }
             QuotaTemp quotaTemp = entry.getValue();
@@ -193,17 +194,22 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
     }*/
 
     /**
+     * 数据获取周期性任务
+     * @param computCal  汇聚时间
+     */
+    public void regularDataGather(Calendar computCal){
+        List<QuotaTemp> quotaTempList = quotaTempRepository.listQuotaTempByMp();
+        /*interfaceDataGather(computCal, quotaTempList);*/
+        interfaceIndicatorDataGater(computCal, quotaTempList);
+    }
+
+    /**
      * 接口数据汇集到系统的最小维度
      * @param computCal 计算时间
      */
-    public void interfaceDataGather (Calendar computCal) {
-        Searchable searchable = Searchable.newSearchable()
-                .addSearchFilter("dataSource", MatchType.EQ, QuotaConsts.DATASOURCE_INTERFACE);
-
-        List<QuotaTemp> quotaTempList = this.quotaTempRepository.findAll(searchable).getContent();
-
+    public void interfaceDataGather (Calendar computCal, List<QuotaTemp> quotaTempList) {
         for (QuotaTemp quotaTemp : quotaTempList) {
-            log.error(" QuotaTemp:->" + quotaTemp.getIndicatorName());
+            log.debug(" QuotaTemp:->" + quotaTemp.getIndicatorName());
             sendCalculateCommForInter(quotaTemp, computCal, new InterfaceQuotaStrategy());
         }
     }
@@ -234,26 +240,35 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
         quotaComputTask.run();
     }
 
-
     /**
      * 接口指标日数据汇集
      * @param computCal 计算日期
      */
-    public void interfaceIndicatorDataGater (Calendar computCal) {
+    public void interfaceIndicatorDataGater (Calendar computCal, List<QuotaTemp> assQuotaTempList) {
 
         LinkedBlockingQueue<QuotaTemp> waitComputQuotaQueue = new LinkedBlockingQueue<QuotaTemp>();
 
-        Searchable searchable = Searchable.newSearchable()
-                .addSearchFilter("dataSource", MatchType.EQ, QuotaConsts.DATASOURCE_INTERFACE)
-                .addSearchFilter("calFrequency", MatchType.GTE, QuotaConsts.CAL_FREQUENCY_DAY);
+        Searchable searchable = Searchable.newSearchable();
+
+        OrCondition orCondition = new OrCondition();
+        for (QuotaTemp assQuotaTemp:assQuotaTempList) {
+            orCondition.add(
+                    SearchFilterHelper.newCondition("gernaterdNativeExpression",
+                            MatchType.LIKE, "%" + assQuotaTemp.getIndicatorCode() + "%"));
+        }
+        searchable.addSearchFilter(orCondition);
+
         List<QuotaTemp> quotaTempList = quotaTempRepository.findAll(searchable).getContent();
         /*Collections.sort(quotaTempList, new DimensionComparator());*/
+
+        //删除计算指标的关联指标
+        deleteNeedReComputIndicator(computCal, quotaTempList);
 
         for (QuotaTemp quotaTemp:quotaTempList) {
             waitComputQuotaQueue.add(quotaTemp);
         }
 
-        stepSendComputRequest(waitComputQuotaQueue, QuotaConsts.CAL_FREQUENCY_DAY,QuotaConsts.FETCH_CYCLE_HOUR, computCal);
+        stepSendComputRequest(waitComputQuotaQueue, QuotaConsts.CAL_FREQUENCY_DAY,QuotaConsts.FETCH_CYCLE_HALF_HOUR, computCal);
     }
 
     /**
@@ -269,7 +284,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
         int initSemaphore = 0;
         while (!waitComputQuotaQueue.isEmpty()) {
             QuotaTemp quotaTemp = waitComputQuotaQueue.poll();
-            log.debug("waitComputQuotaQueue poll || code->" + quotaTemp.getIndicatorCode()
+            log.error("waitComputQuotaQueue poll || code->" + quotaTemp.getIndicatorCode()
                     + ",currCalFrequency->" + quotaTemp.getCalFrequency()
                     + ",currFetchCycle->" + quotaTemp.getFetchCycle()
                     + ",Semaphore->" + quotaTemp.getSemaphore());
@@ -282,7 +297,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
                 QuotaComputHelper._instance.shutdown();
 
                 while (true) {
-                    log.debug("Wait for Computcal:" + DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULTYMDHMS)
+                    log.error("Wait for Computcal:" + DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULTYMDHMS)
                             + ",Active count:" + QuotaComputHelper._instance.getActiveCount()
                             + ",currCalFrequency:" + currCalFrequency
                             + ",currFetchCycle:" + fetchCycle
@@ -290,7 +305,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
                             + ",isTerminating:" + QuotaComputHelper._instance.isTerminating()
                             + ",isTerminating:" + QuotaComputHelper._instance.isTerminated());
                     if (!QuotaComputHelper._instance.isTerminating() && QuotaComputHelper._instance.isTerminated()) {
-                        log.debug("Instance thread pool!");
+                        log.error("Instance thread pool!");
                         QuotaComputHelper.fetchThreadPooSingleInstance();
                         break;
                     }
@@ -338,7 +353,9 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
      * 删除需要重计算的指标以及关联指标实例
      */
     public void deleteNeedReComputIndicator(Calendar computCal, List<QuotaTemp> associatedQuotaTempList){
-        if (associatedQuotaTempList.isEmpty()) return;
+        if (associatedQuotaTempList.isEmpty())
+            return;
+
         List<String> indicatorCodeList = new ArrayList<String>();
         for(QuotaTemp quotaTemp:associatedQuotaTempList) {
             indicatorCodeList.add(quotaTemp.getIndicatorCode());
@@ -347,7 +364,6 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
         int startComputDateNum = Integer.parseInt(DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_DAFAULT));
         Searchable deleteSearchable = Searchable.newSearchable()
                 .addSearchFilter("statDateNum", MatchType.GTE, startComputDateNum)
-                .addSearchFilter("dataSource", MatchType.EQ, QuotaConsts.DATASOURCE_CALCULATE)
                 .addSearchFilter("indicatorCode",MatchType.IN, indicatorCodeList);
         quotaInstanceRepository.deleteInBatch(quotaInstanceRepository.findAll(deleteSearchable).getContent());
     }

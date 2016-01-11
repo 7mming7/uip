@@ -80,7 +80,7 @@ public class InterfaceStrategy extends IComputStrategy {
         }
         System.out.println("-----------" + DateUtil.formatCalendar(computCal, DateUtil.DATE_FORMAT_YMDHMS));
         /** 计算该接口指标的数据汇聚维度 */
-        Long preMinutes = calPreMinutes(indicatorTemp);
+        Integer preMinutes = calPreMinutes(indicatorTemp);
         List<OriginalData> originalDataList = originalDataRepository.listAnHourPreOriginalData(tableName, mesuringPoint.getTargetCode(),preMinutes, computCal);
 
         StringBuilder variableBuilder = new StringBuilder();
