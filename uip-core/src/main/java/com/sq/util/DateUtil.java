@@ -794,6 +794,7 @@ public class DateUtil {
         List<Calendar> calendarList = new ArrayList<Calendar>();
         for (int i=0;i<48;i++) {
             Calendar clone = (Calendar) calendar.clone();
+            clone.set(Calendar.HOUR_OF_DAY, 0);
             clone.set(Calendar.MINUTE, i*30);
             calendarList.add(clone);
         }

@@ -58,8 +58,8 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 		String responseXml = "";
 		StringWriter sw = new StringWriter();
 		try {
-			log.error("receiveReComputIndicatorInfo开始接收指标重新计算请求报文！开始时间："+new Date());
-			log.error("请求收到同步时间---" + DateUtil.formatCalendar(Calendar.getInstance()));
+            log.error("- - - - - - - - - - - - - - - - - - - - - - -");
+			log.error("receiveReComputIndicatorInfo开始接收指标重新计算请求报文！当前时间：" + DateUtil.formatCalendar(Calendar.getInstance()));
 			log.error("收到的报文--- " + xmlStr);
 
 			MrpElementRequest<IndicatorReqElement> requestBean = WsProtocalParser.xmlToBean(xmlStr, new MrpElementRequest<IndicatorReqElement>(), IndicatorReqElement.class);
@@ -68,6 +68,7 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 			 * 请求head
 			 */
 			ReqHeader reqHeader = requestBean.getReqHeader();
+            log.error("指标计算日期：" + reqHeader.getActionTime());
 
 			/**
 			 * 请求数据body
@@ -79,8 +80,9 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 				Calendar cal = DateUtil.stringToCalendar(reqHeader.getActionTime(), DateUtil.DATE_FORMAT_DAFAULT);
 				List<QuotaTemp> itemCodeList = new ArrayList<QuotaTemp>();
 				OrCondition orCondition = new OrCondition();
+				log.error("需要进行关联计算的基础指标项：");
 				for (IndicatorReqElement ir : indicatorEleList) {
-					System.out.println("IndicatorReqElement-> " + ir.getItemCode());
+                    log.error("     --- IndicatorReqElement-> " + ir.getItemCode());
 					orCondition.add(SearchFilterHelper.newCondition("indicatorCode", MatchType.EQ, ir.getItemCode()));
 				}
 				searchable.or(orCondition);
@@ -91,7 +93,7 @@ public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 			sw = wsProtocalParser.beanToXml(mrpElementResponse, StandardResponse.class);
 			responseXml = sw.toString();
 
-			System.out.println("计算完成：" + responseXml);
+            log.error("计算完成：" + responseXml);
 			return responseXml;
 		} catch (BaseException e) {
 			String msg = "解析报文失败: " + e.getMessage();

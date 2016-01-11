@@ -106,7 +106,7 @@ public class QuotaComputTask implements Runnable {
 
     @Override
     public void run() {
-        log.error("Module Comput "
+        log.error("线程接收到指标计算请求 -- Module Comput "
                 + quotaTemp.getIndicatorCode()
                 + " ---- "
                 + DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_YMDH)
@@ -128,10 +128,10 @@ public class QuotaComputTask implements Runnable {
             quotaInstance.setFloatValue(computResult != null ? Double.parseDouble(computResult.toString()):null);
         }
 
-        Calendar tempComputCal = (Calendar) computCal.clone();
         if(iQuotaComputStrategy instanceof InterfaceQuotaStrategy) {
             if (null == computResult) return;
         }
+        Calendar tempComputCal = (Calendar) computCal.clone();
         quotaInstance.setInstanceTime(tempComputCal.getTime());
         quotaInstance.setCreateTime(Calendar.getInstance());
         quotaInstance.setStatDateNum(Integer.parseInt(DateUtil.formatCalendar(tempComputCal, DateUtil.DATE_FORMAT_DAFAULT)));
