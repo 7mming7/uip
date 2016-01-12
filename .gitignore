@@ -1,13 +1,1 @@
-### Java template
-*.class
-*.log
-*.iml
-
-# Package Files #
-*.jar
-*.war
-*.ear
-target/
-log/
-.idea/
-
+### Java template*.class*.log*.iml# Package Files #*.jar*.war*.eartarget/log/.idea/
