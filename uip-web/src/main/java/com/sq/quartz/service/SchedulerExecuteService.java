@@ -27,7 +27,6 @@ import java.util.Calendar;
  * |_)._ _
  * | o| (_
  */
-@Service
 public class SchedulerExecuteService {
 
     private static final Logger log = LoggerFactory.getLogger(SchedulerExecuteService.class);
