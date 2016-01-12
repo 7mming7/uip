@@ -1,7 +1,5 @@
 package com.sq.quota.strategy;
 
-import com.sq.comput.component.ComputHelper;
-import com.sq.comput.domain.IndicatorConsts;
 import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
 import com.sq.quota.component.QuotaComputHelper;
@@ -9,7 +7,6 @@ import com.sq.quota.domain.QuotaConsts;
 import com.sq.quota.domain.QuotaInstance;
 import com.sq.quota.domain.QuotaTemp;
 import com.sq.quota.repository.QuotaInstanceRepository;
-import com.sq.quota.service.QuotaComputInsService;
 import com.sq.util.DateUtil;
 import com.sq.util.SpringUtils;
 import net.sourceforge.jeval.EvaluationConstants;
@@ -48,7 +45,7 @@ public class InventoryQuotaStrategy extends IQuotaComputStrategy {
             return null;
         }
 
-        List<String> variableList = ComputHelper.getVariableList(calculateExp,evaluator);
+        List<String> variableList = QuotaComputHelper.getVariableList(calculateExp,evaluator);
 
         Searchable searchable = Searchable.newSearchable()
                 .addSearchFilter("valueType", MatchType.EQ, QuotaConsts.VALUE_TYPE_DOUBLE);
@@ -85,7 +82,7 @@ public class InventoryQuotaStrategy extends IQuotaComputStrategy {
             searchable.addSearchFilter("indicatorCode", MatchType.EQ, quotaTemp.getIndicatorCode());
             searchable.addSearchFilter("statDateNum", MatchType.EQ, DateUtil.getPreDay(computCal));
             if (!quotaInstanceRepository.findAll(searchable).getContent().isEmpty()
-                    && quotaInstanceRepository.findAll(searchable).getContent().get(0).getValueType() == IndicatorConsts.VALUE_TYPE_DOUBLE) {
+                    && quotaInstanceRepository.findAll(searchable).getContent().get(0).getValueType() == QuotaConsts.VALUE_TYPE_DOUBLE) {
                 result = result + quotaInstanceRepository.findAll(searchable).getContent().get(0).getFloatValue();
             }
         } catch (EvaluationException e) {

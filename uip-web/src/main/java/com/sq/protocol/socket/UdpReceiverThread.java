@@ -1,6 +1,5 @@
 package com.sq.protocol.socket;
 
-import com.sq.comput.repository.LimitTempRepository;
 import com.sq.protocol.opc.component.OpcRegisterFactory;
 import com.sq.protocol.opc.service.MesuringPointService;
 import com.sq.protocol.opc.service.PushDataThirdService;
@@ -14,8 +13,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * UDP接收数据处理线程.

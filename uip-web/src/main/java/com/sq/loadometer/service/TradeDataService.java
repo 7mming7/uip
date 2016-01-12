@@ -1,10 +1,5 @@
 package com.sq.loadometer.service;
 
-import com.sq.comput.domain.IndicatorConsts;
-import com.sq.comput.domain.IndicatorInstance;
-import com.sq.comput.domain.IndicatorTemp;
-import com.sq.comput.repository.IndicatorInstanceRepository;
-import com.sq.comput.repository.IndicatorTempRepository;
 import com.sq.entity.search.MatchType;
 import com.sq.entity.search.Searchable;
 import com.sq.inject.annotation.BaseComponent;
@@ -12,6 +7,7 @@ import com.sq.loadometer.component.JdbcHelper;
 import com.sq.loadometer.domain.LoadometerIndicatorDto;
 import com.sq.loadometer.domain.Trade;
 import com.sq.loadometer.repository.TradeDataRepository;
+import com.sq.quota.domain.QuotaConsts;
 import com.sq.quota.domain.QuotaInstance;
 import com.sq.quota.domain.QuotaTemp;
 import com.sq.quota.repository.QuotaInstanceRepository;
@@ -133,7 +129,7 @@ public class TradeDataService extends BaseService<Trade, Long> {
             QuotaInstance quotaInstance = new QuotaInstance(quotaTemp);
             try {
                 quotaInstance.setFloatValue(Double.parseDouble(loadometerIndicatorDto.getTotalAmount()));
-                quotaInstance.setValueType(IndicatorConsts.VALUE_TYPE_DOUBLE);
+                quotaInstance.setValueType(QuotaConsts.VALUE_TYPE_DOUBLE);
                 quotaInstance.setStatDateNum(Integer.parseInt(generateDate));
                 quotaInstance.setInstanceTime(DateUtil.stringToDate(generateDate, DateUtil.DATE_FORMAT_DAFAULT));
                 quotaInstance.setCreateTime(Calendar.getInstance());

@@ -1,6 +1,5 @@
 package com.sq.quota.service;
 
-import com.sq.comput.domain.IndicatorTemp;
 import com.sq.inject.annotation.BaseComponent;
 import com.sq.quota.domain.QuotaTemp;
 import com.sq.quota.repository.QuotaTempRepository;
