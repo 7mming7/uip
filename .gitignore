@@ -1,10 +1,13 @@
-/uip-parent/.classpath
-/uip-web/.classpath
-/uip-core/.classpath
-/uip-core/uip-core.iml
-/uip-parent/uip-parent.iml
-/uip-web/uip-web.iml
+### Java template
+*.class
+*.log
 *.iml
-target
-log/*
-*/target/*
+
+# Package Files #
+*.jar
+*.war
+*.ear
+target/
+log/
+.idea/
+
