@@ -73,7 +73,8 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
      *     2、更新指标模板的指标模板基础表达式
      */
     public void init() {
-        System.out.println("-------------------------------------");
+        log.error("-----------------------------------------------");
+        log.error("------  初始化指标模板，重新生成表达式和信号量  -------");
         cacheQuotaTemp();
         updateQuotaExp();
     }
@@ -199,7 +200,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
      */
     public void regularDataGather(Calendar computCal){
         List<QuotaTemp> quotaTempList = quotaTempRepository.listQuotaTempByMp();
-        /*interfaceDataGather(computCal, quotaTempList);*/
+        interfaceDataGather(computCal, quotaTempList);
         interfaceIndicatorDataGater(computCal, quotaTempList);
     }
 
@@ -231,7 +232,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
     }
 
     public synchronized void sendCalculateCommForInter (QuotaTemp quotaTemp,
-                                                Calendar computCal, IQuotaComputStrategy iComputStrategy) {
+                                                        Calendar computCal, IQuotaComputStrategy iComputStrategy) {
         QuotaComputTask quotaComputTask = new QuotaComputTask();
         quotaComputTask.setComputCal(computCal);
         quotaComputTask.setAssignMillions(System.currentTimeMillis());
@@ -278,13 +279,13 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
      * @param computCal
      */
     public synchronized void stepSendComputRequest (LinkedBlockingQueue<QuotaTemp> waitComputQuotaQueue,
-                                       int currCalFrequency,
-                                       int fetchCycle,
-                                       Calendar computCal) {
+                                                    int currCalFrequency,
+                                                    int fetchCycle,
+                                                    Calendar computCal) {
         int initSemaphore = 0;
         while (!waitComputQuotaQueue.isEmpty()) {
             QuotaTemp quotaTemp = waitComputQuotaQueue.poll();
-            log.error("waitComputQuotaQueue poll || code->" + quotaTemp.getIndicatorCode()
+            log.error("指标请求队列中poll出一个指标 -- WaitComputQuotaQueue poll || code->" + quotaTemp.getIndicatorCode()
                     + ",currCalFrequency->" + quotaTemp.getCalFrequency()
                     + ",currFetchCycle->" + quotaTemp.getFetchCycle()
                     + ",Semaphore->" + quotaTemp.getSemaphore());
@@ -297,7 +298,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
                 QuotaComputHelper._instance.shutdown();
 
                 while (true) {
-                    log.error("Wait for Computcal:" + DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULTYMDHMS)
+                    log.error("等待线程池计算完成 -- Wait for Computcal:" + DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULTYMDHMS)
                             + ",Active count:" + QuotaComputHelper._instance.getActiveCount()
                             + ",currCalFrequency:" + currCalFrequency
                             + ",currFetchCycle:" + fetchCycle
@@ -305,7 +306,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
                             + ",isTerminating:" + QuotaComputHelper._instance.isTerminating()
                             + ",isTerminating:" + QuotaComputHelper._instance.isTerminated());
                     if (!QuotaComputHelper._instance.isTerminating() && QuotaComputHelper._instance.isTerminated()) {
-                        log.error("Instance thread pool!");
+                        log.error("前次计算已完成，重新初始化线程池。ReInstance thread pool!");
                         QuotaComputHelper.fetchThreadPooSingleInstance();
                         break;
                     }
@@ -402,22 +403,23 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
 
         try {
             for(Calendar computCalTemp:calendarList) {
-                log.debug("sortQuotaTempList size: " + sortQuotaTempList.size());
-                log.debug("Start send comput request computCal: " + DateUtil.formatCalendar(computCalTemp));
+                log.error("需要重计算的排序列表 - SortQuotaTempList size: " + sortQuotaTempList.size());
+                log.error("发送指标计算请求 - Start send comput request computCal: " + DateUtil.formatCalendar(computCalTemp));
 
-                    for (QuotaTemp quotaTemp:sortQuotaTempList) {
+                for (QuotaTemp quotaTemp:sortQuotaTempList) {
 
-                        waitComputQuotaQueue.put(quotaTemp);
+                    waitComputQuotaQueue.put(quotaTemp);
 
-                        log.debug("Sort quotaTemp: " + quotaTemp.getIndicatorCode() + ",CAL_FREQUENCY->" + quotaTemp.getCalFrequency()
-                                + ",FETCH_CYCLE->" + quotaTemp.getFetchCycle()
-                                + ",Semaphore->" + quotaTemp.getSemaphore());
-                    }
+                    log.error("     --- Sort quotaTemp: " + quotaTemp.getIndicatorCode()
+                            + ",CAL_FREQUENCY->" + quotaTemp.getCalFrequency()
+                            + ",FETCH_CYCLE->" + quotaTemp.getFetchCycle()
+                            + ",Semaphore->" + quotaTemp.getSemaphore());
+                }
 
                 stepSendComputRequest(waitComputQuotaQueue, QuotaConsts.CAL_FREQUENCY_HOUR, QuotaConsts.FETCH_CYCLE_HOUR, computCalTemp);
             }
         } catch (InterruptedException e) {
-            log.debug("waitComputQuotaQueue add quotaTemp ", e);
+            log.error("waitComputQuotaQueue add quotaTemp ", e);
         }
     }
 }
