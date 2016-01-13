@@ -37,122 +37,124 @@ import java.util.List;
 @WebService(endpointInterface = "com.sq.protocol.ws.wsimpl.indicator.IWsServerIndicatorCompet", serviceName = "IWsServerIndicatorCompet")
 public class WsServerIndiCompet4Standard implements IWsServerIndicatorCompet{
 
-	private static Logger log = LoggerFactory.getLogger(WsServerIndiCompet4Standard.class);
+    private static Logger log = LoggerFactory.getLogger(WsServerIndiCompet4Standard.class);
 
-	@Autowired
-	private QuotaComputInsService quotaComputInsService;
+    @Autowired
+    private QuotaComputInsService quotaComputInsService;
 
-	@Autowired
-	private QuotaTempService quotaTempService;
+    @Autowired
+    private QuotaTempService quotaTempService;
 
-	/**
-	 * 接受指标重新计算
-	 * @param xmlStr 请求报文
-	 * @return
-	 */
-	@SuppressWarnings({ "unchecked", "static-access" })
-	@Override
-	public String receiveReComputIndicatorInfo(String xmlStr) {
-		WsProtocalParser wsProtocalParser = WsProtocalParser.createInstance();
-		MrpElementResponse<IndicatorReqElement> mrpElementResponse = wsProtocalParser.createRpsMrpObject(true, null);
-		String responseXml = "";
-		StringWriter sw = new StringWriter();
-		try {
-			log.error("receiveReComputIndicatorInfo开始接收指标重新计算请求报文！开始时间："+new Date());
-			log.error("请求收到同步时间---" + DateUtil.formatCalendar(Calendar.getInstance()));
-			log.error("收到的报文--- " + xmlStr);
+    /**
+     * 接受指标重新计算
+     * @param xmlStr 请求报文
+     * @return
+     */
+    @SuppressWarnings({ "unchecked", "static-access" })
+    @Override
+    public String receiveReComputIndicatorInfo(String xmlStr) {
+        WsProtocalParser wsProtocalParser = WsProtocalParser.createInstance();
+        MrpElementResponse<IndicatorReqElement> mrpElementResponse = wsProtocalParser.createRpsMrpObject(true, null);
+        String responseXml = "";
+        StringWriter sw = new StringWriter();
+        try {
+            log.error("- - - - - - - - - - - - - - - - - - - - - - -");
+            log.error("receiveReComputIndicatorInfo开始接收指标重新计算请求报文！当前时间：" + DateUtil.formatCalendar(Calendar.getInstance()));
+            log.error("收到的报文--- " + xmlStr);
 
-			MrpElementRequest<IndicatorReqElement> requestBean = WsProtocalParser.xmlToBean(xmlStr, new MrpElementRequest<IndicatorReqElement>(), IndicatorReqElement.class);
+            MrpElementRequest<IndicatorReqElement> requestBean = WsProtocalParser.xmlToBean(xmlStr, new MrpElementRequest<IndicatorReqElement>(), IndicatorReqElement.class);
 
-			/**
-			 * 请求head
-			 */
-			ReqHeader reqHeader = requestBean.getReqHeader();
+            /**
+             * 请求head
+             */
+            ReqHeader reqHeader = requestBean.getReqHeader();
+            log.error("指标计算日期：" + reqHeader.getActionTime());
 
-			/**
-			 * 请求数据body
-			 */
-			List<IndicatorReqElement> indicatorEleList = requestBean.getAny();
+            /**
+             * 请求数据body
+             */
+            List<IndicatorReqElement> indicatorEleList = requestBean.getAny();
 
-			if (!indicatorEleList.isEmpty()) {
-				Searchable searchable = Searchable.newSearchable();
-				Calendar cal = DateUtil.stringToCalendar(reqHeader.getActionTime(), DateUtil.DATE_FORMAT_DAFAULT);
-				List<QuotaTemp> itemCodeList = new ArrayList<QuotaTemp>();
-				OrCondition orCondition = new OrCondition();
-				for (IndicatorReqElement ir : indicatorEleList) {
-					System.out.println("IndicatorReqElement-> " + ir.getItemCode());
-					orCondition.add(SearchFilterHelper.newCondition("indicatorCode", MatchType.EQ, ir.getItemCode()));
-				}
-				searchable.or(orCondition);
-				itemCodeList = quotaTempService.findAll(searchable).getContent();
-				quotaComputInsService.reComputQuota(cal, itemCodeList);
-			}
+            if (!indicatorEleList.isEmpty()) {
+                Searchable searchable = Searchable.newSearchable();
+                Calendar cal = DateUtil.stringToCalendar(reqHeader.getActionTime(), DateUtil.DATE_FORMAT_DAFAULT);
+                List<QuotaTemp> itemCodeList = new ArrayList<QuotaTemp>();
+                OrCondition orCondition = new OrCondition();
+                log.error("需要进行关联计算的基础指标项：");
+                for (IndicatorReqElement ir : indicatorEleList) {
+                    log.error("     --- IndicatorReqElement-> " + ir.getItemCode());
+                    orCondition.add(SearchFilterHelper.newCondition("indicatorCode", MatchType.EQ, ir.getItemCode()));
+                }
+                searchable.or(orCondition);
+                itemCodeList = quotaTempService.findAll(searchable).getContent();
+                quotaComputInsService.reComputQuota(cal, itemCodeList);
+            }
 
-			sw = wsProtocalParser.beanToXml(mrpElementResponse, StandardResponse.class);
-			responseXml = sw.toString();
+            sw = wsProtocalParser.beanToXml(mrpElementResponse, StandardResponse.class);
+            responseXml = sw.toString();
 
-			System.out.println("计算完成：" + responseXml);
-			return responseXml;
-		} catch (BaseException e) {
-			String msg = "解析报文失败: " + e.getMessage();
-			log.error(msg, e);
-			mrpElementResponse.getRpsHeader().setSuccess(false);
-			mrpElementResponse.getRpsHeader().setRemark(msg);
-			try {
-				sw = WsProtocalParser.beanToXml(mrpElementResponse, IndicatorRpsElement.class);
-			} catch (FileNotFoundException | JAXBException e1) {
-				String msgEx = "解析报文失败: " + e1.getMessage();
-				log.error(msgEx, e1);
-			}
-			return sw.toString();
-		} catch (JAXBException e) {
-			String msg = "解析报文失败: " + e.getMessage();
-			log.error(msg, e);
-			mrpElementResponse.getRpsHeader().setSuccess(false);
-			mrpElementResponse.getRpsHeader().setRemark(msg);
-			try {
-				sw = WsProtocalParser.beanToXml(mrpElementResponse, IndicatorRpsElement.class);
-			} catch (FileNotFoundException | JAXBException e1) {
-				String msgEx = "解析报文失败: " + e1.getMessage();
-				log.error(msgEx, e1);
-			}
-			return sw.toString();
-		} catch (FileNotFoundException e) {
-			String msg = "bean2XML转化出错: " + e.getMessage();
-			log.error(msg, e);
-			mrpElementResponse.getRpsHeader().setSuccess(false);
-			mrpElementResponse.getRpsHeader().setRemark(msg);
-			try {
-				sw = WsProtocalParser.beanToXml(mrpElementResponse, IndicatorRpsElement.class);
-			} catch (FileNotFoundException | JAXBException e1) {
-				String msgEx = "bean2XML转化出错: " + e1.getMessage();
-				log.error(msgEx, e1);
-			}
-			return sw.toString();
-		} catch (ParseException e) {
-			String msg = "时间转化出现错误。";
-			log.error(msg, e);
-			mrpElementResponse.getRpsHeader().setSuccess(false);
-			mrpElementResponse.getRpsHeader().setRemark(msg);
-			try {
-				sw = WsProtocalParser.beanToXml(mrpElementResponse, IndicatorRpsElement.class);
-			} catch (FileNotFoundException | JAXBException e1) {
-				String msgEx = "bean2XML转化出错: " + e1.getMessage();
-				log.error(msgEx, e1);
-			}
-			return sw.toString();
-		} catch (Exception e) {
-			String msg = "reComput出现错误。";
-			log.error(msg, e);
-			mrpElementResponse.getRpsHeader().setSuccess(false);
-			mrpElementResponse.getRpsHeader().setRemark(msg);
-			try {
-				sw = WsProtocalParser.beanToXml(mrpElementResponse, IndicatorRpsElement.class);
-			} catch (FileNotFoundException | JAXBException e1) {
-				String msgEx = "bean2XML转化出错: " + e1.getMessage();
-				log.error(msgEx, e1);
-			}
-			return sw.toString();
-		}
-	}
+            log.error("计算完成：" + responseXml);
+            return responseXml;
+        } catch (BaseException e) {
+            String msg = "解析报文失败: " + e.getMessage();
+            log.error(msg, e);
+            mrpElementResponse.getRpsHeader().setSuccess(false);
+            mrpElementResponse.getRpsHeader().setRemark(msg);
+            try {
+                sw = WsProtocalParser.beanToXml(mrpElementResponse, IndicatorRpsElement.class);
+            } catch (FileNotFoundException | JAXBException e1) {
+                String msgEx = "解析报文失败: " + e1.getMessage();
+                log.error(msgEx, e1);
+            }
+            return sw.toString();
+        } catch (JAXBException e) {
+            String msg = "解析报文失败: " + e.getMessage();
+            log.error(msg, e);
+            mrpElementResponse.getRpsHeader().setSuccess(false);
+            mrpElementResponse.getRpsHeader().setRemark(msg);
+            try {
+                sw = WsProtocalParser.beanToXml(mrpElementResponse, IndicatorRpsElement.class);
+            } catch (FileNotFoundException | JAXBException e1) {
+                String msgEx = "解析报文失败: " + e1.getMessage();
+                log.error(msgEx, e1);
+            }
+            return sw.toString();
+        } catch (FileNotFoundException e) {
+            String msg = "bean2XML转化出错: " + e.getMessage();
+            log.error(msg, e);
+            mrpElementResponse.getRpsHeader().setSuccess(false);
+            mrpElementResponse.getRpsHeader().setRemark(msg);
+            try {
+                sw = WsProtocalParser.beanToXml(mrpElementResponse, IndicatorRpsElement.class);
+            } catch (FileNotFoundException | JAXBException e1) {
+                String msgEx = "bean2XML转化出错: " + e1.getMessage();
+                log.error(msgEx, e1);
+            }
+            return sw.toString();
+        } catch (ParseException e) {
+            String msg = "时间转化出现错误。";
+            log.error(msg, e);
+            mrpElementResponse.getRpsHeader().setSuccess(false);
+            mrpElementResponse.getRpsHeader().setRemark(msg);
+            try {
+                sw = WsProtocalParser.beanToXml(mrpElementResponse, IndicatorRpsElement.class);
+            } catch (FileNotFoundException | JAXBException e1) {
+                String msgEx = "bean2XML转化出错: " + e1.getMessage();
+                log.error(msgEx, e1);
+            }
+            return sw.toString();
+        } catch (Exception e) {
+            String msg = "reComput出现错误。";
+            log.error(msg, e);
+            mrpElementResponse.getRpsHeader().setSuccess(false);
+            mrpElementResponse.getRpsHeader().setRemark(msg);
+            try {
+                sw = WsProtocalParser.beanToXml(mrpElementResponse, IndicatorRpsElement.class);
+            } catch (FileNotFoundException | JAXBException e1) {
+                String msgEx = "bean2XML转化出错: " + e1.getMessage();
+                log.error(msgEx, e1);
+            }
+            return sw.toString();
+        }
+    }
 }
