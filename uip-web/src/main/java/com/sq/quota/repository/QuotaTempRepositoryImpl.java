@@ -32,7 +32,7 @@ public class QuotaTempRepositoryImpl {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         StringBuilder nativeSql = new StringBuilder();
-        nativeSql.append(" select it.* from t_indicatortemp it, t_mesuringpoint mp ")
+        nativeSql.append(" select DISTINCT it.* from t_indicatortemp it, t_mesuringpoint mp ")
                 .append("where it.calculateExpression like CONCAT('%',mp.targetCode,'%') and mp.sysId != 2");
         Query query = em.createNativeQuery(nativeSql.toString(),QuotaTemp.class);
 
