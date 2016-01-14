@@ -51,6 +51,17 @@ public class QuotaComputController {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return null;
+        return "syncInterfaceData 数据同步成功!";
+    }
+
+    /***
+     * 重新初始化指标模板的表达式
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("quotaComput/reInitQuotaTemp.do")
+    public String reInitQuotaTemp() {
+        quotaComputInsService.init();
+        return "重新更新指标模板成功!";
     }
 }

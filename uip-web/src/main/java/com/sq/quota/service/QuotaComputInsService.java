@@ -12,7 +12,6 @@ import com.sq.quota.domain.QuotaInstance;
 import com.sq.quota.domain.QuotaResetRecord;
 import com.sq.quota.domain.QuotaTemp;
 import com.sq.quota.repository.QuotaInstanceRepository;
-import com.sq.quota.repository.QuotaResetRecordRepository;
 import com.sq.quota.repository.QuotaTempRepository;
 import com.sq.quota.strategy.IQuotaComputStrategy;
 import com.sq.quota.strategy.InterfaceQuotaStrategy;
@@ -26,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -54,9 +52,6 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
 
     @Autowired
     private QuotaTempRepository quotaTempRepository;
-
-    @Autowired
-    private QuotaResetRecordRepository quotaResetRecordRepository;
 
     /** 单个计算轮回中的超时时限 */
     public static Long computWaitTimeOutValue = 10l;
@@ -337,7 +332,10 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
      * 找出指标集合的关联指标
      */
     public List<QuotaTemp> searchAssociatedQuotaTemp (List<String> calculateStringList) {
-        Assert.notEmpty(calculateStringList, "searchAssociatedQuotaTemp需要查询关联指标的参数指标不存在.");
+        if (calculateStringList.isEmpty() || calculateStringList.size() == 0) {
+            log.error("searchAssociatedQuotaTemp需要查询关联指标的参数指标不存在.");
+            return null;
+        }
         Searchable searchable = Searchable.newSearchable()
                 .addSearchFilter("dataSource", MatchType.EQ, QuotaConsts.DATASOURCE_CALCULATE);
         OrCondition orCondition = new OrCondition();
@@ -380,18 +378,21 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
 
         List<String> calculateStringList = new ArrayList<String>();
         for (QuotaTemp quotaTemp:quotaTempList) {
-            if (quotaTemp.getDataSource() == QuotaConsts.DATASOURCE_CALCULATE
-                    || quotaTemp.getDataSource() == QuotaConsts.DATASOURCE_INTERFACE ) {
+            if (quotaTemp.getDataSource() == QuotaConsts.DATASOURCE_CALCULATE) {
                 if (StringUtils.isBlank(quotaTemp.getGernaterdNativeExpression()))
                     continue;
                 calculateStringList.addAll(QuotaComputHelper.getVariableList(quotaTemp.getGernaterdNativeExpression(),
                         QuotaComputHelper.getEvaluatorInstance()));
-            } else if (quotaTemp.getDataSource() == QuotaConsts.DATASOURCE_ENTRY) {
+            } else if (quotaTemp.getDataSource() == QuotaConsts.DATASOURCE_ENTRY
+                    || quotaTemp.getDataSource() == QuotaConsts.DATASOURCE_INTERFACE ) {
                 calculateStringList.add(quotaTemp.getIndicatorCode());
             }
         }
 
         List<QuotaTemp> associatedQuotaTempList = searchAssociatedQuotaTemp(calculateStringList);
+        if (null == associatedQuotaTempList)
+            return;
+
         List<QuotaTemp> sortQuotaTempList = new ArrayList<QuotaTemp>(associatedQuotaTempList);
 
         //删除计算指标的关联指标
