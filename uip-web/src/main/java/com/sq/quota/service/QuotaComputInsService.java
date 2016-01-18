@@ -165,31 +165,6 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
     }
 
     /**
-     * 生成数学计算指标表达式
-     * @param exp 配置在模板上的表达式
-     * @return 生成的数学计算表达式
-     */
-    /*public String generateMathExpression (String exp, int fetchCycle){
-        if (exp == null) return null;
-
-        List<String> variableList = QuotaComputHelper.getVariableList(exp, QuotaComputHelper.getEvaluatorInstance());
-        for (String variable:variableList) {
-            //判断表达式中的编码是否存在，留到具体的计算处统一校验
-            QuotaTemp quotaTemp = quotaTempMapCache.get(variable);
-            if (null == quotaTemp ) {
-                return null;//关联指标不存在，直接退出
-            }
-            if (quotaTemp.getFetchCycle() == fetchCycle && quotaTemp.getDataSource() == QuotaConsts.DATASOURCE_CALCULATE) {
-                String replaceString = quotaTemp.getCalculateExpression();
-                String needReplaceString = EvaluationConstants.OPEN_VARIABLE + variable + EvaluationConstants.CLOSED_BRACE;
-                exp = exp.replace(needReplaceString,replaceString);
-            }
-        }
-
-        return exp;
-    }*/
-
-    /**
      * 数据获取周期性任务
      * @param computCal  汇聚时间
      */
@@ -204,6 +179,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
      * @param computCal 计算时间
      */
     public void interfaceDataGather (Calendar computCal, List<QuotaTemp> quotaTempList) {
+        deleteInterfaceReComputIndicator(computCal, quotaTempList);
         for (QuotaTemp quotaTemp : quotaTempList) {
             log.debug(" QuotaTemp:->" + quotaTemp.getIndicatorName());
             sendCalculateCommForInter(quotaTemp, computCal, new InterfaceQuotaStrategy());
@@ -234,6 +210,15 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
         quotaComputTask.setiQuotaComputStrategy(iComputStrategy);
         quotaComputTask.setQuotaTemp(quotaTemp);
         quotaComputTask.run();
+    }
+
+    /**
+     * 接口指标日数据汇集
+     * @param computCal 计算时间
+     */
+    public void interfaceIndicatorDataGater (Calendar computCal) {
+        List<QuotaTemp> quotaTempList = quotaTempRepository.listQuotaTempByMp();
+        interfaceIndicatorDataGater(computCal, quotaTempList);
     }
 
     /**
@@ -346,6 +331,26 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
         }
         searchable.addSearchFilter(orCondition);
         return quotaTempRepository.findAll(searchable).getContent();
+    }
+
+    /**
+     * 删除接口的指标
+     * @param computCal 计算时间
+     * @param associatedQuotaTempList 接口指标列表
+     */
+    public void deleteInterfaceReComputIndicator(Calendar computCal, List<QuotaTemp> associatedQuotaTempList){
+        if (associatedQuotaTempList.isEmpty())
+            return;
+
+        List<String> indicatorCodeList = new ArrayList<String>();
+        for(QuotaTemp quotaTemp:associatedQuotaTempList) {
+            indicatorCodeList.add(quotaTemp.getIndicatorCode());
+        }
+
+        Searchable deleteSearchable = Searchable.newSearchable()
+                .addSearchFilter("instanceTime", MatchType.EQ, computCal)
+                .addSearchFilter("indicatorCode",MatchType.IN, indicatorCodeList);
+        quotaInstanceRepository.deleteInBatch(quotaInstanceRepository.findAll(deleteSearchable).getContent());
     }
 
     /**

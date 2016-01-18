@@ -11,6 +11,7 @@ import com.sq.protocol.opc.domain.OriginalData;
 import com.sq.protocol.opc.repository.MesuringPointRepository;
 import com.sq.protocol.opc.repository.OriginalDataRepository;
 import com.sq.service.BaseService;
+import com.sq.util.NumberUtils;
 import org.jinterop.dcom.common.JIException;
 import org.jinterop.dcom.core.JIString;
 import org.jinterop.dcom.core.JIUnsignedInteger;
@@ -202,7 +203,10 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
             originalData.setInstanceTime(Calendar.getInstance());
             originalData.setBatchNum(batchNum);
             originalData.setItemCode(paramArray[0]);
-            originalData.setItemValue(paramArray[1]);
+            if (NumberUtils.isNumeric(paramArray[1]))
+                originalData.setItemValue(paramArray[1]);
+            else
+                originalData.setItemValue("");
             originalData.setSysId(sysId);
             originalDataList.add(originalData);
         }

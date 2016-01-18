@@ -5,6 +5,7 @@ import com.sq.protocol.opc.repository.MesuringPointRepository;
 import com.sq.protocol.opc.repository.OriginalDataRepository;
 import com.sq.quota.repository.QuotaInstanceRepository;
 import com.sq.util.DateUtil;
+import com.sq.util.NumberUtils;
 import com.sq.util.SpringUtils;
 import net.sourceforge.jeval.EvaluationConstants;
 import net.sourceforge.jeval.Evaluator;
@@ -70,8 +71,15 @@ public class InstantFunction implements Function {
         } else if (frontOriginalDataList.isEmpty() && !behindOriginalDataList.isEmpty()) {
             result = Double.parseDouble(behindOriginalDataList.get(0).getItemValue());
         } else {
-            Double frontValue = Double.parseDouble(frontOriginalDataList.get(0).getItemValue());
-            Double behindValue = Double.parseDouble(behindOriginalDataList.get(0).getItemValue());
+            Double frontValue = null;
+            Double behindValue = null;
+            if (NumberUtils.isNumeric(frontOriginalDataList.get(0).getItemValue())) {
+                frontValue = Double.parseDouble(frontOriginalDataList.get(0).getItemValue());
+            }
+            if (NumberUtils.isNumeric(behindOriginalDataList.get(0).getItemValue())) {
+                behindValue = Double.parseDouble(behindOriginalDataList.get(0).getItemValue());
+            }
+
             long betMinutesTwoInput = DateUtil.getMinutesBetTwoCal(frontOriginalDataList.get(0).getInstanceTime(), behindOriginalDataList.get(0).getInstanceTime());
             long betMinutesComputCal = DateUtil.getMinutesBetTwoCal(frontOriginalDataList.get(0).getInstanceTime(), computCal);
             log.error("betMinutesTwoInput--------- " + betMinutesTwoInput);

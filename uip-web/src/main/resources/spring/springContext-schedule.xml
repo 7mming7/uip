@@ -8,7 +8,7 @@
     <bean name="startQuertz" lazy-init="false" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
-                <!--<ref bean="indicatorReallTimeComputJobTrigger" />
+                <!--<ref bean="execInterfaceBackComputJobTrigger" />
                 <ref bean="opcSyncDataJobTrigger" />
                 <ref bean="dcsDataMigrationJobTrigger" />
                 <ref bean="execInterfaceIndicatorDataGaterTrigger" />
@@ -96,6 +96,25 @@
         </property>
         <property name="cronExpression">
             <value>0 */2 * * * ?</value>
+        </property>
+    </bean>
+
+    <!-- 指标数据昨日数据重计算 -->
+    <bean id="execInterfaceBackComputDetailJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <!-- 调用的类 -->
+        <property name="targetObject" ref="schedulerExecuteService"/>
+        <!-- 调用类中的方法 -->
+        <property name="targetMethod" value="execInterfaceBackComput" />
+        <!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <bean id="execInterfaceBackComputJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail">
+            <ref bean="execInterfaceBackComputDetailJob"/>
+        </property>
+        <property name="cronExpression">
+            <value>0 0 2 * * ?</value>
         </property>
     </bean>
 

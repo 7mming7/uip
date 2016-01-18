@@ -83,6 +83,17 @@ public class SchedulerExecuteService {
     }
 
     /**
+     * 对昨日的数据进行重计算
+     */
+    public void execInterfaceBackComput (){
+        log.error("----------- 接口数据昨日数据重计算开始 -----------");
+        Calendar curr = Calendar.getInstance();
+        curr.add(Calendar.DAY_OF_YEAR,-1);
+        quotaComputInsService.interfaceIndicatorDataGater(curr);
+        log.error("----------- 接口数据昨日数据重计算开始 -----------");
+    }
+
+    /**
      * 接口日数据汇集任务
      */
     /*public void execInterfaceIndicatorDataGater () {
