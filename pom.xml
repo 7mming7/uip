@@ -9,7 +9,7 @@
   <packaging>pom</packaging>
   <version>1.0-SNAPSHOT</version>
   <name>uip</name>
-  <url>https://github.com/ShuiQing301/uip</url>
+  <url>https://github.com/shuiqing301/uip</url>
 
   <!--项目中包含的模块 -->
   <modules>
