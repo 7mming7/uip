@@ -807,8 +807,7 @@ public class DateUtil {
      * @return
      */
     public static long getMinutesBetTwoCal(Calendar firstCal,Calendar lastCal){
-        System.out.println("formatCalendar(firstCal, DATE_FORMAT_YMDHM)===" + formatCalendar(firstCal, DATE_FORMAT_YMDHM));
-        System.out.println("formatCalendar(lastCal, DATE_FORMAT_YMDHM)===" + formatCalendar(lastCal, DATE_FORMAT_YMDHM));
+
         long firstCalInt = Long.parseLong(formatCalendar(firstCal, DATE_FORMAT_YMDHM));
         long lastCalInt = Long.parseLong(formatCalendar(lastCal, DATE_FORMAT_YMDHM));
         return lastCalInt - firstCalInt;

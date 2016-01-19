@@ -80,12 +80,22 @@ public class InstantFunction implements Function {
                 behindValue = Double.parseDouble(behindOriginalDataList.get(0).getItemValue());
             }
 
-            long betMinutesTwoInput = DateUtil.getMinutesBetTwoCal(frontOriginalDataList.get(0).getInstanceTime(), behindOriginalDataList.get(0).getInstanceTime());
-            long betMinutesComputCal = DateUtil.getMinutesBetTwoCal(frontOriginalDataList.get(0).getInstanceTime(), computCal);
+            Calendar firstCal = frontOriginalDataList.get(0).getInstanceTime();
+            Calendar lastCal = behindOriginalDataList.get(0).getInstanceTime();
+            log.error("formatCalendar(firstCal, DATE_FORMAT_YMDHM)===" + DateUtil.formatCalendar(firstCal, DateUtil.DATE_FORMAT_YMDHM));
+            log.error("formatCalendar(lastCal, DATE_FORMAT_YMDHM)===" + DateUtil.formatCalendar(lastCal, DateUtil.DATE_FORMAT_YMDHM));
+            long betMinutesTwoInput = DateUtil.getMinutesBetTwoCal(firstCal, lastCal);
+            long betMinutesComputCal = DateUtil.getMinutesBetTwoCal(firstCal, computCal);
             log.error("betMinutesTwoInput--------- " + betMinutesTwoInput);
             log.error("betMinutesComputCal-------- " + betMinutesComputCal);
             log.error("frontValue------- " + frontValue);
             log.error("behindValue-------- " + behindValue);
+
+            if (null == frontValue || null == behindValue) {
+                return new FunctionResult(null,
+                        FunctionConstants.FUNCTION_RESULT_TYPE_STRING);
+            }
+
             if (frontValue.equals(behindValue)) {
                 result = frontValue;
             } else {
