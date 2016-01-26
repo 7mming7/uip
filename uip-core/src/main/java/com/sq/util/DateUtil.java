@@ -794,6 +794,8 @@ public class DateUtil {
         List<Calendar> calendarList = new ArrayList<Calendar>();
         for (int i=0;i<48;i++) {
             Calendar clone = (Calendar) calendar.clone();
+            clone.set(Calendar.SECOND, 0);
+            clone.set(Calendar.HOUR_OF_DAY, 0);
             clone.set(Calendar.MINUTE, i*30);
             calendarList.add(clone);
         }
@@ -881,11 +883,12 @@ public class DateUtil {
         System.out.println(DateUtil.dateMigrate("Day", -1, "20151022000000"));
         *//*for (Calendar calendar:calendarList) {
             System.out.println(formatCalendar(calendar,DATE_FORMAT_YMDH));
-        }*//*
+        }*/
+        Calendar cal1 = Calendar.getInstance();
         List<Calendar> calendarList = get48HalfHours(cal1);
         for (Calendar calendar:calendarList) {
             System.out.println(formatCalendar(calendar,DATE_FORMAT_DAFAULTYMDHMS));
-        }*/
+        }
         /*Calendar[] calendars = getPointDayFirstAndLast(Calendar.getInstance(), 1, 25);
         for (Calendar calendar:calendars) {
             System.out.println(DateUtil.formatCalendar(calendar,DATE_FORMAT_DAFAULTYMDHMS));

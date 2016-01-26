@@ -31,10 +31,10 @@ public class MesuringPointTest extends TestCase {
     @Autowired
     private OriginalDataRepository originalDataRepository;
 
-    @Test
+    /*@Test
     public void testDelete() {
         this.mesuringPointRepository.delete(12l);
-    }
+    }*/
 
     /*@Test
     public void readBrunch () {
