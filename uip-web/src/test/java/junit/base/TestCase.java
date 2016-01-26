@@ -19,7 +19,7 @@ import javax.persistence.PersistenceContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"classpath:spring/springContext-*.xml", "classpath:springContext-common.xml"})
 @WebAppConfiguration
-@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
+@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = false)
 public class TestCase{
 
     @PersistenceContext

@@ -88,7 +88,7 @@ public abstract class IQuotaComputStrategy {
                             QuotaBaseConfigure.startHour,
                             QuotaBaseConfigure.endHour);
                     searchable.addSearchFilter("instanceTime", MatchType.GTE, dayCalArray[0]);
-                    searchable.addSearchFilter("instanceTime", MatchType.LTE, dayCalArray[1]);
+                    searchable.addSearchFilter("instanceTime", MatchType.LT, dayCalArray[1]);
                 } else if (quotaTemp.getDataSource() == QuotaConsts.DATASOURCE_CALCULATE
                         || quotaTemp.getDataSource() == QuotaConsts.DATASOURCE_ENTRY ) {
                     dayArray = DateUtil.getDayFirstAndLastInt(computCal);

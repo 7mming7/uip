@@ -2,6 +2,7 @@ package com.sq.protocol.opc.domain;
 
 import com.sq.entity.AbstractEntity;
 import com.sq.entity.BaseEntity;
+import com.sq.util.DateUtil;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -91,5 +92,16 @@ public class OriginalData extends AbstractEntity<Long> implements Serializable {
 
     public void setSysId(int sysId) {
         this.sysId = sysId;
+    }
+
+    @Override
+    public String toString() {
+        return "OriginalData{" +
+                "sysId=" + sysId +
+                ", itemCode='" + itemCode + '\'' +
+                ", itemValue='" + itemValue + '\'' +
+                ", instanceTime=" + DateUtil.formatCalendar(instanceTime,DateUtil.DATE_FORMAT_DAFAULTYMDHMS) +
+                ", batchNum=" + batchNum +
+                '}';
     }
 }

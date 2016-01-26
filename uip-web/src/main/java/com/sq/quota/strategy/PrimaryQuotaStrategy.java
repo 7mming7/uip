@@ -151,7 +151,7 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
             List<QuotaInstance> nullValueQuotaInstanceList = new ArrayList<QuotaInstance>();
             for (QuotaInstance quotaInstance:quotaDyList) {
                 if (null == quotaInstance.getFloatValue()) {
-                    log.debug("quotaInstance floatvalue null: " + quotaInstance.getIndicatorCode()
+                    log.error("quotaInstance floatvalue null: " + quotaInstance.getIndicatorCode()
                             + ",statDateNum:" + quotaInstance.getStatDateNum());
                     nullValueQuotaInstanceList.add(quotaInstance);
                 }
@@ -161,7 +161,7 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
             }
 
             if (quotaDyList.isEmpty()) {
-                log.debug("QuotaTemp -> variable: " + variable + " exist no instance!");
+                log.error("QuotaTemp -> variable: " + variable + " exist no instance!");
                 if (quotaTemp.getDoWithNull() == QuotaConsts.DOWITH_NULL_BENULL) {
                     return null;
                 } else {
@@ -171,7 +171,7 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
 
             if (quotaDyList.size() >= 1) {
                 for (QuotaInstance indicatorInstance : quotaDyList) {
-                    log.debug("Comput quotaTemp: " + quotaTemp.getIndicatorCode()
+                    log.error("Comput quotaTemp: " + quotaTemp.getIndicatorCode()
                             + ",quotaDyList code: " + indicatorInstance.getIndicatorCode()
                             + ",value: " + indicatorInstance.getFloatValue()
                             + ",computCal: " + indicatorInstance.getStatDateNum());
@@ -204,14 +204,30 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
                     String variableTemp = new String(variable);
                     needDeleteVariableList.add(variable);
                     variable = variable.replace(")", "," + computCal + ")");
+
                     String result = "";
                     try {
                         result = evaluator.evaluate(variable);
                     } catch (EvaluationException e) {
                         log.error("parseExpressionFront -> logicalFunctions 指标计算出现错误.calculateExp: " + calculateExp, e);
                     }
-                    log.error("calculateExp : " + calculateExp + ", ParseExpressionFront result: " + result);
-                    if (result.equals("'null'")) return null;
+                    if (result.equals("'null'")) {
+                        List<String> subVariableList = QuotaComputHelper.getVariableList(variable,evaluator);
+                        QuotaTemp assQuotaTemp = new QuotaTemp();
+                        for (String assCode:subVariableList) {
+                            QuotaTemp quotaTemp = quotaTempRepository.findByIndicatorCode(assCode);
+                            if (null != assQuotaTemp)
+                                assQuotaTemp = quotaTemp;
+                        }
+                        log.error("assQuotaTemp :" + assQuotaTemp.getIndicatorCode()
+                                + "calculateExp : " + calculateExp
+                                + ", ParseExpressionFront result: " + result);
+                        if (assQuotaTemp.getDoWithNull() == QuotaConsts.DOWITH_NULL_BENULL) {
+                            return null;
+                        } else {
+                            result = "'0'";
+                        }
+                    }
                     result = result.substring(1,result.length() - 1);
                     String replaceVariable = EvaluationConstants.OPEN_VARIABLE + variableTemp + EvaluationConstants.CLOSED_BRACE;
                     calculateExp = calculateExp.replace(replaceVariable, result);

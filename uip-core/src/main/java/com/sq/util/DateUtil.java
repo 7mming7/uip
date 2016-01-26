@@ -808,9 +808,13 @@ public class DateUtil {
      */
     public static long getMinutesBetTwoCal(Calendar firstCal,Calendar lastCal){
 
-        long firstCalInt = Long.parseLong(formatCalendar(firstCal, DATE_FORMAT_YMDHM));
-        long lastCalInt = Long.parseLong(formatCalendar(lastCal, DATE_FORMAT_YMDHM));
-        return lastCalInt - firstCalInt;
+        long nd = 1000 * 24 * 60 * 60;
+        long nh = 1000 * 60 * 60;
+        long nm = 1000 * 60;
+
+        long diff = lastCal.getTime().getTime() - firstCal.getTime().getTime();
+        long min = diff % nd % nh / nm;
+        return min;
     }
 
     /**
@@ -898,6 +902,6 @@ public class DateUtil {
         for (Calendar cal:calendars) {
             System.out.println(DateUtil.formatCalendar(cal,DATE_FORMAT_DAFAULTYMDHMS));
         }
-        System.out.println(DateUtil.dateMigrate("minute", 510, "20160105090000"));
+        System.out.println(DateUtil.dateMigrate("day", -1, "20160101000000"));
     }
 }

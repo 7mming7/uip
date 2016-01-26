@@ -73,17 +73,18 @@ public class InstantFunction implements Function {
         } else {
             Double frontValue = null;
             Double behindValue = null;
-            if (NumberUtils.isNumeric(frontOriginalDataList.get(0).getItemValue())) {
-                frontValue = Double.parseDouble(frontOriginalDataList.get(0).getItemValue());
+            OriginalData frontOd = frontOriginalDataList.get(0);
+            OriginalData behindOd = behindOriginalDataList.get(0);
+            log.error(frontOd.toString());
+            log.error(behindOd.toString());
+            if (NumberUtils.isNumeric(frontOd.getItemValue().trim())) {
+                frontValue = Double.parseDouble(frontOd.getItemValue().trim());
             }
-            if (NumberUtils.isNumeric(behindOriginalDataList.get(0).getItemValue())) {
-                behindValue = Double.parseDouble(behindOriginalDataList.get(0).getItemValue());
+            if (NumberUtils.isNumeric(behindOd.getItemValue().trim())) {
+                behindValue = Double.parseDouble(behindOd.getItemValue().trim());
             }
-
-            Calendar firstCal = frontOriginalDataList.get(0).getInstanceTime();
-            Calendar lastCal = behindOriginalDataList.get(0).getInstanceTime();
-            log.error("formatCalendar(firstCal, DATE_FORMAT_YMDHM)===" + DateUtil.formatCalendar(firstCal, DateUtil.DATE_FORMAT_YMDHM));
-            log.error("formatCalendar(lastCal, DATE_FORMAT_YMDHM)===" + DateUtil.formatCalendar(lastCal, DateUtil.DATE_FORMAT_YMDHM));
+            Calendar firstCal = frontOd.getInstanceTime();
+            Calendar lastCal = behindOd.getInstanceTime();
             long betMinutesTwoInput = DateUtil.getMinutesBetTwoCal(firstCal, lastCal);
             long betMinutesComputCal = DateUtil.getMinutesBetTwoCal(firstCal, computCal);
             log.error("betMinutesTwoInput--------- " + betMinutesTwoInput);

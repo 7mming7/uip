@@ -204,7 +204,7 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
             originalData.setBatchNum(batchNum);
             originalData.setItemCode(paramArray[0]);
             if (NumberUtils.isNumeric(paramArray[1]))
-                originalData.setItemValue(paramArray[1]);
+                originalData.setItemValue(paramArray[1].trim());
             else
                 originalData.setItemValue("");
             originalData.setSysId(sysId);

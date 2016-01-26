@@ -136,37 +136,6 @@ public class SimpleBaseRepository<M, ID extends Serializable> extends SimpleJpaR
     /////////////////////////////////////////////////
     ////////覆盖默认spring data jpa的实现////////////
     /////////////////////////////////////////////////
-
-    /**
-     * 根据主键删除相应实体
-     *
-     * @param id 主键
-     */
-    @Override
-    public void delete(final ID id) {
-        M m = findOne(id);
-        delete(m);
-    }
-
-    /**
-     * 删除实体
-     *
-     * @param m 实体
-     */
-    @Override
-    public void delete(final M m) {
-        if (m == null) {
-            return;
-        }
-        if (m instanceof LogicDeleteable) {
-            ((LogicDeleteable) m).markDeleted();
-            save(m);
-        } else {
-            super.delete(m);
-        }
-    }
-
-
     /**
      * 根据主键删除相应实体
      *

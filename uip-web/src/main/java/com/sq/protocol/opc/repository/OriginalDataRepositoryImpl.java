@@ -129,7 +129,7 @@ public class OriginalDataRepositoryImpl{
                 .append("          FROM       ")
                 .append("             t_originaldata o, t_mesuringpoint p     ")
                 .append("          WHERE ")
-                .append("            o.itemCode = p.sourceCode and o.instanceTime <= ?1 ")
+                .append("            o.itemCode = p.sourceCode and o.instanceTime >= ?1 ")
                 .append("          AND p.targetCode = ?2 ")
                 .append("            )        ");
         Query query = em.createNativeQuery(nativeSql.toString(),OriginalData.class);

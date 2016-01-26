@@ -1,5 +1,6 @@
 package junit.protocol;
 
+import com.sq.protocol.opc.repository.MesuringPointRepository;
 import com.sq.protocol.opc.repository.OriginalDataRepository;
 import com.sq.protocol.opc.service.MesuringPointService;
 import com.sq.protocol.opc.service.OriginalDataService;
@@ -25,7 +26,15 @@ public class MesuringPointTest extends TestCase {
     private MesuringPointService mesuringPointService;
 
     @Autowired
+    private MesuringPointRepository mesuringPointRepository;
+
+    @Autowired
     private OriginalDataRepository originalDataRepository;
+
+    @Test
+    public void testDelete() {
+        this.mesuringPointRepository.delete(12l);
+    }
 
     /*@Test
     public void readBrunch () {

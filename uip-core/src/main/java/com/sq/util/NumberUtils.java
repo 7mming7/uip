@@ -29,4 +29,8 @@ public class NumberUtils {
         }
         return true;
     }
+
+    public static void main (String[] args) {
+        System.out.println(NumberUtils.isNumeric("4.7400    ".trim()));
+    }
 }
