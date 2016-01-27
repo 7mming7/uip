@@ -85,26 +85,7 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
         server.setDefaultUpdateRate(6000);
         try {
             if (flag) {
-                log.debug("开始添加测点.");
-                int item_flag = 0;
-                Group group = server.addGroup();
-                group.setActive(true);
-                Item[] itemArr = new Item[leafs.size()];
-                for(Leaf leaf:leafs){
-                    Item item = null;
-                    try {
-                        item = group.addItem(leaf.getItemId());
-                    } catch (AddFailedException e) {
-                        log.error("Group add error.itemCode：" + leaf.getItemId(),e);
-                    }
-                    item.setActive(true);
-                    log.debug("ItemName:[" + item.getId()
-                            + "],value:" + item.read(true).getValue());
-                    itemArr[item_flag] = item;
-                    item_flag++;
-                }
-                opcServerInfomation.setGroup(group);
-                opcServerInfomation.setItemArr(itemArr);
+                fillInOpcItemToServer(server, leafs, cid);
             }
 
             Map<Item, ItemState> syncItems = null;
@@ -140,6 +121,42 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
         } catch (DuplicateGroupException e) {
             log.error("Group duplicate error.",e);
         }
+    }
+
+    /**
+     * 添加通讯测点
+     * @param server 已经连接的通讯通道
+     * @param leafs 通讯测点集合
+     * @throws DuplicateGroupException
+     * @throws NotConnectedException
+     * @throws JIException
+     * @throws UnknownHostException
+     */
+    public void fillInOpcItemToServer (Server server,Collection<Leaf> leafs, int cid)
+            throws DuplicateGroupException, NotConnectedException, JIException, UnknownHostException {
+        log.debug("开始添加测点.");
+        int item_flag = 0;
+        Group group = server.addGroup();
+        group.setActive(true);
+        Item[] itemArr = new Item[leafs.size()];
+        for(Leaf leaf:leafs) {
+            Item item = null;
+            try {
+                item = group.addItem(leaf.getItemId());
+            } catch (AddFailedException e) {
+                log.error("Group add error.itemCode：" + leaf.getItemId(), e);
+                leafs.remove(leaf);
+                fillInOpcItemToServer(server, leafs, cid);
+            }
+            item.setActive(true);
+            log.debug("ItemName:[" + item.getId()
+                    + "],value:" + item.read(true).getValue());
+            itemArr[item_flag] = item;
+            item_flag++;
+        }
+        OpcServerInfomation opcServerInfomation = OpcRegisterFactory.fetchOpcInfo(cid);
+        opcServerInfomation.setGroup(group);
+        opcServerInfomation.setItemArr(itemArr);
     }
 
     /**
