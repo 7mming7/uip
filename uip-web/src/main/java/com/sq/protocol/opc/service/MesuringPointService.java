@@ -12,6 +12,7 @@ import com.sq.protocol.opc.repository.MesuringPointRepository;
 import com.sq.protocol.opc.repository.OriginalDataRepository;
 import com.sq.service.BaseService;
 import com.sq.util.NumberUtils;
+import org.apache.commons.collections4.collection.SynchronizedCollection;
 import org.jinterop.dcom.common.JIException;
 import org.jinterop.dcom.core.JIString;
 import org.jinterop.dcom.core.JIUnsignedInteger;
@@ -134,12 +135,13 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
      */
     public void fillInOpcItemToServer (Server server,Collection<Leaf> leafs, int cid)
             throws DuplicateGroupException, NotConnectedException, JIException, UnknownHostException {
+        SynchronizedCollection<Leaf> synchronizedCollection = SynchronizedCollection.synchronizedCollection(leafs);
         log.debug("开始添加测点.");
         int item_flag = 0;
         Group group = server.addGroup();
         group.setActive(true);
         Item[] itemArr = new Item[leafs.size()];
-        for(Leaf leaf:leafs) {
+        for(Leaf leaf:synchronizedCollection) {
             Item item = null;
             try {
                 item = group.addItem(leaf.getItemId());
