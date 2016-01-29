@@ -13,6 +13,7 @@ import com.sq.quota.domain.QuotaInstance;
 import com.sq.quota.domain.QuotaTemp;
 import com.sq.quota.repository.QuotaInstanceRepository;
 import com.sq.quota.repository.QuotaTempRepository;
+import com.sq.quota.service.QuotaComputInsService;
 import com.sq.service.BaseService;
 import com.sq.util.DateUtil;
 import org.slf4j.Logger;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -54,6 +56,9 @@ public class TradeDataService extends BaseService<Trade, Long> {
 
     @Autowired
     private QuotaInstanceRepository quotaInstanceRepository;
+
+    @Autowired
+    private QuotaComputInsService quotaComputInsService;
 
     /**
      * 地磅流水数据同步
@@ -135,28 +140,52 @@ public class TradeDataService extends BaseService<Trade, Long> {
             loadometerCodeList.add(loadometerIndicatorDto.getIndicatorCode());
         }
 
-        if (!loadometerCodeList.isEmpty()) {
-            //删除已经存在的当日的地磅指标数据
-            Searchable removeLoadometerCodeSearchable = Searchable.newSearchable()
-                    .addSearchFilter("indicatorCode", MatchType.IN, loadometerCodeList)
-                    .addSearchFilter("statDateNum", MatchType.EQ, generateDate);
-            quotaInstanceRepository.deleteInBatch(quotaInstanceRepository.findAll(removeLoadometerCodeSearchable));
-        }
+        //删除已经存在的当日的地磅指标数据
+        Searchable removeLoadometerCodeSearchable = Searchable.newSearchable()
+                .addSearchFilter("indicatorCode", MatchType.IN, loadometerCodeList)
+                .addSearchFilter("statDateNum", MatchType.EQ, generateDate);
+        quotaInstanceRepository.deleteInBatch(quotaInstanceRepository.findAll(removeLoadometerCodeSearchable));
 
+        log.error("----生成地磅原始指标开始----");
         //保存查询到的当日地磅指标数据
         for(LoadometerIndicatorDto loadometerIndicatorDto:loadometerIndicatorDtoList) {
-            QuotaTemp indicatorTemp = quotaTempRepository.findByIndicatorCode(loadometerIndicatorDto.getIndicatorCode());
-            QuotaInstance quotaInstance = new QuotaInstance(indicatorTemp);
+            QuotaTemp quotaTemp = quotaTempRepository.findByIndicatorCode(loadometerIndicatorDto.getIndicatorCode());
+            QuotaInstance quotaInstance = new QuotaInstance(quotaTemp);
             try {
                 quotaInstance.setFloatValue(Double.parseDouble(loadometerIndicatorDto.getTotalAmount()));
                 quotaInstance.setValueType(QuotaConsts.VALUE_TYPE_DOUBLE);
                 quotaInstance.setStatDateNum(Integer.parseInt(generateDate));
                 quotaInstance.setInstanceTime(DateUtil.stringToDate(generateDate, DateUtil.DATE_FORMAT_DAFAULT));
+                quotaInstance.setCreateTime(Calendar.getInstance());
             } catch (ParseException e) {
                 log.error("stringToCalendar error:", e);
             }
             quotaInstanceList.add(quotaInstance);
         }
+        log.error("----生成地磅原始指标结束----");
         quotaInstanceRepository.save(quotaInstanceList);
+
+        log.error("----生成地磅扩展指标开始----");
+        computExtendLoadoQuota(loadometerCodeList, generateDate);
+        log.error("----生成地磅扩展指标结束----");
+    }
+
+    /**
+     * 计算地磅的扩展指标
+     * @param loadometerCodeList 原始地磅指标
+     * @param generateDate 生成日期
+     */
+    public void computExtendLoadoQuota(List<String> loadometerCodeList, String generateDate) {
+        Calendar computCal = null;
+        try {
+            computCal = DateUtil.stringToCalendar(generateDate, DateUtil.DATE_FORMAT_DAFAULT);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Searchable searchable = Searchable.newSearchable()
+                .addSearchFilter("indicatorCode", MatchType.IN, loadometerCodeList);
+        List<QuotaTemp> quotaTempList = quotaTempRepository.findAll(searchable).getContent();
+        quotaComputInsService.reComputQuota(computCal, quotaTempList);
     }
 }

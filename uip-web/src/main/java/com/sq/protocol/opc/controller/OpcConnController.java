@@ -1,5 +1,8 @@
 package com.sq.protocol.opc.controller;
 
+import com.sq.inject.annotation.BaseComponent;
+import com.sq.protocol.opc.service.MesuringPointService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +29,10 @@ import java.util.Map;
 @Controller
 @RequestMapping("opc")
 public class OpcConnController {
+
+    @BaseComponent
+    @Autowired
+    private MesuringPointService mesuringPointService;
 
     /**
      * 列表opc连接
@@ -56,5 +63,10 @@ public class OpcConnController {
         //保存opc配置对象
         /*opcConfigService.saveOpcConfig(connName,host,username,password,clsid);*/
         return null;
+    }
+
+    @RequestMapping(value = "deleteMp.do",method = RequestMethod.GET)
+    public void deleteMesuringPoint(@RequestParam("pointId") String pointId) {
+        mesuringPointService.delete(Long.parseLong(pointId));
     }
 }

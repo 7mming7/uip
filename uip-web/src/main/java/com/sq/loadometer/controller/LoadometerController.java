@@ -57,8 +57,7 @@ public class LoadometerController{
 
         for (String syncDay:dayList) {
             System.out.println(syncDay);
-            tradeDataService.removeCurrDayTradeData(syncDay);
-            tradeDataService.insertCurrDayTradeData(syncDay);
+            tradeDataService.syncLoadometerTrade(syncDay);
         }
 
         return null;

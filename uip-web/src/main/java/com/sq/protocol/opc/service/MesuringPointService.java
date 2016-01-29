@@ -56,10 +56,6 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
     @Autowired
     private OriginalDataRepository originalDataRepository;
 
-    /*public static Group group;
-
-    public static Item[] itemArr = null;*/
-
     /**
      * 读取server下所有的ITEM
      * @param cid
@@ -149,6 +145,7 @@ public class MesuringPointService extends BaseService<MesuringPoint, Long> {
                 log.error("Group add error.itemCode：" + leaf.getItemId(), e);
                 leafs.remove(leaf);
                 fillInOpcItemToServer(server, leafs, cid);
+                return;
             }
             item.setActive(true);
             log.debug("ItemName:[" + item.getId()

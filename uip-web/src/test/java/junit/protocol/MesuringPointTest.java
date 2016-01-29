@@ -33,7 +33,7 @@ public class MesuringPointTest extends TestCase {
 
     /*@Test
     public void testDelete() {
-        this.mesuringPointRepository.delete(12l);
+        this.mesuringPointService.delete(13l);
     }*/
 
     /*@Test
