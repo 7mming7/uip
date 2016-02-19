@@ -56,12 +56,14 @@
         }
 
 - **OPC通信测试**： 建立OPC测试连接时，需要四个条件，分别是工程师站的IP，工程师站的登录用户名，工程师站的登录密码以及之前找出来的OPC服务的clsid的值。
+![image](http://7xr1w9.com1.z0.glb.clouddn.com/opcceshi.png)
 
 - **通信测点数据测试**：既然OPC的通信连接也建立好了，下一步就要获取实时数据了，opc是通过对测点名称进行匹配的，也就是说，要想获取工程师站上目标OPC服务上的测点实时数据，我们需要找到这些通信测点的名称，寻找测点名的方式有多种。
 1. 询问厂家工程师获取点表。
 2. 使用**OPC Client**工具如，MatrikonOPC Explorer ，opcClient，将此类opc client软件安装在工程师站上，
 客户端上Item Id列即是我们寻找的测点的名称，将需要的测点名称整理出来。
 3. 如果直接将客户端安装在工程师站上不可行，那么我们可以选择将客户端安装在测试本或者接口机上获取测点名称。此时配置相较方式二需要多做一些配置，包括了-->用户名和密码需要跟工程师站保持一致，接口机需要配置DCOM。（DCOM的配置另有详解）
+![image](http://7xr1w9.com1.z0.glb.clouddn.com/opcclient.jpg)
 
 - **项目配置**： 对接系统获取数据，要在接口机上获取工控系统的实时数据，还需要对uip进行相关配置。
 在utgard-opc-config.properties配置文件中配置被接方的信息，主要是
@@ -78,6 +80,15 @@
 其中sysId为系统ID，此为自定义的编号；host为工程师站的IP地址；username为登录用户名；
 password为登录密码；clsid为注册表ID；
 
-
 ### JDBC (Java Data Base Connectivity)
-**JDBC**主要适用于地磅称重系统的对接中，地磅的称重系统一般使用sql server系列的数据库作为数据存储。
+**JDBC**主要适用于地磅称重系统的对接中，地磅的称重系统一般使用sql server系列的数据库作为数据存储。对接过程如下：
+- **网络接入**：我们需要了解到地磅系统的IP地址，设置接口机中一块新网卡的IP地址，使其可以与地磅系统网络通信。
+- **数据库分析**：需要在数据库中找到入厂垃圾的流水明细表。做好字段的对应，
+![image](http://7xr1w9.com1.z0.glb.clouddn.com/trade.png)
+根据地磅系统数据库中的表结构，更改TradeDataService.java中insertCurrDayTradeData方法，需要更改地磅数据同步的sql。
+**ps**：如果地磅的数据库是sqlserver 2000版本，需要安装sqlserver 2000 sp4 补丁。如果补丁的方式协调不了，可用数据库同步软件DBSync定时同步数据。
+
+### UDP（User Datagram Protocol）
+**UDP**的使用场景是在对接系统中存在网闸时，如下图所示
+![image](http://7xr1w9.com1.z0.glb.clouddn.com/udp.png)
+在有网闸存在的结构图中，需要在接口机上运行silence，获取工程师站上OPC服务的实时数据，再将实时数据通过UDP的方式发送至数据服务器的指定端口上。数据服务器上需要部署uip，获取本机端口上的UDP传输的实时数据。
