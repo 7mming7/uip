@@ -56,24 +56,25 @@
         }
 
 - **OPC通信测试**： 建立OPC测试连接时，需要四个条件，分别是工程师站的IP，工程师站的登录用户名，工程师站的登录密码以及之前找出来的OPC服务的clsid的值。
-![Alt text](./1455778988025.png)
 
 - **通信测点数据测试**：既然OPC的通信连接也建立好了，下一步就要获取实时数据了，opc是通过对测点名称进行匹配的，也就是说，要想获取工程师站上目标OPC服务上的测点实时数据，我们需要找到这些通信测点的名称，寻找测点名的方式有多种。
 1. 询问厂家工程师获取点表。
 2. 使用**OPC Client**工具如，MatrikonOPC Explorer ，opcClient，将此类opc client软件安装在工程师站上，
-![Alt text](./[@ZJKH@7LFHSW~KTEITN2.jpg)
 客户端上Item Id列即是我们寻找的测点的名称，将需要的测点名称整理出来。
 3. 如果直接将客户端安装在工程师站上不可行，那么我们可以选择将客户端安装在测试本或者接口机上获取测点名称。此时配置相较方式二需要多做一些配置，包括了-->用户名和密码需要跟工程师站保持一致，接口机需要配置DCOM。（DCOM的配置另有详解）
 
 - **项目配置**： 对接系统获取数据，要在接口机上获取工控系统的实时数据，还需要对uip进行相关配置。
 在utgard-opc-config.properties配置文件中配置被接方的信息，主要是
-    host->1=192.168.0.71
-	sysid->1=1
-	domain->1=
-	username->1=Administrator
-	password->1=123456
-	clsid->1=ba198b62-32e3-11d1-a1b5-00805f35623c
-	progid->1=
+    
+    ``` java
+        host->1=192.168.0.71
+        sysid->1=1
+        domain->1=
+        username->1=Administrator
+        password->1=123456
+        clsid->1=ba198b62-32e3-11d1-a1b5-00805f35623c
+        progid->1=
+    ```
 其中sysId为系统ID，此为自定义的编号；host为工程师站的IP地址；username为登录用户名；
 password为登录密码；clsid为注册表ID；
 
