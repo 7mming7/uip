@@ -89,4 +89,4 @@ password为登录密码；clsid为注册表ID；
 
 ### UDP（User Datagram Protocol）
 **UDP**的使用场景是在对接系统中存在网闸时，在有网闸存在的结构图中，需要在接口机上运行silence，获取工程师站上OPC服务的实时数据，再将实时数据通过UDP的方式发送至数据服务器的指定端口上。数据服务器上需要部署uip，获取本机端口上的UDP传输的实时数据。
-![image](http://7xr1w9.com1.z0.glb.clouddn.com/udp.png) 
+![image](http://7xr1w9.com1.z0.glb.clouddn.com/udp.png)
