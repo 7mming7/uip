@@ -30,6 +30,7 @@ import java.util.List;
  * |_)._ _
  * | o| (_
  */
+@Deprecated
 public class InventoryQuotaStrategy extends IQuotaComputStrategy {
 
     private Logger log = LoggerFactory.getLogger(InventoryQuotaStrategy.class);

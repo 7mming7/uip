@@ -165,7 +165,7 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
     }
 
     /**
-     * 数据获取周期性任务
+     * 接口指标数据获取周期性任务
      * @param computCal  汇聚时间
      */
     public void regularDataGather(Calendar computCal){
