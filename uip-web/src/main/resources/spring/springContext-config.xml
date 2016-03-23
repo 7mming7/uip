@@ -135,7 +135,7 @@
             <tx:method name="count*" propagation="NOT_SUPPORTED" read-only="true"/>
             <tx:method name="find*" propagation="NOT_SUPPORTED" read-only="true"/>
             <tx:method name="list*" propagation="NOT_SUPPORTED" read-only="true"/>
-            <tx:method name="*" propagation="REQUIRED"/>
+            <tx:method name="*" propagation="NOT_SUPPORTED"/>
         </tx:attributes>
     </tx:advice>
 

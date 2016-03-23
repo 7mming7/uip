@@ -133,6 +133,7 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
                 log.error("SearchFilter:quotaTemp->" + quotaTemp.getIndicatorCode() + "," + searchFilter.toString());
             }
 
+            /** 如果quotaInstances为空，需要在requestWaitTimeOutValue时间范围内，不断重试获取数据 */
             StringBuilder variableBuilder = new StringBuilder();
             long whileStartMillions = System.currentTimeMillis();
             long computMillions = System.currentTimeMillis();
@@ -144,10 +145,10 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
                     log.error("Thread sleep error.", e);
                 }
                 quotaInstances = quotaInstanceRepository.findAll(searchable).getContent();
-                log.debug("While search variable : " + variable);
             }
             List<QuotaInstance> quotaDyList = new ArrayList<QuotaInstance>(quotaInstances);
 
+            /** 替换quotaInstance中floatValue为null的对象 */
             List<QuotaInstance> nullValueQuotaInstanceList = new ArrayList<QuotaInstance>();
             for (QuotaInstance quotaInstance:quotaDyList) {
                 if (null == quotaInstance.getFloatValue()) {
@@ -160,6 +161,7 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
                 quotaDyList.removeAll(nullValueQuotaInstanceList);
             }
 
+            /** 指标结果集空值处理判断 */
             if (quotaDyList.isEmpty()) {
                 log.error("QuotaTemp -> variable: " + variable + " exist no instance!");
                 if (quotaTemp.getDoWithNull() == QuotaConsts.DOWITH_NULL_BENULL) {
@@ -211,12 +213,14 @@ public class PrimaryQuotaStrategy extends IQuotaComputStrategy {
                     } catch (EvaluationException e) {
                         log.error("parseExpressionFront -> logicalFunctions 指标计算出现错误.calculateExp: " + calculateExp, e);
                     }
+
+                    /** 当计算结果为null时，根据关联指标查询基于它计算的doWithNull的状态，来决定最终的计算结果 */
                     if (result.equals("'null'")) {
                         List<String> subVariableList = QuotaComputHelper.getVariableList(variable,evaluator);
                         QuotaTemp assQuotaTemp = new QuotaTemp();
                         for (String assCode:subVariableList) {
                             QuotaTemp quotaTemp = quotaTempRepository.findByIndicatorCode(assCode);
-                            if (null != assQuotaTemp)
+                            if (null != quotaTemp)
                                 assQuotaTemp = quotaTemp;
                         }
                         log.error("assQuotaTemp :" + assQuotaTemp.getIndicatorCode()

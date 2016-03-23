@@ -278,20 +278,21 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
                 QuotaComputHelper._instance.shutdown();
 
                 while (true) {
-                    log.error("等待线程池计算完成 -- Wait for Computcal:" + DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULTYMDHMS)
-                            + ",Active count:" + QuotaComputHelper._instance.getActiveCount()
-                            + ",currCalFrequency:" + currCalFrequency
-                            + ",currFetchCycle:" + fetchCycle
-                            + ",Semaphore:" + initSemaphore
-                            + ",isTerminating:" + QuotaComputHelper._instance.isTerminating()
-                            + ",isTerminating:" + QuotaComputHelper._instance.isTerminated());
                     if (!QuotaComputHelper._instance.isTerminating() && QuotaComputHelper._instance.isTerminated()) {
                         log.error("前次计算已完成，重新初始化线程池。ReInstance thread pool!");
                         QuotaComputHelper.fetchThreadPooSingleInstance();
                         break;
+                    } else {
+                        log.error("等待线程池计算完成 -- Wait for Computcal:" + DateUtil.formatCalendar(computCal,DateUtil.DATE_FORMAT_DAFAULTYMDHMS)
+                                + ",Active count:" + QuotaComputHelper._instance.getActiveCount()
+                                + ",currCalFrequency:" + currCalFrequency
+                                + ",currFetchCycle:" + fetchCycle
+                                + ",Semaphore:" + initSemaphore
+                                + ",isTerminating:" + QuotaComputHelper._instance.isTerminating()
+                                + ",isTerminated:" + QuotaComputHelper._instance.isTerminated());
                     }
                     try {
-                        Thread.sleep(100l);
+                        Thread.sleep(1000l);
                     } catch (InterruptedException e) {
                         log.error("Thread sleep error!");
                     }
