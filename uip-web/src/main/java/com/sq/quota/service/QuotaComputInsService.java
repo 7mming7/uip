@@ -322,6 +322,9 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
             log.error("searchAssociatedQuotaTemp需要查询关联指标的参数指标不存在.");
             return null;
         }
+
+        Integer calculateStringListSizeCache = calculateStringList.size();
+
         Searchable searchable = Searchable.newSearchable()
                 .addSearchFilter("dataSource", MatchType.EQ, QuotaConsts.DATASOURCE_CALCULATE);
         OrCondition orCondition = new OrCondition();
@@ -331,7 +334,19 @@ public class QuotaComputInsService extends BaseService<QuotaInstance,Long> {
                             MatchType.LIKE, "%" + quotaTempStr + "%"));
         }
         searchable.addSearchFilter(orCondition);
-        return quotaTempRepository.findAll(searchable).getContent();
+
+        List<QuotaTemp> quotaTempList = quotaTempRepository.findAll(searchable).getContent();
+        for (QuotaTemp quotaTemp:quotaTempList) {
+            calculateStringList.add(quotaTemp.getIndicatorCode());
+        }
+        Set<String> quotaSet = new HashSet<String>();
+        quotaSet.addAll(calculateStringList);
+        calculateStringList.clear();
+        calculateStringList.addAll(quotaSet);
+        if (calculateStringListSizeCache == calculateStringList.size())
+            return quotaTempList;
+
+        return searchAssociatedQuotaTemp(calculateStringList);
     }
 
     /**

@@ -126,6 +126,7 @@ public class QuotaComputTask implements Runnable {
         } else {
             quotaInstance.setValueType(QuotaConsts.VALUE_TYPE_DOUBLE);
             quotaInstance.setFloatValue(computResult != null ? Double.parseDouble(computResult.toString()):null);
+            quotaInstance.setStringValue(computResult.toString());
         }
 
         Calendar tempComputCal = (Calendar) computCal.clone();
